@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product Catalog</title>
+</head>
+<body>
+    <h1>Product Catalog</h1>
+    <table>
+        <tr>
+            <th>ASIN</th>
+            <th>Old ASINs</th>
+            <th>SKU</th>
+            <th>Old SKUs</th>
+            <th>Name</th>
+            <th>THR Link</th>
+            <th>WS Link</th>
+            <th>Pricing Strategy</th>
+            <th>Basic Handling Time</th>
+            <th>Price</th>
+            <th>Delivery Price THR 10001</th>
+            <th>Delivery Price WS 10001</th>
+            <th>Delivery Price THR 90001</th>
+            <th>Delivery Price WS 90001</th>
+            <th>Threshold for median HT calculation</th>
+            <th>Orders count</th>
+            <th>Units sold count</th>
+            <th>Returns count</th>
+            <th>A-to-Z count</th>
+            <th>Item #</th>
+            <th>ETA</th>
+            <th>Stock availability</th>
+            <th>Free shipping with Plus</th>
+        </tr>
+        {% for item in items %}
+        <tr>
+            <td>{{ item['ASIN'] }}</td>
+            <td>{{ item['Old ASINs'] }}</td>
+            <td>{{ item['SKU'] }}</td>
+            <td>{{ item['Old SKUs'] }}</td>
+            <td>{{ item['Name'] }}</td>
+            <td>{{ item['THR Link'] }}</td>
+            <td>{{ item['WS Link'] }}</td>
+            <td>{{ item['Pricing Strategy'] }}</td>
+            <td>{{ item['Basic Handling Time'] }}</td>
+            <td>{{ item['Price'] }}</td>
+            <td>{{ item['Delivery Price']['THR']['10001'] }}</td>
+            <td>{{ item['Delivery Price']['WS']['10001'] }}</td>
+            <td>{{ item['Delivery Price']['THR']['90001'] }}</td>
+            <td>{{ item['Delivery Price']['WS']['90001'] }}</td>
+            <td>{{ item['Threshold for median HT calculation'] }}</td>
+            <td>{{ item['Orders count'] }}</td>
+            <td>{{ item['Units sold count'] }}</td>
+            <td>{{ item['Returns count'] }}</td>
+            <td>{{ item['A-to-Z count'] }}</td>
+            <td>{{ item['Item #'] }}</td>
+            <td>{{ item['ETA'] }}</td>
+            <td>{{ item['Stock availability'] }}</td>
+            <td>{{ item['Free shipping with Plus'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
