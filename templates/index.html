@@ -14,9 +14,25 @@
         <button id="parse-selected-prices-button">Parse Selected Prices</button>
         <button id="parse-all-delivery-prices-button">Parse All Delivery Prices</button>
         <button id="parse-selected-delivery-prices-button">Parse Selected Delivery Prices</button>
+        <button id="customize-button">Customize</button>
     </div>
 
     <h1>Nexus one</h1>
+
+    <!-- Hidden modal dialog for column customization -->
+    <div id="customize-dialog" class="modal">
+        <div class="modal-content">
+            <span id="customize-close" class="close">&times;</span>
+            <h2>Customize Columns</h2>
+            <div id="customize-checkboxes">
+                <!-- Checkboxes and names will be added dynamically using JavaScript -->
+            </div>
+            <button id="customize-save">Save</button>
+            <button id="customize-cancel">Cancel</button>
+        </div>
+    </div>
+
+    
 
     <!-- Modal Overlay -->
     <div id="modal-overlay" class="modal">
@@ -44,56 +60,56 @@
     <table>
         <tr>
             <th>    </th>
-            <th>ASIN</th>
-            <th>Old ASINs</th>
-            <th>SKU</th>
-            <th>Old SKUs</th>
-            <th>Name</th>
-            <th>THR Link</th>
-            <th>WS Link</th>
-            <th>Pricing Strategy</th>
-            <th>Basic Handling Time</th>
-            <th>Price</th>
-            <th>Delivery Price THR 10001</th>
-            <th>Delivery Price WS 10001</th>
-            <th>Delivery Price THR 90001</th>
-            <th>Delivery Price WS 90001</th>
-            <th>Threshold for median HT calculation</th>
-            <th>Orders count</th>
-            <th>Units sold count</th>
-            <th>Returns count</th>
-            <th>A-to-Z count</th>
-            <th>Item #</th>
-            <th>ETA</th>
-            <th>Stock availability</th>
-            <th>Free shipping with Plus</th>
+            <th data-column="asin">ASIN</th>
+            <th data-column="odl-asin">Old ASINs</th>
+            <th data-column="sku">SKU</th>
+            <th data-column="old-sku">Old SKUs</th>
+            <th data-column="name">Name</th>
+            <th data-column="thr-link">THR Link</th>
+            <th data-column="link">WS Link</th>
+            <th data-column="pricing">Pricing Strategy</th>
+            <th data-column="bht">Basic Handling Time</th>
+            <th data-column="price">Price</th>
+            <th data-column="delivery-thr-10001">Delivery Price THR 10001</th>
+            <th data-column="delivery-ws-10001">Delivery Price WS 10001</th>
+            <th data-column="delivery-thr-90001">Delivery Price THR 90001</th>
+            <th data-column="delivery-ws-90001">Delivery Price WS 90001</th>
+            <th data-column="threshlod-m">Threshold for median HT calculation</th>
+            <th data-column="orders-count">Orders count</th>
+            <th data-column="units-sold">Units sold count</th>
+            <th data-column="returs">Returns count</th>
+            <th data-column="a-z">A-to-Z count</th>
+            <th data-column="item">Item #</th>
+            <th data-column="eta">ETA</th>
+            <th data-column="stock-availble">Stock availability</th>
+            <th data-column="free-ship">Free shipping with Plus</th>
         </tr>
         {% for item in items %}
         <tr>
             <td><input type="checkbox" name="selected_product" value="{{ item['_id'] }}"></td> <!-- Add a checkbox input within each row -->
-            <td>{{ item['ASIN'] }}</td>
-            <td>{{ item.get('Old ASINs', '') }}</td>
-            <td>{{ item['SKU'] }}</td>
-            <td>{{ item.get('Old SKUs', '') }}</td>
-            <td>{{ item['Name'] }}</td>
-            <td>{{ item.get('THR Link', '') }}</td>
-            <td>{{ item.get('WS Link', '') }}</td>
-            <td>{{ item.get('Pricing Strategy', '') }}</td>
-            <td>{{ item.get('Basic Handling Time', '') }}</td>
-            <td>{{ item.get('Price', '') }}</td>
-            <td>{{ item.get('Delivery Price', {}).get('THR', {}).get('10001', '') }}</td>
-            <td>{{ item.get('Delivery Price', {}).get('WS', {}).get('10001', '') }}</td>
-            <td>{{ item.get('Delivery Price', {}).get('THR', {}).get('90001', '') }}</td>
-            <td>{{ item.get('Delivery Price', {}).get('WS', {}).get('90001', '') }}</td>
-            <td>{{ item.get('Threshold for median HT calculation', '') }}</td>
-            <td>{{ item.get('Orders count', '') }}</td>
-            <td>{{ item.get('Units sold count', '') }}</td>
-            <td>{{ item.get('Returns count', '') }}</td>
-            <td>{{ item.get('A-to-Z count', '') }}</td>
-            <td>{{ item.get('Item #', '') }}</td>
-            <td>{{ item.get('ETA', '') }}</td>
-            <td>{{ item.get('Stock availability', '') }}</td>
-            <td>{{ item.get('Free shipping with Plus', '') }}</td>
+            <td data-column="asin">{{ item['ASIN'] }}</td>
+            <td data-column="odl-asin">{{ item.get('Old ASINs', '') }}</td>
+            <td data-column="sku">{{ item['SKU'] }}</td>
+            <td data-column="old-sku">{{ item.get('Old SKUs', '') }}</td>
+            <td data-column="name">{{ item['Name'] }}</td>
+            <td data-column="thr-link">{{ item.get('THR Link', '') }}</td>
+            <td data-column="link">{{ item.get('WS Link', '') }}</td>
+            <td data-column="pricing">{{ item.get('Pricing Strategy', '') }}</td>
+            <td data-column="bht">{{ item.get('Basic Handling Time', '') }}</td>
+            <td data-column="price">{{ item.get('Price', '') }}</td>
+            <td data-column="delivery-thr-10001">{{ item.get('Delivery Price', {}).get('THR', {}).get('10001', '') }}</td>
+            <td data-column="delivery-ws-10001">{{ item.get('Delivery Price', {}).get('WS', {}).get('10001', '') }}</td>
+            <td data-column="delivery-thr-90001">{{ item.get('Delivery Price', {}).get('THR', {}).get('90001', '') }}</td>
+            <td data-column="delivery-ws-90001">{{ item.get('Delivery Price', {}).get('WS', {}).get('90001', '') }}</td>
+            <td data-column="threshlod-m">{{ item.get('Threshold for median HT calculation', '') }}</td>
+            <td data-column="orders-count">{{ item.get('Orders count', '') }}</td>
+            <td data-column="units-sold">{{ item.get('Units sold count', '') }}</td>
+            <td data-column="returs">{{ item.get('Returns count', '') }}</td>
+            <td data-column="a-z">{{ item.get('A-to-Z count', '') }}</td>
+            <td data-column="item">{{ item.get('Item #', '') }}</td>
+            <td data-column="eta">{{ item.get('ETA', '') }}</td>
+            <td data-column="stock-availble">{{ item.get('Stock availability', '') }}</td>
+            <td data-column="free-ship">{{ item.get('Free shipping with Plus', '') }}</td>
         </tr>
         {% endfor %}
     </table>

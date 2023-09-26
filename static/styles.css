@@ -132,3 +132,55 @@ button, input[type="button"], input[type="submit"] {
 button:hover, input[type="button"]:hover, input[type="submit"]:hover {
     background-color: #1d2941; /* Darker background color on hover */
 }
+
+/* CSS for modal dialog */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto; /* Center horizontally and vertically */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 60%; /* Adjust as needed */
+    max-width: 600px; /* Set a maximum width for larger screens */
+}
+
+.close {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Additional CSS for the Customize button */
+#customize-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+#customize-button:hover {
+    background-color: #45a049;
+}
+
+/* CSS for arranging checkboxes and names in two columns */
+#customize-checkboxes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns */
+    grid-gap: 10px; /* Spacing between items */
+}
