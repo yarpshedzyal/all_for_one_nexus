@@ -19,6 +19,31 @@
 
     <h1>Nexus one</h1>
 
+    <div class="pagination-container">
+        <!-- Dropdown for items per page (moved to the left)
+        <label for="items-per-page">Items per page:</label>
+        <select id="items-per-page">
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option> <!-- Default selection -->
+            <!-- <option value="100">100</option> -->
+            <!-- Add more options as needed -->
+        <!-- </select> --> -->
+        <span id="current-page">Page {{ current_page }} of <span id="total-pages">{{ total_pages }}</span></span> <!-- Add id="current-page" and id="total-pages" here -->
+        <a class="custom-pagination-button" href="?page=1&per_page={{ per_page }}">First</a>
+        {% if current_page > 1 %}
+            <a class="custom-pagination-button" href="?page={{ current_page - 1 }}&per_page={{ per_page }}">Previous</a>
+        {% endif %}
+        {% if current_page < total_pages %}
+            <a class="custom-pagination-button" href="?page={{ current_page + 1 }}&per_page={{ per_page }}">Next</a>
+        {% endif %}
+        <a class="custom-pagination-button" href="?page={{ total_pages }}&per_page={{ per_page }}">Last</a>
+        <div id="pagination-dropdown" class="pagination-dropdown">
+        </div>
+    </div>
+    
+
+
     <!-- Hidden modal dialog for column customization -->
     <div id="customize-dialog" class="modal">
         <div class="modal-content">
@@ -58,7 +83,7 @@
     </div>
 
     <table>
-        <tr>
+        <tr id="table-headers">
             <th>    </th>
             <th data-column="asin">ASIN</th>
             <th data-column="odl-asin">Old ASINs</th>
@@ -84,6 +109,7 @@
             <th data-column="stock-availble">Stock availability</th>
             <th data-column="free-ship">Free shipping with Plus</th>
         </tr>
+        <tbody id="table-body">
         {% for item in items %}
         <tr>
             <td><input type="checkbox" name="selected_product" value="{{ item['_id'] }}"></td> <!-- Add a checkbox input within each row -->
@@ -112,6 +138,7 @@
             <td data-column="free-ship">{{ item.get('Free shipping with Plus', '') }}</td>
         </tr>
         {% endfor %}
+        </tbody>
     </table>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>

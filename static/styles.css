@@ -184,3 +184,36 @@ button:hover, input[type="button"]:hover, input[type="submit"]:hover {
     grid-template-columns: repeat(2, 1fr); /* Two columns */
     grid-gap: 10px; /* Spacing between items */
 }
+
+/* Style the pagination container */
+.pagination-container {
+    position: fixed; /* Fixed positioning to keep it at the bottom */
+    bottom: 0; /* Position it at the bottom of the viewport */
+    width: 100%; /* Full width */
+    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
+    z-index: 1000; /* Ensure it's above other content */
+    text-align: center; /* Center-align the pagination buttons */
+    padding: 10px 0; /* Add padding to the container */
+}
+
+/* Style pagination buttons within the container */
+.pagination-container .custom-pagination-button {
+    background-color: #576c96;
+    color: white;
+    border: none;
+    padding: 5px 10px; /* Adjust padding for smaller buttons */
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+}
+
+/* Style the hover effect for pagination buttons */
+.pagination-container .custom-pagination-button:hover {
+    background-color: #1d2941;
+}
+
+
+
