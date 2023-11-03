@@ -79,19 +79,19 @@ document.getElementById('add-product-form').addEventListener('submit', function 
 const menuContainer = document.getElementById('menu-container');
 const addProductButton = document.getElementById('add-product-button');
 
-// Show the menu when hovering near the top
-window.addEventListener('mousemove', (e) => {
-    if (e.clientY < 50) {
-        menuContainer.style.display = 'block';
-    } else {
-        menuContainer.style.display = 'none';
-    }
-});
+// // Show the menu when hovering near the top
+// window.addEventListener('mousemove', (e) => {
+//     if (e.clientY < 50) {
+//         menuContainer.style.display = 'block';
+//     } else {
+//         menuContainer.style.display = 'none';
+//     }
+// });
 
-// Hide the menu when clicking the "Add Product" button
-addProductButton.addEventListener('click', () => {
-    menuContainer.style.display = 'none';
-});
+// // Hide the menu when clicking the "Add Product" button
+// addProductButton.addEventListener('click', () => {
+//     menuContainer.style.display = 'none';
+// });
 
 // Handle the "Delete Selected" button click
 document.getElementById('delete-selected-button').addEventListener('click', function () {
