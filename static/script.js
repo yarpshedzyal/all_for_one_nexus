@@ -285,6 +285,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // updateTable();
 });
 
+
+    
 // // Fetch data function
 // function fetchData(page, perPage) {
 //     // Make an AJAX request to the server with the page and perPage parameters
