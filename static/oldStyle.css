@@ -1,0 +1,222 @@
+
+
+
+/* styles.css */
+/* Apply background color to even rows */
+tr:nth-child(even) {
+  background-color: #ced4e0;
+}
+
+/* Set border color and width for all table cells */
+table {
+  border-collapse: collapse;
+  width: 100%; /* Set the table width to 100% */
+}
+
+table, th, td {
+  border-left: 1px solid #ced4e0;
+  border-right: 1px solid #ced4e0;
+  padding: 8px;
+  text-align: left; /* Align text to the left */
+}
+
+/* Set background color for the row with column names */
+tr:first-child {
+  background-color: #ced4e0;
+}
+
+/* Override border color and background for odd rows */
+tr:nth-child(odd) td {
+  border-color: transparent;
+  background-color: transparent;
+}
+
+/* Style the checkbox to align it vertically */
+input[type="checkbox"] {
+  vertical-align: middle;
+}
+
+/* Hide the form fields by default */
+#add-product-form {
+  display: none;
+}
+/* Style for the modal overlay */
+#modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+  z-index: 999; /* Ensure the modal appears on top of everything */
+}
+
+/* Style for the modal content */
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* Add a shadow effect */
+}
+
+.modal-content input[type="text"] {
+  width: 100%;
+  padding: 5px; /* Add padding to increase field size */
+  margin-bottom: 15px; /* Add margin to separate fields */
+}
+
+.modal-content button[type="submit"] {
+  width: 100%;
+  padding: 15px; /* Add padding to increase button size */
+  margin-top: 15px; /* Add margin to separate button from fields */
+}
+
+/* Style for the close button */
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Style for the form within the modal */
+#add-product-form {
+  display: none; /* Initially hidden */
+}
+
+#menu-container {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  margin: 10px auto; /* Adjust the margin as needed */
+  background-color: #ffffff00; /* Background color of the menu */
+  z-index: 1000; /* Adjust the z-index as needed */
+}
+
+/* Style for menu buttons */
+#menu-container button {
+  margin: 5px; /* Add spacing between buttons */
+  padding: 10px; /* Add padding to buttons */
+  background-color: #576c96; /* Button background color */
+  color: #fff; /* Button text color */
+  border: none; /* Remove button border */
+  cursor: pointer; /* Add pointer cursor on hover */
+}
+
+/* Style for button hover effect */
+#menu-container button:hover {
+  background-color: #1d2941; /* Change color on hover */
+}
+
+/* Style all buttons to look like menu buttons */
+button, input[type="button"], input[type="submit"] {
+  background-color: #576c96; /* Background color */
+  color: white; /* Text color */
+  border: none; /* Remove borders */
+  padding: 10px 20px; /* Add padding to buttons */
+  margin: 5px; /* Add margin between buttons */
+  cursor: pointer; /* Change cursor on hover */
+  border-radius: 5px; /* Add rounded corners */
+  font-weight: bold; /* Make text bold */
+  text-align: center; /* Center text horizontally */
+  text-decoration: none; /* Remove underlines */
+}
+
+/* Style the hover effect for all buttons */
+button:hover, input[type="button"]:hover, input[type="submit"]:hover {
+  background-color: #1d2941; /* Darker background color on hover */
+}
+
+/* CSS for modal dialog */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: auto; /* Center horizontally and vertically */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 60%; /* Adjust as needed */
+  max-width: 600px; /* Set a maximum width for larger screens */
+}
+
+.close {
+  position: absolute;
+  right: 20px;
+  top: 10px;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Additional CSS for the Customize button */
+#customize-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+#customize-button:hover {
+  background-color: #45a049;
+}
+
+/* CSS for arranging checkboxes and names in two columns */
+#customize-checkboxes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Two columns */
+  grid-gap: 10px; /* Spacing between items */
+}
+
+/* Style the pagination container */
+.pagination-container {
+  position: fixed; /* Fixed positioning to keep it at the bottom */
+  bottom: 0; /* Position it at the bottom of the viewport */
+  width: 100%; /* Full width */
+  background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
+  z-index: 1000; /* Ensure it's above other content */
+  text-align: center; /* Center-align the pagination buttons */
+  padding: 10px 0; /* Add padding to the container */
+}
+
+/* Style pagination buttons within the container */
+.pagination-container .custom-pagination-button {
+  background-color: #576c96;
+  color: white;
+  border: none;
+  padding: 5px 10px; /* Adjust padding for smaller buttons */
+  margin: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+}
+
+/* Style the hover effect for pagination buttons */
+.pagination-container .custom-pagination-button:hover {
+  background-color: #1d2941;
+}
+
+
+
