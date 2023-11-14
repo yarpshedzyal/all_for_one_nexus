@@ -1,105 +1,255 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Mother V2</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+   <title>Mother V2</title>
+   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
+
 <body>
+   <script>
+      document.addEventListener('DOMContentLoaded', async function () {
+         // Get the pagination parameters from the query string or use default values
+         const page = new URLSearchParams(window.location.search).get('page') || 1;
+         const perPage = new URLSearchParams(window.location.search).get('per_page') || 50;
 
-    <div id="menu-container">
-        <button id="add-product-button">Add Product</button>
-        <button id="delete-selected-button">Delete Selected</button>
-        <button id="add-via-csv-button">Add via CSV</button>
-        <button id="parse-all-prices-button">Parse All Prices</button>
-        <button id="parse-selected-prices-button">Parse Selected Prices</button>
-        <button id="parse-all-delivery-prices-button">Parse All Delivery Prices</button>
-        <button id="parse-selected-delivery-prices-button">Parse Selected Delivery Prices</button>
-    </div>
+         // Fetch data from the server
+         const response = await fetch(`/index?page=${page}&per_page=${perPage}`);
 
-    <h1>Nexus one</h1>
+         if (response.ok) {
+            // Parse the JSON data
+            const data = await response.json();
+            console.log(data);
 
-    <!-- Modal Overlay -->
-    <div id="modal-overlay" class="modal">
-        <!-- Modal Content -->
-        <div class="modal-content">
-            <span class="close">&times;</span> <!-- Close button -->
-            <h2>Add Product</h2>
-            <form id="add-product-form">
-                <!-- Add input fields for product details -->
-                <input type="text" id="sku" placeholder="SKU" required>
-                <input type="text" id="name" placeholder="Name" required>
-                <input type="text" id="thr-link" placeholder="THR Link">
-                <input type="text" id="ws-link" placeholder="WS Link">
-                <input type="text" id="pricing-strategy" placeholder="Pricing Strategy">
-                <input type="text" id="basic-handling-time" placeholder="Basic Handling Time">
-                <input type="text" id="price" placeholder="Price">
-                <input type="text" id="median-ht" placeholder="Threshold for median HT calculation">
-                <!-- Add more input fields for other product details -->
+            // Use the data as needed, for example, update the DOM
+            // Example: Assuming there's a div with id="items-container" to display the items
+            const itemsContainer = document.getElementById('items-container');
+            itemsContainer.innerHTML = ''; // Clear previous content
 
-                <button type="submit" class="menu-container button:hover">Add</button>
-            </form>
-        </div>
-    </div>
+            data.items.forEach(item => {
+               const itemElement = document.createElement('div');
+               itemElement.textContent = JSON.stringify(item);
+               itemsContainer.appendChild(itemElement);
+            });
 
-    <table>
-        <tr>
-            <th>    </th>
-            <th>ASIN</th>
-            <th>Old ASINs</th>
-            <th>SKU</th>
-            <th>Old SKUs</th>
-            <th>Name</th>
-            <th>THR Link</th>
-            <th>WS Link</th>
-            <th>Pricing Strategy</th>
-            <th>Basic Handling Time</th>
-            <th>Price</th>
-            <th>Delivery Price THR 10001</th>
-            <th>Delivery Price WS 10001</th>
-            <th>Delivery Price THR 90001</th>
-            <th>Delivery Price WS 90001</th>
-            <th>Threshold for median HT calculation</th>
-            <th>Orders count</th>
-            <th>Units sold count</th>
-            <th>Returns count</th>
-            <th>A-to-Z count</th>
-            <th>Item #</th>
-            <th>ETA</th>
-            <th>Stock availability</th>
-            <th>Free shipping with Plus</th>
-        </tr>
-        {% for item in items %}
-        <tr>
-            <td><input type="checkbox" name="selected_product" value="{{ item['_id'] }}"></td> <!-- Add a checkbox input within each row -->
-            <td>{{ item['ASIN'] }}</td>
-            <td>{{ item.get('Old ASINs', '') }}</td>
-            <td>{{ item['SKU'] }}</td>
-            <td>{{ item.get('Old SKUs', '') }}</td>
-            <td>{{ item['Name'] }}</td>
-            <td>{{ item.get('THR Link', '') }}</td>
-            <td>{{ item.get('WS Link', '') }}</td>
-            <td>{{ item.get('Pricing Strategy', '') }}</td>
-            <td>{{ item.get('Basic Handling Time', '') }}</td>
-            <td>{{ item.get('Price', '') }}</td>
-            <td>{{ item.get('Delivery Price', {}).get('THR', {}).get('10001', '') }}</td>
-            <td>{{ item.get('Delivery Price', {}).get('WS', {}).get('10001', '') }}</td>
-            <td>{{ item.get('Delivery Price', {}).get('THR', {}).get('90001', '') }}</td>
-            <td>{{ item.get('Delivery Price', {}).get('WS', {}).get('90001', '') }}</td>
-            <td>{{ item.get('Threshold for median HT calculation', '') }}</td>
-            <td>{{ item.get('Orders count', '') }}</td>
-            <td>{{ item.get('Units sold count', '') }}</td>
-            <td>{{ item.get('Returns count', '') }}</td>
-            <td>{{ item.get('A-to-Z count', '') }}</td>
-            <td>{{ item.get('Item #', '') }}</td>
-            <td>{{ item.get('ETA', '') }}</td>
-            <td>{{ item.get('Stock availability', '') }}</td>
-            <td>{{ item.get('Free shipping with Plus', '') }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+            // You can also use other data like total_pages, current_page, etc., as needed
+         } else {
+            console.error('Failed to fetch data:', response.statusText);
+         }
+      });
+   </script>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+   <nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
+      <div class="container-fluid">
+         <a class="navbar-brand" href="#">Nexus one</a>
+         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarID"
+            aria-controls="navbarID" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+         </button>
+         <div class="collapse navbar-collapse">
+            <div class="navbar-nav">
+               <div id="menu-container" class="d-flex justify-content-between flex-wrap">
+                  <button class="m-2 btn btn-outline-light" id="add-product-button">Add Product</button>
+                  <button class="m-2 btn btn-outline-light" id="delete-selected-button">Delete Selected</button>
+                  <button class="m-2 btn btn-outline-light" id="add-via-csv-button">Add via CSV</button>
+                  <button class="m-2 btn btn-outline-light" id="parse-all-prices-button">Parse All Prices</button>
+                  <button class="m-2 btn btn-outline-light" id="parse-selected-prices-button">Parse Selected
+                     Prices</button>
+                  <button class="m-2 btn btn-outline-light" id="parse-all-delivery-prices-button">Parse All Delivery
+                     Prices</button>
+                  <button class="m-2 btn btn-outline-light" id="parse-selected-delivery-prices-button">Parse Selected
+                     Delivery Prices</button>
+                  <button class="m-2 btn btn-outline-light" id="customize-button">Customize</button>
+               </div>
+            </div>
+         </div>
+      </div>
+   </nav>
+
+
+
+
+
+
+
+   <!-- Hidden modal dialog for column customization -->
+   <div id="customize-dialog" class="modal">
+      <div class="modal-content">
+         <span id="customize-close" class="close">&times;</span>
+         <h2>Customize Columns</h2>
+         <div id="customize-checkboxes">
+            <!-- Checkboxes and names will be added dynamically using JavaScript -->
+         </div>
+         <button id="customize-save">Save</button>
+         <button id="customize-cancel">Cancel</button>
+      </div>
+   </div>
+
+
+
+   <!-- Modal Overlay -->
+   <div id="modal-overlay" class="modal">
+      <!-- Modal Content -->
+      <div class="modal-content">
+         <span id="close-add-product-modal" class="close">&times;</span>
+         <h2>Add Product</h2>
+         <form id="add-product-form">
+            <!-- Add input fields for product details -->
+            <input type="text" id="sku" placeholder="SKU" required>
+            <input type="text" id="name" placeholder="Name" required>
+            <input type="text" id="thr-link" placeholder="THR Link">
+            <input type="text" id="ws-link" placeholder="WS Link">
+            <input type="text" id="pricing-strategy" placeholder="Pricing Strategy">
+            <input type="text" id="basic-handling-time" placeholder="Basic Handling Time">
+            <input type="text" id="price" placeholder="Price">
+            <input type="text" id="median-ht" placeholder="Threshold for median HT calculation">
+            <!-- Add more input fields for other product details -->
+
+            <button type="submit" class="menu-container button:hover">Add</button>
+         </form>
+      </div>
+   </div>
+
+   <br><br><br><br><br>
+
+
+
+   <section>
+      <div class="container-fluid">
+         <div class="row mt-10">
+            <div class="col-12 d-flex my-2">
+               <div>
+                  <Strong>Style Table:</Strong>
+               </div>
+               <div id="CreateFormCheckingStyles" class="d-flex">
+               </div>
+            </div>
+            <div class="col-12 my-2">
+               <table class="ToggleStyleTable table-striped table table-bordered">
+                  <thead>
+                     <tr id="NewTableHeaders"></tr>
+                     <!-- <tr id="table-headers" class="text-center">
+                        <th  scope="col" data-column="checkbox"></th>
+                        <th  scope="col" data-column="index">#</th> 
+                        <th  scope="col" data-column="asin">ASIN</th> 
+                        <th  scope="col" data-column="odl-asin">Old ASINs</th>
+                        <th  scope="col" data-column="sku">SKU</th>
+                        <th  scope="col" data-column="old-sku">Old SKUs</th>
+                        <th  scope="col" data-column="name">Name</th>
+                        <th  scope="col" data-column="thr-link">THR Link</th>
+                        <th  scope="col" data-column="link">WS Link</th>
+                        <th  scope="col" data-column="pricing">Pricing Strategy</th>
+                        <th  scope="col" data-column="bht">Basic Handling Time</th>
+                        <th  scope="col" data-column="price">Price</th>
+                        <th  scope="col" data-column="delivery-thr-10001">Delivery Price THR 10001</th>
+                        <th  scope="col" data-column="delivery-ws-10001">Delivery Price WS 10001</th>
+                        <th  scope="col" data-column="delivery-thr-90001">Delivery Price THR 90001</th>
+                        <th  scope="col" data-column="delivery-ws-90001">Delivery Price WS 90001</th>
+                        <th  scope="col" data-column="threshlod-m">Threshold for median HT calculation</th>
+                        <th  scope="col" data-column="orders-count">Orders count</th>
+                        <th  scope="col" data-column="units-sold">Units sold count</th>
+                        <th  scope="col" data-column="returs">Returns count</th>
+                        <th  scope="col" data-column="a-z">A-to-Z count</th>
+                        <th  scope="col" data-column="item">Item #</th>
+                        <th  scope="col" data-column="eta">ETA</th>
+                        <th  scope="col" data-column="stock-availble">Stock availability</th>
+                        <th  scope="col" data-column="free-ship">Free shipping with Plus</th>
+                     </tr> -->
+                  </thead>
+
+                  <tbody id="newTable"> </tbody>
+                  <!-- <tbody id="table-body"> 
+                     {% for item in items %}   
+                     <tr>
+                        <td>
+                           <input style="width: 100%;text-align: center;" type="checkbox" name="selected_product" value="{{ item['_id'] }}">
+                        </td> 
+                        <th data-column="index" scope="row">{{ loop.index }}</th>
+                        <td data-column="asin">{{ item['ASIN'] }}</td>
+                        <td data-column="odl-asin">{{ item.get('Old ASINs', '') }}</td>
+                        <td data-column="sku">{{ item['SKU'] }}</td>
+                        <td data-column="old-sku">{{ item.get('Old SKUs', '') }}</td>
+                        <td data-column="name">{{ item['Name'] }}</td>
+                        <td data-column="thr-link">{{ item.get('THR Link', '') }}</td>
+                        <td data-column="link">{{ item.get('WS Link', '') }}</td>
+                        <td data-column="pricing">{{ item.get('Pricing Strategy', '') }}</td>
+                        <td data-column="bht">{{ item.get('Basic Handling Time', '') }}</td>
+                        <td data-column="price">{{ item.get('Price', '') }}</td>
+                        <td data-column="delivery-thr-10001">{{ item.get('Delivery Price', {}).get('THR',
+                           {}).get('10001', '') }}</td>
+                        <td data-column="delivery-ws-10001">{{ item.get('Delivery Price', {}).get('WS', {}).get('10001',
+                           '') }}</td>
+                        <td data-column="delivery-thr-90001">{{ item.get('Delivery Price', {}).get('THR',
+                           {}).get('90001', '') }}</td>
+                        <td data-column="delivery-ws-90001">{{ item.get('Delivery Price', {}).get('WS', {}).get('90001',
+                           '') }}</td>
+                        <td data-column="threshlod-m">{{ item.get('Threshold for median HT calculation', '') }}</td>
+                        <td data-column="orders-count">{{ item.get('Orders count', '') }}</td>
+                        <td data-column="units-sold">{{ item.get('Units sold count', '') }}</td>
+                        <td data-column="returs">{{ item.get('Returns count', '') }}</td>
+                        <td data-column="a-z">{{ item.get('A-to-Z count', '') }}</td>
+                        <td data-column="item">{{ item.get('Item #', '') }}</td>
+                        <td data-column="eta">{{ item.get('ETA', '') }}</td>
+                        <td data-column="stock-availble">{{ item.get('Stock availability', '') }}</td>
+                        <td data-column="free-ship">{{ item.get('Free shipping with Plus', '') }}</td>
+                     </tr>
+                     {% endfor %}
+                  </tbody> -->
+               </table>
+            </div>
+         </div>
+      </div>
+   </section>
+
+
+   <section>
+      <div class="container-fluid">
+         <div class="row mt-10">
+            <div class="col-12 d-flex my-2">
+               <nav class="fixedBot" aria-label="Page navigation example">
+                  <ul class="pagination">
+                     <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                     <li class="page-item"><a class="page-link" href="#">1</a></li>
+                     <li class="page-item"><a class="page-link" href="#">2</a></li>
+                     <li class="page-item"><a class="page-link" href="#">3</a></li>
+                     <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                  </ul>
+               </nav>
+
+            </div>
+         </div>
+      </div>
+   </section>
+ 
+
+   <div class="pagination-container">
+      <!-- Dropdown for items per page (moved to the left)
+        <label for="items-per-page">Items per page:</label>
+        <select id="items-per-page">
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option> <!-- Default selection -->
+      <!-- <option value="100">100</option> -->
+      <!-- Add more options as needed -->
+      <!-- </select> --> -->
+      <span id="current-page">Page {{ current_page }} of <span id="total-pages">{{ total_pages }}</span></span>
+      <!-- Add id="current-page" and id="total-pages" here -->
+      <a class="custom-pagination-button" href="?page=1&per_page={{ per_page }}">First</a>
+      {% if current_page > 1 %}
+      <a class="custom-pagination-button" href="?page={{ current_page - 1 }}&per_page={{ per_page }}">Previous</a>
+      {% endif %}
+      {% if current_page < total_pages %} <a class="custom-pagination-button"
+         href="?page={{ current_page + 1 }}&per_page={{ per_page }}">Next</a>
+         {% endif %}
+         <a class="custom-pagination-button" href="?page={{ total_pages }}&per_page={{ per_page }}">Last</a>
+         <div id="pagination-dropdown" class="pagination-dropdown">
+         </div>
+   </div>
+ 
+
+   <script type="module" src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
+
 </html>
-
-
