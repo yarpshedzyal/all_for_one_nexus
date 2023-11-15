@@ -1,8 +1,8 @@
 
 function ModalWindow() {
   function showModal() {
-    const modalOverlay = document.getElementById('modal-overlay');
-    modalOverlay.style.display = 'block';
+    // const modalOverlay = document.getElementById('modal-overlay');
+    // modalOverlay.style.display = 'block';
 
     // Show the form fields
     const addProductForm = document.getElementById('add-product-form');
@@ -11,8 +11,8 @@ function ModalWindow() {
 
   // Function to hide the modal and form fields
   function hideModal() {
-    const modalOverlay = document.getElementById('modal-overlay');
-    modalOverlay.style.display = 'none';
+    // const modalOverlay = document.getElementById('modal-overlay');
+    // modalOverlay.style.display = 'none';
 
     // Hide the form fields
     const addProductForm = document.getElementById('add-product-form');
@@ -23,7 +23,7 @@ function ModalWindow() {
   document.getElementById('add-product-button').addEventListener('click', showModal);
 
   // Hide the modal when the close button is clicked
-  document.getElementById('close-add-product-modal').addEventListener('click', hideModal);
+  // document.getElementById('close-add-product-modal').addEventListener('click', hideModal);
 
   // Hide the modal when the form is submitted
   document.getElementById('add-product-form').addEventListener('submit', function (e) {

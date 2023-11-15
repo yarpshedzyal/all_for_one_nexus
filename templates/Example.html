@@ -1,0 +1,54 @@
+    <!-- Button trigger modal 
+    Для активации кнопки нужен класс btnModal.
+    data-targetmodal="#first" Уникальный айди, для понимание где окно находится, а также какие кнопки используются для закрытия 
+    -->
+    <button type="button" class="btn btn-primary btnModal" data-targetmodal="#first">
+      Launch demo modal
+   </button> 
+   <!-- Modal -->
+   <div class="modalW modal fade dNone" data-targetmodal="#first">
+      <div class="bgModalEvent btnModal" data-targetmodal="#first"></div>
+      <div class="modal-dialog modal-dialog-centered">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h1 class="modal-title fs-5">Modal title</h1>
+               <button type="button" class="btn-close btnModal" data-targetmodal="#first"></button>
+            </div>
+            <div class="modal-body">
+               <p>Woo-hoo, you're reading this text in a modal!</p>
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-secondary btnModal" data-targetmodal="#first">Close</button>
+               <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+         </div>
+      </div>
+   </div>
+
+
+
+
+    
+   <div class="pagination-container">
+      <!-- Dropdown for items per page (moved to the left)-->
+        <label for="items-per-page">Items per page:</label>
+        <select id="items-per-page">
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option> <!-- Default selection -->
+      <option value="100">100</option>
+      <!-- Add more options as needed -->
+      </select> 
+
+      <!-- Add id="current-page" and id="total-pages" here -->
+      <a class="custom-pagination-button" href="?page=1&per_page={{ per_page }}">First</a>
+      {% if current_page > 1 %}
+      <a class="custom-pagination-button" href="?page={{ current_page - 1 }}&per_page={{ per_page }}">Previous</a>
+      {% endif %}
+      {% if current_page < total_pages %} <a class="custom-pagination-button"
+         href="?page={{ current_page + 1 }}&per_page={{ per_page }}">Next</a>
+         {% endif %}
+         <a class="custom-pagination-button" href="?page={{ total_pages }}&per_page={{ per_page }}">Last</a>
+         <div id="pagination-dropdown" class="pagination-dropdown">
+         </div> 
+   </div>

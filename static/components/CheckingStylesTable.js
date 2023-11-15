@@ -13,11 +13,11 @@ function CheckingStylesTable() {
   let CreateFormCheckingStyles = document.querySelector("#CreateFormCheckingStyles");
   let ToggleStyleTable = document.querySelector(".ToggleStyleTable");
 
-  // Генерируем HTML для каждого стиля и добавляем его к форме
+  // Генерируем HTML для каждого стиля и добавляем его к форме 
   Object.keys(colorsObj).map((e, i) => {
     CreateFormCheckingStyles.insertAdjacentHTML("beforeend", `
     <div class="form-check mx-2">
-      <input class="form-check-input CheckingStylesTable" type="radio" name="flexRadioDefault" id="${e}" ${colorsObj[e].checked ? "checked" : ""}>
+      <input class="form-check-input CheckingStylesTable" type="radio" name="StyleTableRadio" id="${e}" ${colorsObj[e].checked ? "checked" : ""}>
       <label class="form-check-label" for="${e}">
         ${e}
       </label>
