@@ -35,7 +35,7 @@ function AddProductForm() {
             // Handle the response from the server
             if (data.success) {
                 // Close the modal and potentially update the product list
-                document.getElementById('modal-overlay').style.display = 'none';
+                // document.getElementById('modal-overlay').style.display = 'none';
                 // You can update the product list here if needed
             } else {
                 // Handle errors, display a message, etc.

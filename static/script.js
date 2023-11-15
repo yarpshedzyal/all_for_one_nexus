@@ -1,5 +1,4 @@
-import ModalWindow2 from "./ModalWindow/ModalWindow.js";
-import CheckingStylesTable from "./components/CheckingStylesTable.js"
+ import CheckingStylesTable from "./components/CheckingStylesTable.js"
 import fetch_data from "./components/fetch_data.js";
 import CreateTable from "./components/CreateTable.js";
 import ModalWindow from "./components/ModalWindow.js";
@@ -16,7 +15,7 @@ document.querySelector("#btnCollapse").addEventListener("click",()=>{
     document.querySelector(".navbar-collapse").classList.toggle("show");
 });
  
-ModalWindow2();
+// ModalWindow2();
 ModalWindow();
 CheckingStylesTable(); 
 fetch_data().then(async (data) => { 

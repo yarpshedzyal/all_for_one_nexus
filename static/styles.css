@@ -1,3 +1,9 @@
+* {
+    font-family: 'Caveat', cursive;
+    font-family: 'Neucha', cursive;
+    font-family: 'Open Sans', sans-serif;
+}
+
 .mt-10 {
     margin-top: 10rem !important;
 }
@@ -13,111 +19,126 @@
 .borderColor {
     border-color: #d9d9d9 !important;
 }
-.dBlock{
+
+.dBlock {
     display: block !important;
 }
-.dNone{
-    display: none !important;
-    pointer-events: none !important; 
+
+.dNone {
+    display       : none !important;
+    pointer-events: none !important;
 }
-.show > .bgModalEvent{
+
+.show>.bgModalEvent {
     animation: bgModalEventShow 0.2s ease;
 }
+
 @keyframes bgModalEventShow {
-    0%{
+    0% {
         background: #00000000;
-    }100%{
+    }
+
+    100% {
         background: #0000005c;
-    }  
+    }
 }
+
 .bgModalEvent {
-    position: absolute;
-    width: 100%;
-    height: 100%;
+    position  : absolute;
+    width     : 100%;
+    height    : 100%;
     background: #0000005c;
 }
-.customize-checkboxes > div{
+
+.customize-checkboxes>div {
     margin: 5px;
 }
 
 form.form-inline {
     max-width: 260px;
 }
- 
-table , thead , tbody{
+
+table,
+thead,
+tbody {
     background-color: #dddddd !important;
-    table-layout: fixed;
-    width       : 100%;
+    table-layout    : fixed;
+    width           : 100%;
     /* Или укажите конкретную ширину */
 }
- 
+
 th,
 td {
-    white-space: nowrap;  
-    overflow: hidden;  
-    text-overflow: ellipsis;  
-    
-    min-width: 100px;
-    max-width: 220px;
+    white-space  : nowrap;
+    overflow     : hidden;
+    text-overflow: ellipsis;
+
+    min-width : 100px;
+    max-width : 220px;
     width     : auto;
     /* Укажите необходимую ширину */
     text-align: center !important;
 }
- 
+
 th[data-column="Name"],
-td[data-column="Name"],  
+td[data-column="Name"],
 th[data-column="index"],
-td[data-column="index"]{
-    white-space: inherit !important;  
+td[data-column="index"] {
+    white-space : inherit !important;
     table-layout: fixed;
-    width     : 220px;
+    width       : 220px;
 }
+
 th[data-column="ASIN"],
 td[data-column="ASIN"],
 th[data-column="Pricing Strategy"],
 td[data-column="Pricing Strategy"],
 th[data-column="SKU"],
-td[data-column="SKU"]{
-    white-space: inherit !important;  
+td[data-column="SKU"] {
+    white-space : inherit !important;
     table-layout: fixed;
-    width     : 125px;
+    width       : 125px;
 }
 
 th[data-column="checkbox"],
 th[data-column="index"] {
-    width: 35px; 
+    width: 35px;
     /* Укажите необходимую ширину */
 }
 
 table {
     border-collapse: collapse;
-    width: 100%;
-  }
+    width          : 100%;
+}
 
-  th, td {
-    border: 1px solid #dddddd;
+th,
+td {
+    border    : 1px solid #dddddd;
     text-align: left;
-    padding: 8px;
-  }
+    padding   : 8px;
+}
 
-  th:hover, td:hover {
+th:hover,
+td:hover {
     background-color: #f5f5f5;
-  }
-  .fixedBot{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    position: fixed;
-    bottom: 0px;
-    z-index: 10;
-  }
+}
 
-  .pagidark li > a{
+.fixedBot {
+    display        : flex;
+    flex-direction : column;
+    justify-content: center;
+    align-items    : center;
+    width          : 100%;
+    position       : fixed;
+    bottom         : 0px;
+    z-index        : 10;
+}
+
+.pagidark li>a {
     background-color: #212529;
-    color: #fff;
-  }
-  .styletotalPgage{
+    color           : #fff;
+}
+
+.styletotalPgage {
     border-radius: 0.375rem;
-  }
+}

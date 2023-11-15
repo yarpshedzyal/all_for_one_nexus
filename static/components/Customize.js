@@ -6,21 +6,21 @@ function Cuscomize() {
     const customizeSaveButton = document.getElementById('customize-save');
     const customizeCancelButton = document.getElementById('customize-cancel');
     // const customizeCloseButton = document.getElementById('customize-close');
-    const tableHeaders = document.querySelectorAll('th[data-column]'); // Get table headers with data attributes
+    let tableHeaders = document.querySelectorAll('th[data-column]'); // Get table headers with data attributes
  
-     
-    // Function to show the dialog
-    function showCustomizeDialog() {
-        customizeDialog.style.display = 'block';
-    }
+      
 
     // Function to hide the dialog
     function hideCustomizeDialog() {
         customizeDialog.style.display = 'none';
     }
 
-    // Function to handle the "Customize" button click
-    customizeButton.addEventListener('click', showCustomizeDialog);
+    // refresh arr elements tableHeaders
+    customizeButton.addEventListener("click",()=>{ 
+        tableHeaders = document.querySelectorAll('th[data-column]');  
+        return tableHeaders;
+    }); 
+    
 
     // Function to handle the "Close" button click
     // customizeCloseButton.addEventListener('click', hideCustomizeDialog);
