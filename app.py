@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, jsonify,  redirect, session, url_for
 from pymongo import MongoClient
-from bson.objectid import ObjectId
+from bson import ObjectId, json_util
 from bcrypt import checkpw
+import json
 
 class User:
     def __init__(self, id, user_name, password):
@@ -44,6 +45,46 @@ def check_authentication():
         if request.endpoint != 'login':
             return redirect(url_for('login'))
 
+@app.route('/fetch_data', methods=['GET'])
+def fetch_data():  
+    page = request.args.get('page')
+    items_per_page = request.args.get('per_page')
+
+    # Check if 'page' and 'per_page' are not None, and provide defaults if needed
+    if page is None:
+        page = 1  # Default to page 1 if 'page' is not provided
+    else:
+        page = int(page)
+
+    if items_per_page is None:
+        items_per_page = 50  # Default to 50 items per page if 'items_per_page' is not provided
+    else:
+        items_per_page = int(items_per_page)
+
+    # Use the 'page' and 'items_per_page' values to fetch the appropriate data
+    skip = (page - 1) * items_per_page
+    items = collection.find().skip(skip).limit(items_per_page)
+
+    # Convert the MongoDB cursor to a list of dictionaries
+    data = [json_util.loads(json_util.dumps(item)) for item in items]
+
+    # Calculate the total number of items
+    total_items = collection.count_documents({})
+
+    # Calculate the total number of pages
+    total_pages = (total_items + items_per_page - 1) // items_per_page
+
+    # Prepare the response data
+    response_data = {
+        'items': data,
+        'currentPage': page,
+        'totalPages': total_pages,
+    }
+
+    # Serialize the response_data to JSON
+    my_json_string = json.dumps(response_data, default=json_util.default)
+
+    return my_json_string
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -62,11 +103,28 @@ def login():
     return render_template('login.html')
 
 
-@app.route('/index')
+@app.route('/index', methods=['GET'])
 def index():
-    items = collection.find()
-    # Render the main index.html page
-    return render_template('index.html', items = items)
+    # Get pagination parameters from the query string or use default values
+    page = int(request.args.get('page', type=int, default=1))  # Default to page 1
+    per_page = int(request.args.get('per_page', type=int, default=50))  # Default to 50 items per page
+
+    # Calculate the skip value based on the page number and items per page
+    skip = (page - 1) * per_page
+
+    # Query the database to retrieve a specific range of items
+    items = collection.find().skip(skip).limit(per_page)
+
+    # Count the total number of items for pagination
+    total_items = collection.count_documents({})
+
+    # Calculate the total number of pages
+    total_pages = (total_items + per_page - 1) // per_page
+
+    # Render the main index.html page with pagination information
+    return render_template('index.html', items=items, total_pages=total_pages, current_page=page, per_page=per_page)
+
+
 
 
 @app.route('/add_product', methods=['POST'])
@@ -116,7 +174,54 @@ def delete_selected_items():
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)})
 
+ 
 
+@app.route('/NumberOfItems', methods=['POST'])
+def fetch_data_test():
+    data = request.get_json()
+    current_page = data.get('currentPage')
+    data_i_p_p = data.get('itemsPerPage') 
+
+    # Add your logic to process the data here
+    page = request.args.get('page')
+    items_per_page = request.args.get('per_page')
+
+    # Check if 'page' and 'per_page' are not None, and provide defaults if needed
+    if page is None:
+        page = current_page  # Default to page 1 if 'page' is not provided
+    else:
+        page = int(page)
+
+    if items_per_page is None:
+        items_per_page = data_i_p_p  # Default to 50 items per page if 'items_per_page' is not provided
+    else:
+        items_per_page = int(items_per_page)
+
+    # Use the 'page' and 'items_per_page' values to fetch the appropriate data
+    skip = (page - 1) * items_per_page
+    items = collection.find().skip(skip).limit(items_per_page)
+
+    # Convert the MongoDB cursor to a list of dictionaries
+    data = [json_util.loads(json_util.dumps(item)) for item in items]
+
+    # Calculate the total number of items
+    total_items = collection.count_documents({})
+
+    # Calculate the total number of pages
+    total_pages = (total_items + items_per_page - 1) // items_per_page
+
+    # Prepare the response data
+    response_data = {
+        'items': data,
+        'currentPage': page,
+        'totalPages': total_pages, 
+    }
+
+    # Serialize the response_data to JSON
+    my_json_string = json.dumps(response_data, default=json_util.default)
+
+    return my_json_string 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0" ,port=8080)
+
