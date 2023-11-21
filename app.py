@@ -143,14 +143,26 @@ def add_product():
         # Insert the new product into the MongoDB collection
         # You can customize this based on your data structure
         new_product = {
-            'SKU': data.get('sku'),
-            'Name': data.get('name'),  # Add the 'Name' field
-            'THR Link': data.get('thrLink'),  # Add the 'THR Link' field
-            'WS Link': data.get('wsLink'),  # Add the 'WS Link' field
-            'Pricing Strategy': data.get('pricingStrategy'),  # Add the 'Pricing Strategy' field
-            'Basic Handling Time': data.get('basicHandlingTime'),  # Add the 'Basic Handling Time' field
-            'Price': data.get('price'),  # Add the 'Price' field
-            'Threshold for median HT calculation' : data.get('medianHT')
+            'ASIN': data.get('ASIN'),
+            'SKU': data.get('SKU'),
+            'Name': data.get('Name'),  # Add the 'Name' field
+            'ThrLink': data.get('ThrLink'),  # Add the 'THR Link' field
+            'WSlink': data.get('WSlink'),  # Add the 'WS Link' field
+            'PricingStrategy': data.get('PricingStrategy'),  # Add the 'Pricing Strategy' field
+            'BasicHndlingTime': data.get('BasicHndlingTime'),  # Add the 'Basic Handling Time' field
+            'Price': data.get('Price'),
+            'DeliveryPriceTHR10001': data.get('DeliveryPriceTHR10001'),  # Add the 'Price' field
+            'DeliveryPriceWS10001': data.get('DeliveryPriceWS10001'),
+            'DeliveryPriceTHR90001': data.get('DeliveryPriceTHR90001'),
+            'DeliveryPriceWS90001': data.get('DeliveryPriceWS90001'),
+            'ThresholdForMedianHTCalculation': data.get('ThresholdForMedianHTCalculation'),
+            'OrdersCount': data.get('OrdersCount'),
+            'UnitsSoldCount': data.get('UnitsSoldCount'),
+            'ReturnsCount': data.get('ReturnsCount'),
+            'AZCount': data.get('AZCount'),
+            'ItemNumber': data.get('ItemNumber'),
+            'StockAviability': data.get('StockAviability'),
+            'FreeShippingWithPlus': data.get('FreeShippingWithPlus')
             # Add other fields as needed
         }
         
@@ -253,15 +265,26 @@ def upload_csv():
                 csv_reader = csv.DictReader(csv_file)
                 for row in csv_reader:
                     new_product = {
+                        'ASIN': row.get('ASIN'),
                         'SKU': row.get('SKU'),
-                        'Name': row.get('name'),
-                        'THR Link': row.get('thrLink'),
-                        'WS Link': row.get('wsLink'),
-                        'Pricing Strategy': row.get('pricingStrategy'),
-                        'Basic Handling Time': row.get('basicHandlingTime'),
-                        'Price': row.get('price'),
-                        'Threshold for median HT calculation': row.get('medianHT')
-                        # Add other fields as needed
+                        'Name': row.get('Name'),  # Add the 'Name' field
+                        'ThrLink': row.get('ThrLink'),  # Add the 'THR Link' field
+                        'WSlink': row.get('WSlink'),  # Add the 'WS Link' field
+                        'PricingStrategy': row.get('PricingStrategy'),  # Add the 'Pricing Strategy' field
+                        'BasicHndlingTime': row.get('BasicHndlingTime'),  # Add the 'Basic Handling Time' field
+                        'Price': row.get('Price'),
+                        'DeliveryPriceTHR10001': row.get('DeliveryPriceTHR10001'),  # Add the 'Price' field
+                        'DeliveryPriceWS10001': row.get('DeliveryPriceWS10001'),
+                        'DeliveryPriceTHR90001': row.get('DeliveryPriceTHR90001'),
+                        'DeliveryPriceWS90001': row.get('DeliveryPriceWS90001'),
+                        'ThresholdForMedianHTCalculation': row.get('ThresholdForMedianHTCalculation'),
+                        'OrdersCount': row.get('OrdersCount'),
+                        'UnitsSoldCount': row.get('UnitsSoldCount'),
+                        'ReturnsCount': row.get('ReturnsCount'),
+                        'AZCount': row.get('AZCount'),
+                        'ItemNumber': row.get('ItemNumber'),
+                        'StockAviability': row.get('StockAviability'),
+                        'FreeShippingWithPlus': row.get('FreeShippingWithPlus')
                     }
                     collection.insert_one(new_product)
 
@@ -275,11 +298,28 @@ def upload_csv():
 @app.route('/update_product', methods=['POST'])
 def update_product():
     data = request.get_json()
-    product_id = data.get('id')
+    product_id = data.get('_id', {}).get('$oid')
     new_data = {
-        'SKU': data.get('sku'),
-        'Name': data.get('name'),
-        'THR Link': data.get('thrLink'),
+            'ASIN': data.get('ASIN'),
+            'SKU': data.get('SKU'),
+            'Name': data.get('Name'),  # Add the 'Name' field
+            'ThrLink': data.get('ThrLink'),  # Add the 'THR Link' field
+            'WSlink': data.get('WSlink'),  # Add the 'WS Link' field
+            'PricingStrategy': data.get('PricingStrategy'),  # Add the 'Pricing Strategy' field
+            'BasicHndlingTime': data.get('BasicHndlingTime'),  # Add the 'Basic Handling Time' field
+            'Price': data.get('Price'),
+            'DeliveryPriceTHR10001': data.get('DeliveryPriceTHR10001'),  # Add the 'Price' field
+            'DeliveryPriceWS10001': data.get('DeliveryPriceWS10001'),
+            'DeliveryPriceTHR90001': data.get('DeliveryPriceTHR90001'),
+            'DeliveryPriceWS90001': data.get('DeliveryPriceWS90001'),
+            'ThresholdForMedianHTCalculation': data.get('ThresholdForMedianHTCalculation'),
+            'OrdersCount': data.get('OrdersCount'),
+            'UnitsSoldCount': data.get('UnitsSoldCount'),
+            'ReturnsCount': data.get('ReturnsCount'),
+            'AZCount': data.get('AZCount'),
+            'ItemNumber': data.get('ItemNumber'),
+            'StockAviability': data.get('StockAviability'),
+            'FreeShippingWithPlus': data.get('FreeShippingWithPlus')
         # Add more fields as needed
     }
 

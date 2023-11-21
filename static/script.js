@@ -15,10 +15,10 @@ document.querySelector("#btnCollapse").addEventListener("click",()=>{
     document.querySelector(".navbar-collapse").classList.toggle("show");
 });
 
-const ArrKeys = ["ASIN", "Old ASINs", "SKU", "Name", "THR Link", "WS Link", "Pricing Strategy", "Basic Handling Time", "Price",
-"Delivery Price THR 10001", "Delivery Price WS 10001", "Delivery Price THR 90001", "Delivery Price WS 90001",
-"Threshold for median HT calculation", "Orders count", "Orders count", "Units sold count", "Returns count", "A-to-Z count",
-"Item #", "ETA", "Stock availability", "Free shipping with Plus"
+const ArrKeys = ["ASIN", "SKU", "Name", "ThrLink", "WSlink", "PricingStrategy", "BasicHndlingTime", "Price",
+"DeliveryPriceTHR10001", "DeliveryPriceWS10001", "DeliveryPriceTHR90001", "DeliveryPriceWS90001",
+"ThresholdForMedianHTCalculation", "OrdersCount", "UnitsSoldCount", "ReturnsCount", "AZCount",
+"ItemNumber", "StockAviability", "FreeShippingWithPlus",
 ]
  
 // ModalWindow2(); 
