@@ -9,7 +9,7 @@ import NumberOfItems from "./components/NumberOfItems.js";
 import SearchRadio from "./components/SearchRadio.js";
 import AddProductForm from "./components/AddProductForm.js";
 import DeleteSelectedButton from "./components/DeleteSelectedButton.js";
-
+import addviascsv from "./components/addviacsv.js";
  
 document.querySelector("#btnCollapse").addEventListener("click",()=>{
     document.querySelector(".navbar-collapse").classList.toggle("show");
@@ -25,7 +25,8 @@ fetch_data().then(async (data) => {
 NumberOfItems();
 SearchRadio();
 AddProductForm();
-DeleteSelectedButton();  
+DeleteSelectedButton();
+addviascsv();  
 // WTF();
 
 //  

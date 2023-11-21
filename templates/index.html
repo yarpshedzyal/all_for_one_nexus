@@ -92,6 +92,26 @@
       </div>
    </section>
 
+      <!-- Add an edit form or modal to your HTML -->
+   <div class="modal fade" id="edit-modal" tabindex="-1" aria-labelledby="edit-modal-label" aria-hidden="true">
+      <div class="modal-dialog">
+         <div class="modal-content">
+            <div class="modal-header">
+                  <h5 class="modal-title" id="edit-modal-label">Edit Product</h5>
+                  <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                  <form id="edit-form">
+                     <input type="text" class="form-control" id="edit-sku" placeholder="SKU" required>
+                     <input type="text" class="form-control" id="edit-name" placeholder="Name" required>
+                     <input type="text" class="form-control" id="edit-thr-link" placeholder="THR Link">
+                     <!-- Add more fields as needed -->
+                     <button type="submit" class="btn btn-primary">Save Changes</button>
+                  </form>
+            </div>
+         </div>
+      </div>
+   </div>
 
 
    <!-- Modal Hidden modal dialog for column customization-->
@@ -308,6 +328,68 @@
             });
         });
     });
+</script>
+
+<script>
+   document.addEventListener('DOMContentLoaded', function () {
+       // Add click event listener to each row
+       const rows = document.querySelectorAll('#newTable tr');
+       rows.forEach(row => {
+           row.addEventListener('click', function () {
+               // Get data from the clicked row and populate the edit form
+               const rowData = JSON.parse(row.getAttribute('data-row'));
+               populateEditForm(rowData);
+           });
+       });
+   });
+
+   function populateEditForm(data) {
+       // Populate the edit form with data from the clicked row
+       // Example: Assuming you have input fields with IDs like 'edit-sku', 'edit-name', etc.
+       document.getElementById('edit-sku').value = data.SKU;
+       document.getElementById('edit-name').value = data.Name;
+       document.getElementById('edit-thr-link').value = data['THR Link'];
+       // Add more fields as needed
+       // Show the edit modal or form
+       $('#edit-modal').modal('show');
+   }
+</script>
+
+<script>
+   $(document).ready(function () {
+       // Add submit event listener to the edit form
+       $('#edit-form').submit(function (event) {
+           event.preventDefault();
+
+           // Get data from the edit form
+           const updatedData = {
+               sku: $('#edit-sku').val(),
+               name: $('#edit-name').val(),
+               thrLink: $('#edit-thr-link').val(),
+               // Add more fields as needed
+           };
+
+           // Use Ajax to submit the edit form
+           $.ajax({
+               type: 'POST',
+               url: '/update_product',
+               data: JSON.stringify(updatedData),
+               contentType: 'application/json',
+               success: function (response) {
+                   // Handle the response from the server
+                   console.log(response);
+                   // Optionally, you can display a message to the user
+                   alert(response.message);
+                   // Hide the edit modal
+                   $('#edit-modal').modal('hide');
+               },
+               error: function (error) {
+                   // Handle the error
+                   console.error('Error updating product:', error);
+               }
+           });
+       });
+   });
 </script>
 
 

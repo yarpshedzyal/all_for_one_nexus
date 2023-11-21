@@ -270,6 +270,24 @@ def upload_csv():
             return jsonify({'success': False, 'message': str(e)})
     else:
         return jsonify({'success': False, 'message': 'Invalid file format'})
+    
+# Add a new route to handle the update process
+@app.route('/update_product', methods=['POST'])
+def update_product():
+    data = request.get_json()
+    product_id = data.get('id')
+    new_data = {
+        'SKU': data.get('sku'),
+        'Name': data.get('name'),
+        'THR Link': data.get('thrLink'),
+        # Add more fields as needed
+    }
+
+    # Update the product in the MongoDB collection
+    collection.update_one({'_id': ObjectId(product_id)}, {'$set': new_data})
+
+    return jsonify({'success': True, 'message': 'Product updated successfully'})
+
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0" ,port=8080)
