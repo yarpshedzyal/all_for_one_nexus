@@ -33,6 +33,7 @@ fetch_data().then(async (data) => {
 NumberOfItems(ArrKeys);
 SearchRadio(ArrKeys);
 AddProductForm();
+
 DeleteSelectedButton(); 
 
 
@@ -45,6 +46,14 @@ thisBtnRefresh.forEach((thisBtn) =>{
 })
      
  
+
+DeleteSelectedButton();
+
+  
+
+addviascsv();  
+
+
 // WTF();
 
 //  

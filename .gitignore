@@ -1,3 +1,8 @@
 .dockerignore
+
 Dockerfile 
 *pyc
+
+Dockerfile
+*.pyc
+
