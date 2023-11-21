@@ -10,6 +10,8 @@ function SearchRadio(ArrKeys) {
   let newData = { items: [] };
   // нужно чтобы FETCH получал от App.py все элементы.
   setTimeout(async () => {
+
+    // Пределать на запрос AllItems FETCH("/AllItems")
     FETCH("/NumberOfItems", { currentPage: 1, itemsPerPage: 200 }).then(async (data) => { 
       newData = data;
     });

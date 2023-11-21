@@ -1,3 +1,5 @@
+@import "./tables.css";
+
 * {
     font-family: 'Caveat', cursive;
     font-family: 'Neucha', cursive;
@@ -6,6 +8,12 @@
 
 .mt-10 {
     margin-top: 10rem !important;
+}
+.mh-800{
+    max-height: 800px;
+}
+.ContentModalAddViacsv{
+    overflow-y: scroll;
 }
 
 /* .table-striped>tbody>tr:nth-of-type(even)>*  {
@@ -79,31 +87,31 @@ td {
     /* Укажите необходимую ширину */
     text-align: center !important;
 }
-
-th[data-column="Name"],
-td[data-column="Name"],
-th[data-column="index"],
-td[data-column="index"] {
-    white-space : inherit !important;
-    table-layout: fixed;
-    width       : 220px;
+ 
+td[data-column="index"]{
+    cursor: pointer;
 }
-
-th[data-column="ASIN"],
-td[data-column="ASIN"],
-th[data-column="Pricing Strategy"],
-td[data-column="Pricing Strategy"],
-th[data-column="SKU"],
-td[data-column="SKU"] {
-    white-space : inherit !important;
-    table-layout: fixed;
-    width       : 125px;
+td[data-column="index"]:hover, tr:hover{
+    border-bottom-color: #198754; 
+    
 }
-
-th[data-column="checkbox"],
-th[data-column="index"] {
-    width: 35px;
-    /* Укажите необходимую ширину */
+td[data-column="index"]{
+    position: relative;
+}
+td[data-column="index"]:hover::before{
+    display: block;
+}
+  td[data-column="index"]::before{
+    display: none;
+    content: "";
+    width: 100%;
+    height: 100%;
+    border: 2px solid #198754;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
 }
 td[data-column="index"]{
     cursor: pointer;

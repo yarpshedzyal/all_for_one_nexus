@@ -70,7 +70,12 @@
                               data-targetmodal="#Add_Product">Add Product</button>
                            <button class="m-2 btn btn-outline-light" id="delete-selected-button">Delete
                               Selected</button>
+
+                           <button class="m-2 btn btn-outline-light" id="add-via-csv-button"
+                              onclick="handleCsvUpload()">Add via CSV</button>
+
                            <button class="m-2 btn btn-outline-light" id="add-via-csv-button" onclick="handleCsvUpload()">Add via CSV</button>
+
                            <button class="m-2 btn btn-outline-light" id="parse-all-prices-button">Parse All
                               Prices</button>
                            <button class="m-2 btn btn-outline-light" id="parse-selected-prices-button">Parse Selected
@@ -83,6 +88,8 @@
                               Delivery Prices</button>
                            <button class="m-2 btn btn-outline-light btnModal" data-targetmodal="#Customize"
                               id="customize-button">Customize</button>
+                           <button class="m-2 btn btn-outline-light" >Download Tsv</button>
+                           <button class="m-2 btn btn-outline-light" >Upload fee report</button>
                         </div>
                      </div>
                   </div>
@@ -92,11 +99,28 @@
       </div>
    </section>
 
+
+   <!-- Add an edit form or modal to your HTML -->
+
       <!-- Add an edit form or modal to your HTML -->
+
    <div class="modal fade" id="edit-modal" tabindex="-1" aria-labelledby="edit-modal-label" aria-hidden="true">
       <div class="modal-dialog">
          <div class="modal-content">
             <div class="modal-header">
+
+               <h5 class="modal-title" id="edit-modal-label">Edit Product</h5>
+               <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+               <form id="edit-form">
+                  <input type="text" class="form-control" id="edit-sku" placeholder="SKU" required>
+                  <input type="text" class="form-control" id="edit-name" placeholder="Name" required>
+                  <input type="text" class="form-control" id="edit-thr-link" placeholder="THR Link">
+                  <!-- Add more fields as needed -->
+                  <button type="submit" class="btn btn-primary">Save Changes</button>
+               </form>
+
                   <h5 class="modal-title" id="edit-modal-label">Edit Product</h5>
                   <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -108,6 +132,7 @@
                      <!-- Add more fields as needed -->
                      <button type="submit" class="btn btn-primary">Save Changes</button>
                   </form>
+
             </div>
          </div>
       </div>
@@ -119,7 +144,7 @@
       <div id="customize-dialog" class="modalW modal fade  dNone" data-targetmodal="#Customize">
          <div class="bgModalEvent btnModal" data-targetmodal="#Customize"></div>
          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content ">
                <div class="modal-header">
                   <h1 class="modal-title fs-5">Customize Columns</h1>
                   <button type="button" class="btn-close btnModal" data-targetmodal="#Customize"></button>
@@ -132,7 +157,8 @@
                   <div>
                      <strong>Style Table:</strong>
                   </div>
-                  <div id="CreateFormCheckingStyles" class="d-flex flex-wrap justify-content-between align-items-center">
+                  <div id="CreateFormCheckingStyles"
+                     class="d-flex flex-wrap justify-content-between align-items-center">
                      <!-- Create Radio Style table -->
                   </div>
                </div>
@@ -157,6 +183,46 @@
                <div class="modal-body">
                   <form id="add-product-form">
                      <!-- Add input fields for product details -->
+
+                     <div class="d-flex justify-content-between">
+                        <div>
+                           <input type="text" class="my-2 form-control" id="ASIN" placeholder="ASIN" required>
+                           <input type="text" class="my-2 form-control" id="SKU" placeholder="SKU" required>
+                           <input type="text" class="my-2 form-control" id="Name" placeholder="Name">
+                           <input type="text" class="my-2 form-control" id="ThrLink" placeholder="Thr Link">
+                           <input type="text" class="my-2 form-control" id="WSlink" placeholder="WS link">
+                           <input type="text" class="my-2 form-control" id="PricingStrategy"
+                              placeholder="Pricing Strategy">
+                           <input type="text" class="my-2 form-control" id="BasicHndlingTime"
+                              placeholder="Basic Hndling Time">
+                           <input type="text" class="my-2 form-control" id="Price" placeholder="Price">
+                           <input type="text" class="my-2 form-control" id="DeliveryPriceTHR10001"
+                              placeholder="Delivery Price THR 10001">
+                           <input type="text" class="my-2 form-control" id="DeliveryPriceWS10001"
+                              placeholder="Delivery Price WS 10001"> 
+                        </div>
+                        <div>
+                           <input type="text" class="my-2 form-control" id="DeliveryPriceTHR90001"
+                           placeholder="Delivery Price THR 90001">
+                           <input type="text" class="my-2 form-control" id="DeliveryPriceWS90001"
+                              placeholder="Delivery Price WS 90001">
+                           <input type="text" class="my-2 form-control" id="ThresholdForMedianHTCalculation"
+                              placeholder="Threshold For Median HT Calculation">
+                           <input type="text" class="my-2 form-control" id="OrdersCount" placeholder="Orders Count">
+                           <input type="text" class="my-2 form-control" id="UnitsSoldCount"
+                              placeholder="Units Sold Count">
+                           <input type="text" class="my-2 form-control" id="ReturnsCount" placeholder="Returns Count">
+                           <input type="text" class="my-2 form-control" id="AZCount" placeholder="AZ Count">
+                           <input type="text" class="my-2 form-control" id="ItemNumber" placeholder="Item Number">
+                           <input type="text" class="my-2 form-control" id="StockAviability"
+                              placeholder="Stock Aviability">
+                           <input type="text" class="my-2 form-control" id="FreeShippingWithPlus"
+                              placeholder="Free Shipping With Plus">
+                        </div>
+
+                     </div>
+
+
                      <input type="text" class="my-2 form-control" id="ASIN" placeholder="ASIN" required>
                      <input type="text" class="my-2 form-control" id="SKU" placeholder="SKU" required>
                      <input type="text" class="my-2 form-control" id="Name" placeholder="Name">
@@ -179,9 +245,10 @@
                      <input type="text" class="my-2 form-control" id="ItemNumber" placeholder="Item Number">
                      <input type="text" class="my-2 form-control" id="StockAviability" placeholder="Stock Aviability">
                      <input type="text" class="my-2 form-control" id="FreeShippingWithPlus" placeholder="Free Shipping With Plus">
+
                      <!-- Add more input fields for other product details -->
                      <div class="modal-footer">
-                        <button type="submit" class="btn btn-success menu-container btnModal"
+                        <button type="submit" class="btn btn-success menu-container btnModal thisBtnRefresh"
                            data-targetmodal="#Add_Product">Add</button>
                         <button type="button" class="btn btn-secondary btnModal"
                            data-targetmodal="#Add_Product">Close</button>
@@ -195,16 +262,29 @@
       <div class="modalW modal fade dNone" data-targetmodal="#columnindex">
          <div class="bgModalEvent btnModal" data-targetmodal="#columnindex"></div>
          <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content mh-800">
+
             <div class="modal-content">
+
                <div class="modal-header">
                   <h1 class="modal-title fs-5 titleModalAddViacsv"></h1>
                   <button type="button" class="btn-close btnModal" data-targetmodal="#columnindex"></button>
                </div>
+
+               <div class="modal-body ContentModalAddViacsv">
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary btnModal"
+                     data-targetmodal="#columnindex">Close</button>
+                  <button type="button" class="btn btn-primary POSTaddviascsv btnModal thisBtnRefresh" data-targetmodal="#columnindex">Save changes</button>
+
                <div class="modal-body ContentModalAddViacsv"> 
                </div>
                <div class="modal-footer">
                   <button type="button" class="btn btn-secondary btnModal" data-targetmodal="#columnindex">Close</button>
                   <button type="button" class="btn btn-primary POSTaddviascsv">Save changes</button>
+
                </div>
             </div>
          </div>
@@ -228,7 +308,8 @@
                            <strong>Search</strong>
                            <div class="input-group mb-3">
                               <input id="InpSearch" type="text" class="form-control" placeholder="Text...">
-                              <button class="btn btn-outline-secondary" type="button" id="SearchSubmit" disabled>Button</button>
+                              <button class="btn btn-outline-secondary" type="button" id="SearchSubmit"
+                                 disabled>Apply</button>
                            </div>
                         </form>
                      </div>
@@ -262,14 +343,14 @@
                         <div class="input-group mb-3">
                            <input id="InpNumberOfItems" value="10" type="number" class="form-control"
                               placeholder="Number of items">
-                           <button class="btn btn-outline-secondary" type="button" id="BtnNumberOfItems">Button</button>
+                           <button class="btn btn-outline-secondary" type="button" id="BtnNumberOfItems">Apply</button>
                         </div>
                      </form>
                   </div>
 
                </div>
 
- 
+
 
             </div>
 
@@ -288,6 +369,7 @@
    </section>
 
     
+
 
    <!-- Pagination -->
    <section>
@@ -324,6 +406,43 @@
 <!-- Add this script block with JavaScript code -->
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
+
+   function handleCsvUpload() {
+      // Trigger the file input click
+      $("#csv-file-input").click();
+   }
+
+   // Handle file selection and form submission
+   $(document).ready(function () {
+      $("#csv-file-input").change(function () {
+         // Get the selected file
+         var file = this.files[0];
+
+         // Create a FormData object and append the file
+         var formData = new FormData();
+         formData.append("csv_file", file);
+
+         // Use Ajax to submit the form
+         $.ajax({
+            type: "POST",
+            url: "/upload_csv",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+               // Handle the response from the server
+               console.log(response);
+               // Optionally, you can display a message to the user
+               alert(response.message);
+            },
+            error: function (error) {
+               // Handle the error
+               console.error("Error uploading CSV file:", error);
+            }
+         });
+      });
+   });
+
     function handleCsvUpload() {
         // Trigger the file input click
         $("#csv-file-input").click();
@@ -359,6 +478,7 @@
             });
         });
     });
+
 </script>
 
 

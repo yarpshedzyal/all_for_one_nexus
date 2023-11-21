@@ -33,11 +33,26 @@ fetch_data().then(async (data) => {
 NumberOfItems(ArrKeys);
 SearchRadio(ArrKeys);
 AddProductForm();
+
+DeleteSelectedButton(); 
+
+
+// Refresh по классу. Нужно только добавить на кнопку. thisBtnRefresh
+let thisBtnRefresh = document.querySelectorAll(".thisBtnRefresh"); 
+thisBtnRefresh.forEach((thisBtn) =>{
+    thisBtn.addEventListener("click",()=>{
+        location.reload();
+    });
+})
+     
+ 
+
 DeleteSelectedButton();
 
   
 
 addviascsv();  
+
 
 // WTF();
 

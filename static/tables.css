@@ -1,0 +1,31 @@
+/*Css для таблиці*/
+th[data-column="Name"],
+td[data-column="Name"],
+th[data-column="index"],
+td[data-column="index"] {
+    white-space : inherit !important;
+    table-layout: fixed;
+    width       : 220px;
+}
+
+th[data-column="index"],
+td[data-column="index"] {
+    width: 50px !important;
+}
+
+th[data-column="ASIN"],
+td[data-column="ASIN"],
+th[data-column="Pricing Strategy"],
+td[data-column="Pricing Strategy"],
+th[data-column="SKU"],
+td[data-column="SKU"] {
+    white-space : inherit !important;
+    table-layout: fixed;
+    width       : 225px;
+}
+
+th[data-column="checkbox"],
+th[data-column="index"] {
+    width: 35px;
+    /* Укажите необходимую ширину */
+}

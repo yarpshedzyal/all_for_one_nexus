@@ -6,7 +6,10 @@ import json
 from werkzeug.utils import secure_filename
 import csv
 import os
+
+
 from flask import send_file
+
 
 class User:
     def __init__(self, id, user_name, password):
@@ -330,6 +333,19 @@ def update_product():
     return jsonify({'success': True, 'message': 'Product updated successfully'})
 
 
+# @app.route('/AllItems', methods=['GET'])
+# def all_items():
+#     # Query the database to retrieve all items
+#     items = list(collection.find())
+
+#     # Serialize ObjectId to JSON-friendly format
+#     serialized_items = json_util.dumps(items)
+
+#     # Return the serialized list of items as JSON
+#     return jsonify({'items': serialized_items})
+ 
+
+
 @app.route('/download_tsv_report', methods=['GET'])
 def download_tsv_report():
     # Query the MongoDB collection to get the necessary data
@@ -374,6 +390,7 @@ def download_tsv_report():
 
     # Send the file as a response
     return send_file('report.tsv', as_attachment=True)
+
 
 
 if __name__ == '__main__':
