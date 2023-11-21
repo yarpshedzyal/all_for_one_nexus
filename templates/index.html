@@ -179,6 +179,24 @@
             </div>
          </div>
       </div>
+ 
+      <div class="modalW modal fade dNone" data-targetmodal="#columnindex">
+         <div class="bgModalEvent btnModal" data-targetmodal="#columnindex"></div>
+         <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h1 class="modal-title fs-5 titleModalAddViacsv"></h1>
+                  <button type="button" class="btn-close btnModal" data-targetmodal="#columnindex"></button>
+               </div>
+               <div class="modal-body ContentModalAddViacsv"> 
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary btnModal" data-targetmodal="#columnindex">Close</button>
+                  <button type="button" class="btn btn-primary POSTaddviascsv">Save changes</button>
+               </div>
+            </div>
+         </div>
+      </div>
    </section>
 
 
@@ -257,6 +275,7 @@
       </div>
    </section>
 
+    
 
    <!-- Pagination -->
    <section>
@@ -330,7 +349,11 @@
     });
 </script>
 
+
+<!-- <script>
+
 <script>
+
    document.addEventListener('DOMContentLoaded', function () {
        // Add click event listener to each row
        const rows = document.querySelectorAll('#newTable tr');
@@ -353,12 +376,21 @@
        // Show the edit modal or form
        $('#edit-modal').modal('show');
    }
+
+</script> -->
+<!-- 
+<script>
+   $(document).ready(function () {
+       // Add submit event listener to the edit form
+       $('#edti-form').submit(function (event) {
+=======
 </script>
 
 <script>
    $(document).ready(function () {
        // Add submit event listener to the edit form
        $('#edit-form').submit(function (event) {
+
            event.preventDefault();
 
            // Get data from the edit form
@@ -390,7 +422,11 @@
            });
        });
    });
+
+</script> -->
+
 </script>
+
 
 
 </html>

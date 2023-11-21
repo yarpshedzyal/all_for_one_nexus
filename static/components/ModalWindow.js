@@ -3,8 +3,7 @@ function ModalWindow() {
    let btnModal = document.querySelectorAll(".btnModal");
 
    btnModal.forEach((btn) =>{
-    btn.addEventListener("click",(event)=>{
-     
+    btn.addEventListener("click",(event)=>{ 
       modalW.forEach((modal) =>{ 
          if(btn.dataset.targetmodal === modal.dataset.targetmodal){
           modal.classList.toggle("show");
