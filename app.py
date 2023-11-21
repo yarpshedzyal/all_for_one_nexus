@@ -3,6 +3,9 @@ from pymongo import MongoClient
 from bson import ObjectId, json_util
 from bcrypt import checkpw
 import json
+from werkzeug.utils import secure_filename
+import csv
+import os
 
 class User:
     def __init__(self, id, user_name, password):
@@ -25,6 +28,10 @@ app.secret_key = 'supadupasecretkey10101010'
 with open('config.txt') as config_file:
     config = config_file.readlines()
 
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'csv'}
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Parse configuration values
 mongo_uri = config[0].strip().split('=')[1]
@@ -222,6 +229,67 @@ def fetch_data_test():
 
     return my_json_string 
 
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/upload_csv', methods=['POST'])
+def upload_csv():
+    if 'csv_file' not in request.files:
+        return jsonify({'success': False, 'message': 'No file part'})
+
+    file = request.files['csv_file']
+
+    if file.filename == '':
+        return jsonify({'success': False, 'message': 'No selected file'})
+
+    if file and allowed_file(file.filename):
+        try:
+            # Save the uploaded file to the uploads directory
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+            # Process the CSV file and add elements to the MongoDB collection
+            with open(os.path.join(app.config['UPLOAD_FOLDER'], filename), 'r') as csv_file:
+                csv_reader = csv.DictReader(csv_file)
+                for row in csv_reader:
+                    new_product = {
+                        'SKU': row.get('SKU'),
+                        'Name': row.get('name'),
+                        'THR Link': row.get('thrLink'),
+                        'WS Link': row.get('wsLink'),
+                        'Pricing Strategy': row.get('pricingStrategy'),
+                        'Basic Handling Time': row.get('basicHandlingTime'),
+                        'Price': row.get('price'),
+                        'Threshold for median HT calculation': row.get('medianHT')
+                        # Add other fields as needed
+                    }
+                    collection.insert_one(new_product)
+
+            return jsonify({'success': True, 'message': 'File uploaded and processed successfully'})
+        except Exception as e:
+            return jsonify({'success': False, 'message': str(e)})
+    else:
+        return jsonify({'success': False, 'message': 'Invalid file format'})
+    
+# Add a new route to handle the update process
+@app.route('/update_product', methods=['POST'])
+def update_product():
+    data = request.get_json()
+    product_id = data.get('id')
+    new_data = {
+        'SKU': data.get('sku'),
+        'Name': data.get('name'),
+        'THR Link': data.get('thrLink'),
+        # Add more fields as needed
+    }
+
+    # Update the product in the MongoDB collection
+    collection.update_one({'_id': ObjectId(product_id)}, {'$set': new_data})
+
+    return jsonify({'success': True, 'message': 'Product updated successfully'})
+
+
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0" ,port=8080)
+
 
