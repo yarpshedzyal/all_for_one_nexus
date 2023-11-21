@@ -3,6 +3,9 @@ from pymongo import MongoClient
 from bson import ObjectId, json_util
 from bcrypt import checkpw
 import json
+from werkzeug.utils import secure_filename
+import csv
+import os
 
 class User:
     def __init__(self, id, user_name, password):
@@ -25,6 +28,10 @@ app.secret_key = 'supadupasecretkey10101010'
 with open('config.txt') as config_file:
     config = config_file.readlines()
 
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'csv'}
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Parse configuration values
 mongo_uri = config[0].strip().split('=')[1]
@@ -136,14 +143,26 @@ def add_product():
         # Insert the new product into the MongoDB collection
         # You can customize this based on your data structure
         new_product = {
-            'SKU': data.get('sku'),
-            'Name': data.get('name'),  # Add the 'Name' field
-            'THR Link': data.get('thrLink'),  # Add the 'THR Link' field
-            'WS Link': data.get('wsLink'),  # Add the 'WS Link' field
-            'Pricing Strategy': data.get('pricingStrategy'),  # Add the 'Pricing Strategy' field
-            'Basic Handling Time': data.get('basicHandlingTime'),  # Add the 'Basic Handling Time' field
-            'Price': data.get('price'),  # Add the 'Price' field
-            'Threshold for median HT calculation' : data.get('medianHT')
+            'ASIN': data.get('ASIN'),
+            'SKU': data.get('SKU'),
+            'Name': data.get('Name'),  # Add the 'Name' field
+            'ThrLink': data.get('ThrLink'),  # Add the 'THR Link' field
+            'WSlink': data.get('WSlink'),  # Add the 'WS Link' field
+            'PricingStrategy': data.get('PricingStrategy'),  # Add the 'Pricing Strategy' field
+            'BasicHndlingTime': data.get('BasicHndlingTime'),  # Add the 'Basic Handling Time' field
+            'Price': data.get('Price'),
+            'DeliveryPriceTHR10001': data.get('DeliveryPriceTHR10001'),  # Add the 'Price' field
+            'DeliveryPriceWS10001': data.get('DeliveryPriceWS10001'),
+            'DeliveryPriceTHR90001': data.get('DeliveryPriceTHR90001'),
+            'DeliveryPriceWS90001': data.get('DeliveryPriceWS90001'),
+            'ThresholdForMedianHTCalculation': data.get('ThresholdForMedianHTCalculation'),
+            'OrdersCount': data.get('OrdersCount'),
+            'UnitsSoldCount': data.get('UnitsSoldCount'),
+            'ReturnsCount': data.get('ReturnsCount'),
+            'AZCount': data.get('AZCount'),
+            'ItemNumber': data.get('ItemNumber'),
+            'StockAviability': data.get('StockAviability'),
+            'FreeShippingWithPlus': data.get('FreeShippingWithPlus')
             # Add other fields as needed
         }
         
@@ -222,6 +241,106 @@ def fetch_data_test():
 
     return my_json_string 
 
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/upload_csv', methods=['POST'])
+def upload_csv():
+    if 'csv_file' not in request.files:
+        return jsonify({'success': False, 'message': 'No file part'})
+
+    file = request.files['csv_file']
+
+    if file.filename == '':
+        return jsonify({'success': False, 'message': 'No selected file'})
+
+    if file and allowed_file(file.filename):
+        try:
+            # Save the uploaded file to the uploads directory
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+            # Process the CSV file and add elements to the MongoDB collection
+            with open(os.path.join(app.config['UPLOAD_FOLDER'], filename), 'r') as csv_file:
+                csv_reader = csv.DictReader(csv_file)
+                for row in csv_reader:
+                    new_product = {
+                        'ASIN': row.get('ASIN'),
+                        'SKU': row.get('SKU'),
+                        'Name': row.get('Name'),  # Add the 'Name' field
+                        'ThrLink': row.get('ThrLink'),  # Add the 'THR Link' field
+                        'WSlink': row.get('WSlink'),  # Add the 'WS Link' field
+                        'PricingStrategy': row.get('PricingStrategy'),  # Add the 'Pricing Strategy' field
+                        'BasicHndlingTime': row.get('BasicHndlingTime'),  # Add the 'Basic Handling Time' field
+                        'Price': row.get('Price'),
+                        'DeliveryPriceTHR10001': row.get('DeliveryPriceTHR10001'),  # Add the 'Price' field
+                        'DeliveryPriceWS10001': row.get('DeliveryPriceWS10001'),
+                        'DeliveryPriceTHR90001': row.get('DeliveryPriceTHR90001'),
+                        'DeliveryPriceWS90001': row.get('DeliveryPriceWS90001'),
+                        'ThresholdForMedianHTCalculation': row.get('ThresholdForMedianHTCalculation'),
+                        'OrdersCount': row.get('OrdersCount'),
+                        'UnitsSoldCount': row.get('UnitsSoldCount'),
+                        'ReturnsCount': row.get('ReturnsCount'),
+                        'AZCount': row.get('AZCount'),
+                        'ItemNumber': row.get('ItemNumber'),
+                        'StockAviability': row.get('StockAviability'),
+                        'FreeShippingWithPlus': row.get('FreeShippingWithPlus')
+                    }
+                    collection.insert_one(new_product)
+
+            return jsonify({'success': True, 'message': 'File uploaded and processed successfully'})
+        except Exception as e:
+            return jsonify({'success': False, 'message': str(e)})
+    else:
+        return jsonify({'success': False, 'message': 'Invalid file format'})
+    
+# Add a new route to handle the update process
+@app.route('/update_product', methods=['POST'])
+def update_product():
+    data = request.get_json()
+    product_id = data.get('_id', {}).get('$oid')
+    new_data = {
+            'ASIN': data.get('ASIN'),
+            'SKU': data.get('SKU'),
+            'Name': data.get('Name'),  # Add the 'Name' field
+            'ThrLink': data.get('ThrLink'),  # Add the 'THR Link' field
+            'WSlink': data.get('WSlink'),  # Add the 'WS Link' field
+            'PricingStrategy': data.get('PricingStrategy'),  # Add the 'Pricing Strategy' field
+            'BasicHndlingTime': data.get('BasicHndlingTime'),  # Add the 'Basic Handling Time' field
+            'Price': data.get('Price'),
+            'DeliveryPriceTHR10001': data.get('DeliveryPriceTHR10001'),  # Add the 'Price' field
+            'DeliveryPriceWS10001': data.get('DeliveryPriceWS10001'),
+            'DeliveryPriceTHR90001': data.get('DeliveryPriceTHR90001'),
+            'DeliveryPriceWS90001': data.get('DeliveryPriceWS90001'),
+            'ThresholdForMedianHTCalculation': data.get('ThresholdForMedianHTCalculation'),
+            'OrdersCount': data.get('OrdersCount'),
+            'UnitsSoldCount': data.get('UnitsSoldCount'),
+            'ReturnsCount': data.get('ReturnsCount'),
+            'AZCount': data.get('AZCount'),
+            'ItemNumber': data.get('ItemNumber'),
+            'StockAviability': data.get('StockAviability'),
+            'FreeShippingWithPlus': data.get('FreeShippingWithPlus')
+        # Add more fields as needed
+    }
+
+    # Update the product in the MongoDB collection
+    collection.update_one({'_id': ObjectId(product_id)}, {'$set': new_data})
+
+    return jsonify({'success': True, 'message': 'Product updated successfully'})
+
+# @app.route('/AllItems', methods=['GET'])
+# def all_items():
+#     # Query the database to retrieve all items
+#     items = list(collection.find())
+
+#     # Serialize ObjectId to JSON-friendly format
+#     serialized_items = json_util.dumps(items)
+
+#     # Return the serialized list of items as JSON
+#     return jsonify({'items': serialized_items})
+ 
+
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0" ,port=8080)
+
 

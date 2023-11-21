@@ -9,23 +9,42 @@ import NumberOfItems from "./components/NumberOfItems.js";
 import SearchRadio from "./components/SearchRadio.js";
 import AddProductForm from "./components/AddProductForm.js";
 import DeleteSelectedButton from "./components/DeleteSelectedButton.js";
-
+import addviascsv from "./components/addviacsv.js";
  
 document.querySelector("#btnCollapse").addEventListener("click",()=>{
     document.querySelector(".navbar-collapse").classList.toggle("show");
 });
+
+const ArrKeys = ["ASIN", "SKU", "Name", "ThrLink", "WSlink", "PricingStrategy", "BasicHndlingTime", "Price",
+"DeliveryPriceTHR10001", "DeliveryPriceWS10001", "DeliveryPriceTHR90001", "DeliveryPriceWS90001",
+"ThresholdForMedianHTCalculation", "OrdersCount", "UnitsSoldCount", "ReturnsCount", "AZCount",
+"ItemNumber", "StockAviability", "FreeShippingWithPlus",
+]
  
-// ModalWindow2();
-ModalWindow();
+// ModalWindow2(); 
 CheckingStylesTable(); 
 fetch_data().then(async (data) => { 
-    CreateTable(data);
+    CreateTable(data,ArrKeys);
     await Cuscomize();
+    await ModalWindow();
+    await addviascsv(data, ArrKeys); 
 });
-NumberOfItems();
-SearchRadio();
+ 
+NumberOfItems(ArrKeys);
+SearchRadio(ArrKeys);
 AddProductForm();
-DeleteSelectedButton();  
+DeleteSelectedButton(); 
+
+
+// Refresh по классу. Нужно только добавить на кнопку. thisBtnRefresh
+let thisBtnRefresh = document.querySelectorAll(".thisBtnRefresh"); 
+thisBtnRefresh.forEach((thisBtn) =>{
+    thisBtn.addEventListener("click",()=>{
+        location.reload();
+    });
+})
+     
+ 
 // WTF();
 
 //  

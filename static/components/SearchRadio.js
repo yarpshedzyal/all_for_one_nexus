@@ -1,7 +1,8 @@
 import FETCH from "./FETCH.js";
 import CreateTable from "./CreateTable.js";
+import addviascsv from "./addviacsv.js";
 
-function SearchRadio() {
+function SearchRadio(ArrKeys) {
   let RadioSearch = document.querySelectorAll('input[name="SearchRadio"]');
   let SearchSubmit = document.querySelector("#SearchSubmit");
   let InpSearch = document.querySelector("#InpSearch");
@@ -9,6 +10,8 @@ function SearchRadio() {
   let newData = { items: [] };
   // нужно чтобы FETCH получал от App.py все элементы.
   setTimeout(async () => {
+
+    // Пределать на запрос AllItems FETCH("/AllItems")
     FETCH("/NumberOfItems", { currentPage: 1, itemsPerPage: 200 }).then(async (data) => { 
       newData = data;
     });
@@ -30,7 +33,8 @@ function SearchRadio() {
           if (sortedData.items.length === 0) {
             alert("Not found");
           } else {
-            CreateTable(sortedData);
+            CreateTable(sortedData , ArrKeys);
+            addviascsv(sortedData , ArrKeys);
           } 
         }
       })
