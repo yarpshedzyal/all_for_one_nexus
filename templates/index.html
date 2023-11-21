@@ -47,6 +47,10 @@
       });
    </script>
 
+   <!-- Add this input element for file selection -->
+   <input type="file" id="csv-file-input" accept=".csv" style="display:none;">
+
+
    <!-- Navigation -->
    <section>
       <div class="container-fluid">
@@ -66,7 +70,7 @@
                               data-targetmodal="#Add_Product">Add Product</button>
                            <button class="m-2 btn btn-outline-light" id="delete-selected-button">Delete
                               Selected</button>
-                           <button class="m-2 btn btn-outline-light" id="add-via-csv-button">Add via CSV</button>
+                           <button class="m-2 btn btn-outline-light" id="add-via-csv-button" onclick="handleCsvUpload()">Add via CSV</button>
                            <button class="m-2 btn btn-outline-light" id="parse-all-prices-button">Parse All
                               Prices</button>
                            <button class="m-2 btn btn-outline-light" id="parse-selected-prices-button">Parse Selected
@@ -265,6 +269,46 @@
 
    <script type="module" src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
+
+<!-- Add this script block with JavaScript code -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    function handleCsvUpload() {
+        // Trigger the file input click
+        $("#csv-file-input").click();
+    }
+
+    // Handle file selection and form submission
+    $(document).ready(function () {
+        $("#csv-file-input").change(function () {
+            // Get the selected file
+            var file = this.files[0];
+
+            // Create a FormData object and append the file
+            var formData = new FormData();
+            formData.append("csv_file", file);
+
+            // Use Ajax to submit the form
+            $.ajax({
+                type: "POST",
+                url: "/upload_csv",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    // Handle the response from the server
+                    console.log(response);
+                    // Optionally, you can display a message to the user
+                    alert(response.message);
+                },
+                error: function (error) {
+                    // Handle the error
+                    console.error("Error uploading CSV file:", error);
+                }
+            });
+        });
+    });
+</script>
 
 
 </html>
