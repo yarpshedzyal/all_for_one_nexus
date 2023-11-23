@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify,  redirect, session, url_for
+from flask import Flask, render_template, request, jsonify,  redirect, session, url_for,send_file
 from pymongo import MongoClient
 from bson import ObjectId, json_util
 from bcrypt import checkpw
@@ -6,7 +6,7 @@ import json
 from werkzeug.utils import secure_filename
 import csv
 import os
-from flask import send_file
+
 
 class User:
     def __init__(self, id, user_name, password):
@@ -329,7 +329,6 @@ def update_product():
 
     return jsonify({'success': True, 'message': 'Product updated successfully'})
 
-
 @app.route('/download_tsv_report', methods=['GET'])
 def download_tsv_report():
     # Query the MongoDB collection to get the necessary data
@@ -340,23 +339,21 @@ def download_tsv_report():
 
     for item in items:
         sku = item.get('SKU', '')
-        price = item.get('Price', '')
-        stock_availability = item.get('StockAvailability', '')
+        price = item.get('Price', '').strip()
+        stock_availability = item.get('StockAviability', '')
 
         # Calculate quantity based on stock_availability
         if stock_availability == 'Yes':
-            quantity = 99
-        elif stock_availability == 'No':
-            quantity = 0
+            quantity = '99'
         else:
-            quantity = None
+            quantity = '0'
 
         # Calculate other fields based on quantity
-        if quantity == 0:
+        if quantity == '0' or quantity == None:
             handling_time = business_price = quantity_price_type = quantity_lower_bound1 = quantity_price1 = quantity_lower_bound2 = quantity_price2 = quantity_lower_bound3 = quantity_price3 = None
         else:
             handling_time = 3
-            business_price = int(price) - 1
+            business_price = float(price) - 1
             quantity_price_type = 'PERCENT'
             quantity_lower_bound1 = 2
             quantity_price1 = 0.25
@@ -374,6 +371,7 @@ def download_tsv_report():
 
     # Send the file as a response
     return send_file('report.tsv', as_attachment=True)
+
 
 
 if __name__ == '__main__':

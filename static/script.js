@@ -1,4 +1,4 @@
- import CheckingStylesTable from "./components/CheckingStylesTable.js"
+import CheckingStylesTable from "./components/CheckingStylesTable.js";
 import fetch_data from "./components/fetch_data.js";
 import CreateTable from "./components/CreateTable.js";
 import ModalWindow from "./components/ModalWindow.js";
@@ -34,10 +34,25 @@ NumberOfItems(ArrKeys);
 SearchRadio(ArrKeys);
 AddProductForm();
 DeleteSelectedButton();
-
-  
-
 addviascsv();  
+
+
+let download_tsv = document.querySelector('#download-tsv')
+download_tsv.addEventListener('click', ()=>{window.location.href = '/download_tsv_report'})
+
+
+
+
+// Refresh по классу. Нужно только добавить на кнопку. thisBtnRefresh
+let thisBtnRefresh = document.querySelectorAll(".thisBtnRefresh"); 
+thisBtnRefresh.forEach((thisBtn) =>{
+    thisBtn.addEventListener("click",()=>{
+        location.reload();
+    });
+})
+     
+ 
+
 
 // WTF();
 
