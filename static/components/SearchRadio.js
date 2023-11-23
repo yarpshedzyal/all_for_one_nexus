@@ -12,7 +12,7 @@ function SearchRadio(ArrKeys) {
   setTimeout(async () => {
 
     // Пределать на запрос AllItems FETCH("/AllItems")
-    FETCH("/NumberOfItems", { currentPage: 1, itemsPerPage: 200 }).then(async (data) => { 
+    FETCH("/all_items").then(async (data) => { 
       newData = data;
     });
     SearchSubmit.disabled = false;
@@ -25,8 +25,10 @@ function SearchRadio(ArrKeys) {
           // });  
           let RadioKey = e.title;
           let sortedData = { items: [] };
-          newData.items.map((element) => {
-            if (element[RadioKey].toLowerCase().includes(InpSearch.value.toLowerCase()) === true) {
+          console.log(newData.items);
+
+          newData.items.map((element, index) => { 
+            if (String(element[RadioKey]).toLowerCase().includes(String(InpSearch.value).toLowerCase()) === true) {
               sortedData.items.push(element);
             }
           })

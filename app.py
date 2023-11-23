@@ -379,8 +379,6 @@ def download_tsv_report():
     # Send the file as a response
     return send_file('report.tsv', as_attachment=True)
 
-from flask import request
-
 @app.route('/upload_fee_report', methods=['POST'])
 def upload_fee_report():
     try:
@@ -401,6 +399,26 @@ def upload_fee_report():
         return jsonify({'success': True, 'message': 'Fee report uploaded successfully'})
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)})
+
+
+@app.route('/all_items', methods=['GET', 'POST'])
+def get_all_items():
+    try:
+        # Query all items from the MongoDB collection
+        items = collection.find()
+
+        # Convert the MongoDB cursor to a list of dictionaries
+        data = [json_util.loads(json_util.dumps(item)) for item in items]
+
+        # Convert ObjectId to string in each item
+        for item in data:
+            item['_id'] = str(item['_id'])
+
+        return jsonify({'success': True, 'items': data})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0" ,port=8080)
