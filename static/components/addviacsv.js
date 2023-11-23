@@ -17,13 +17,12 @@ export default function addviascsv(data, ArrKeys) {
             console.log(e);
             contentModalAddViacsv.insertAdjacentHTML("beforeend", `
 
-                <div class="d-flex justify-content-between col-12 flex-wrap"> 
-                
                 ${ArrKeys.map((key) => `
                     ${e[key] === undefined ? "" : `
                     <span>${key}:
                     <input class="form-control my-2 inpaddviascsv" placeholder="${key}" value="${e[key]}" data-column="${key}" title='${e[key] === undefined ? "" : e[key]}'>
                     <span/>
+
 
                     `}
                 `).join('')}
