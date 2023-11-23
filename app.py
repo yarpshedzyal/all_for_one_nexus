@@ -6,7 +6,7 @@ import json
 from werkzeug.utils import secure_filename
 import csv
 import os
-
+import pandas as pd
 
 
 
@@ -166,7 +166,8 @@ def add_product():
             'AZCount': data.get('AZCount'),
             'ItemNumber': data.get('ItemNumber'),
             'StockAviability': data.get('StockAviability'),
-            'FreeShippingWithPlus': data.get('FreeShippingWithPlus')
+            'FreeShippingWithPlus': data.get('FreeShippingWithPlus'),
+            'estimated_referral_fee': data.get('estimated_referral_fee')
             # Add other fields as needed
         }
         
@@ -288,7 +289,8 @@ def upload_csv():
                         'AZCount': row.get('AZCount'),
                         'ItemNumber': row.get('ItemNumber'),
                         'StockAviability': row.get('StockAviability'),
-                        'FreeShippingWithPlus': row.get('FreeShippingWithPlus')
+                        'FreeShippingWithPlus': row.get('FreeShippingWithPlus'),
+                        'estimated_referral_fee': row.get('estimated_referral_fee')
                     }
                     collection.insert_one(new_product)
 
@@ -323,7 +325,8 @@ def update_product():
             'AZCount': data.get('AZCount'),
             'ItemNumber': data.get('ItemNumber'),
             'StockAviability': data.get('StockAviability'),
-            'FreeShippingWithPlus': data.get('FreeShippingWithPlus')
+            'FreeShippingWithPlus': data.get('FreeShippingWithPlus'),
+            'estimated_referral_fee': data.get('estimated_referral_fee')
         # Add more fields as needed
     }
 
@@ -376,7 +379,28 @@ def download_tsv_report():
     # Send the file as a response
     return send_file('report.tsv', as_attachment=True)
 
+from flask import request
 
+@app.route('/upload_fee_report', methods=['POST'])
+def upload_fee_report():
+    try:
+        # Get the fee report file from the request
+        fee_report_file = request.files['fee_report_file']
+
+        # Read the CSV file into a pandas DataFrame
+        fee_report_df = pd.read_csv(fee_report_file)
+
+        # Iterate through the rows of the DataFrame and update the MongoDB collection
+        for index, row in fee_report_df.iterrows():
+            sku = row['SKU']
+            estimated_referral_fee = row['estimated-referral-fee-per-item']
+
+            # Update the corresponding item in the MongoDB collection
+            collection.update_one({'SKU': sku}, {'$set': {'estimated_referral_fee': estimated_referral_fee}})
+
+        return jsonify({'success': True, 'message': 'Fee report uploaded successfully'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0" ,port=8080)

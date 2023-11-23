@@ -68,7 +68,7 @@
                         <div id="menu-container" class="d-flex flex-wrap">
                            <button class="m-2 btn btn-outline-light btnModal" id="add-product-button"
                               data-targetmodal="#Add_Product">Add Product</button>
-                           <button class="m-2 btn btn-outline-light" id="delete-selected-button">Delete
+                           <button class="m-2 btn btn-outline-light thisBtnRefresh" id="delete-selected-button">Delete
                               Selected</button>
 
                            <button class="m-2 btn btn-outline-light" id="add-via-csv-button" onclick="handleCsvUpload()">Add via CSV</button>
@@ -86,7 +86,10 @@
                            <button class="m-2 btn btn-outline-light btnModal" data-targetmodal="#Customize"
                               id="customize-button">Customize</button>
                            <button class="m-2 btn btn-outline-light" id="download-tsv">Download Tsv</button>
-                           <button class="m-2 btn btn-outline-light" >Upload fee report</button>
+                           <button class="m-2 btn btn-outline-light" id="upload-fee" onclick="handleFeeReportUpload()">
+                              <!-- Add this input element for fee report selection -->
+<input type="file" id="fee-report-file-input" accept=".csv" style="display:none;">
+Upload fee report</button>
                         </div>
                      </div>
                   </div>
@@ -215,33 +218,11 @@
                               placeholder="Stock Aviability">
                            <input type="text" class="my-2 form-control" id="FreeShippingWithPlus"
                               placeholder="Free Shipping With Plus">
+                           <input type="text" class="my-2 form-control" id="estimated_referral_fee"
+                              placeholder="estimated_referral_fee">
                         </div>
 
                      </div>
-
-
-                     <input type="text" class="my-2 form-control" id="ASIN" placeholder="ASIN" required>
-                     <input type="text" class="my-2 form-control" id="SKU" placeholder="SKU" required>
-                     <input type="text" class="my-2 form-control" id="Name" placeholder="Name">
-                     <input type="text" class="my-2 form-control" id="ThrLink" placeholder="Thr Link">
-                     <input type="text" class="my-2 form-control" id="WSlink" placeholder="WS link">
-                     <input type="text" class="my-2 form-control" id="PricingStrategy"
-                        placeholder="Pricing Strategy">
-                     <input type="text" class="my-2 form-control" id="BasicHndlingTime" placeholder="Basic Hndling Time">
-                     <input type="text" class="my-2 form-control" id="Price"
-                        placeholder="Price">
-                     <input type="text" class="my-2 form-control" id="DeliveryPriceTHR10001" placeholder="Delivery Price THR 10001">
-                     <input type="text" class="my-2 form-control" id="DeliveryPriceWS10001" placeholder="Delivery Price WS 10001">
-                     <input type="text" class="my-2 form-control" id="DeliveryPriceTHR90001" placeholder="Delivery Price THR 90001">
-                     <input type="text" class="my-2 form-control" id="DeliveryPriceWS90001" placeholder="Delivery Price WS 90001">
-                     <input type="text" class="my-2 form-control" id="ThresholdForMedianHTCalculation" placeholder="Threshold For Median HT Calculation">
-                     <input type="text" class="my-2 form-control" id="OrdersCount" placeholder="Orders Count">
-                     <input type="text" class="my-2 form-control" id="UnitsSoldCount" placeholder="Units Sold Count">
-                     <input type="text" class="my-2 form-control" id="ReturnsCount" placeholder="Returns Count">
-                     <input type="text" class="my-2 form-control" id="AZCount" placeholder="AZ Count">
-                     <input type="text" class="my-2 form-control" id="ItemNumber" placeholder="Item Number">
-                     <input type="text" class="my-2 form-control" id="StockAviability" placeholder="Stock Aviability">
-                     <input type="text" class="my-2 form-control" id="FreeShippingWithPlus" placeholder="Free Shipping With Plus">
 
                      <!-- Add more input fields for other product details -->
                      <div class="modal-footer">
@@ -259,38 +240,22 @@
       <div class="modalW modal fade dNone" data-targetmodal="#columnindex">
          <div class="bgModalEvent btnModal" data-targetmodal="#columnindex"></div>
          <div class="modal-dialog modal-dialog-centered">
-
             <div class="modal-content mh-800">
-
-
-            <div class="modal-content mh-800">
-
-            <div class="modal-content">
-
                <div class="modal-header">
                   <h1 class="modal-title fs-5 titleModalAddViacsv"></h1>
                   <button type="button" class="btn-close btnModal" data-targetmodal="#columnindex"></button>
                </div>
-
                <div class="modal-body ContentModalAddViacsv">
                </div>
                <div class="modal-footer">
                   <button type="button" class="btn btn-secondary btnModal"
                      data-targetmodal="#columnindex">Close</button>
                   <button type="button" class="btn btn-primary POSTaddviascsv btnModal thisBtnRefresh" data-targetmodal="#columnindex">Save changes</button>
-
-               <div class="modal-body ContentModalAddViacsv"> 
-               </div>
-               <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary btnModal" data-targetmodal="#columnindex">Close</button>
-                  <button type="button" class="btn btn-primary POSTaddviascsv">Save changes</button>
-
                </div>
             </div>
          </div>
       </div>
    </section>
-
 
 
 
@@ -308,8 +273,6 @@
                            <strong>Search</strong>
                            <div class="input-group mb-3">
                               <input id="InpSearch" type="text" class="form-control" placeholder="Text...">
-                              <button class="btn btn-outline-secondary" type="button" id="SearchSubmit"
-                                 disabled>Apply</button>
                               <button class="btn btn-outline-secondary" type="button" id="SearchSubmit"
                                  disabled>Apply</button>
                            </div>
@@ -371,7 +334,6 @@
    </section>
 
     
-
 
     
 
@@ -452,6 +414,52 @@
 
 
 </script>
+
+<!-- Add this script block with JavaScript code -->
+<script>
+   function handleFeeReportUpload() {
+       // Trigger the file input click
+       document.getElementById("fee-report-file-input").click();
+   }
+
+   // Handle fee report file selection and form submission
+   document.addEventListener("DOMContentLoaded", function () {
+       var feeReportInput = document.getElementById("fee-report-file-input");
+
+       feeReportInput.addEventListener("change", function () {
+           // Get the selected file
+           var file = this.files[0];
+
+           // Create a FormData object and append the file
+           var formData = new FormData();
+           formData.append("fee_report_file", file);
+
+           // Use XMLHttpRequest to submit the fee report
+           var xhr = new XMLHttpRequest();
+           xhr.open("POST", "/upload_fee_report", true);
+           xhr.onload = function () {
+               if (xhr.status === 200) {
+                   // Handle the response from the server
+                   var response = JSON.parse(xhr.responseText);
+                   console.log(response);
+                   // Optionally, you can display a message to the user
+                   alert(response.message);
+               } else {
+                   // Handle the error
+                   console.error("Error uploading fee report:", xhr.statusText);
+               }
+           };
+
+           xhr.onerror = function (error) {
+               // Handle the network error
+               console.error("Network error:", error);
+           };
+
+           xhr.send(formData);
+       });
+   });
+</script>
+
 
 
 <!-- <script>

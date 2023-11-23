@@ -18,7 +18,7 @@ document.querySelector("#btnCollapse").addEventListener("click",()=>{
 const ArrKeys = ["ASIN", "SKU", "Name", "ThrLink", "WSlink", "PricingStrategy", "BasicHndlingTime", "Price",
 "DeliveryPriceTHR10001", "DeliveryPriceWS10001", "DeliveryPriceTHR90001", "DeliveryPriceWS90001",
 "ThresholdForMedianHTCalculation", "OrdersCount", "UnitsSoldCount", "ReturnsCount", "AZCount",
-"ItemNumber", "StockAviability", "FreeShippingWithPlus",
+"ItemNumber", "StockAviability", "FreeShippingWithPlus", "estimated_referral_fee",
 ]
  
 // ModalWindow2(); 
@@ -32,8 +32,7 @@ fetch_data().then(async (data) => {
  
 NumberOfItems(ArrKeys);
 SearchRadio(ArrKeys);
-AddProductForm();
-addviascsv(); 
+AddProductForm(); 
 DeleteSelectedButton(); 
 
 
@@ -50,7 +49,7 @@ let download_tsv = document.querySelector('#download-tsv')
 download_tsv.addEventListener('click', ()=>{window.location.href = '/download_tsv_report'})
 
 
- 
+
 
 
 // WTF();
