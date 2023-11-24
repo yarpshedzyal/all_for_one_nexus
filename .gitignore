@@ -1,5 +1,8 @@
 .dockerignore
+
 Dockerfile 
 *pyc
-.venv
+
+Dockerfile
+*.pyc
 
