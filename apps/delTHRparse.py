@@ -1,7 +1,7 @@
 import re
 from playwright.sync_api import sync_playwright
 
-def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url):
+def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url, zipindex):
     with sync_playwright() as p:
         browser = p.chromium.launch()
         page = browser.new_page()
@@ -39,7 +39,7 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url):
         zip_code_field = page.locator(zip_code_field_selector)
 
         # Replace '90001' with the zip code you want to input
-        zip_code_to_input = '90001'
+        zip_code_to_input = str(zipindex)
         zip_code_field.type(zip_code_to_input)
 
         # Wait for some time to allow any JavaScript code triggered by the input to execute
@@ -71,11 +71,11 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url):
             cleaned_price = re.sub(r'[^0-9.]', '', shipping_price_text)
 
             print(f"Shipping Method Price {index + 1}:", cleaned_price)
+            break
 
         # Close the browser
         browser.close()
 
-if __name__ == "__main__":
-    # Replace 'https://example.com' with the URL of the website you want to interact with
-    website_url = 'https://www.therestaurantstore.com/items/36165'
-    perform_add_to_cart_view_cart_calculate_and_retrieve_price(website_url)
+    return [cleaned_price, zipindex]
+
+print(perform_add_to_cart_view_cart_calculate_and_retrieve_price('https://www.therestaurantstore.com/items/36165','10001'))
