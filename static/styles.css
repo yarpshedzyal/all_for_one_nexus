@@ -10,7 +10,7 @@
     margin-top: 10rem !important;
 }
 .mh-800{
-    max-height: 800px;
+    max-height: 80vh;
 }
 .ContentModalAddViacsv{
     overflow-y: scroll;
@@ -36,7 +36,21 @@
     display       : none !important;
     pointer-events: none !important;
 }
-
+ 
+.show > .modal-dialog{
+    animation: showModal 0.2s ease; 
+}
+@keyframes showModal {
+    0%{
+        opacity: 0;
+        top:10%;
+    }
+    100%{
+        top:0%;
+        opacity: 1;
+    }
+    
+}
 .show>.bgModalEvent {
     animation: bgModalEventShow 0.2s ease;
 }
@@ -136,7 +150,7 @@ td:hover {
     flex-direction : column;
     justify-content: center;
     align-items    : center;
-    width          : 100%;
+    width          : 100%; 
     position       : fixed;
     bottom         : 0px;
     z-index        : 10;

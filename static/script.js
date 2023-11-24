@@ -1,4 +1,4 @@
- import CheckingStylesTable from "./components/CheckingStylesTable.js"
+import CheckingStylesTable from "./components/CheckingStylesTable.js";
 import fetch_data from "./components/fetch_data.js";
 import CreateTable from "./components/CreateTable.js";
 import ModalWindow from "./components/ModalWindow.js";
@@ -18,33 +18,46 @@ document.querySelector("#btnCollapse").addEventListener("click",()=>{
 const ArrKeys = ["ASIN", "SKU", "Name", "ThrLink", "WSlink", "PricingStrategy", "BasicHndlingTime", "Price",
 "DeliveryPriceTHR10001", "DeliveryPriceWS10001", "DeliveryPriceTHR90001", "DeliveryPriceWS90001",
 "ThresholdForMedianHTCalculation", "OrdersCount", "UnitsSoldCount", "ReturnsCount", "AZCount",
-"ItemNumber", "StockAviability", "FreeShippingWithPlus",
+"ItemNumber", "StockAviability", "FreeShippingWithPlus", "estimated_referral_fee",
 ]
  
-// ModalWindow2(); 
+ 
 CheckingStylesTable(); 
 fetch_data().then(async (data) => { 
-    CreateTable(data,ArrKeys);
-    await Cuscomize();
-    await ModalWindow();
+    await CreateTable(data,ArrKeys);
+    await Cuscomize(); 
     await addviascsv(data, ArrKeys); 
 });
  
 NumberOfItems(ArrKeys);
 SearchRadio(ArrKeys);
-AddProductForm();
+AddProductForm(); 
 DeleteSelectedButton(); 
 
 
 // Refresh по классу. Нужно только добавить на кнопку. thisBtnRefresh
+// data-time="300"
 let thisBtnRefresh = document.querySelectorAll(".thisBtnRefresh"); 
 thisBtnRefresh.forEach((thisBtn) =>{
     thisBtn.addEventListener("click",()=>{
-        location.reload();
+        if(thisBtn.dataset.time !== undefined){
+            setTimeout(()=>{
+                location.reload();
+            },Number(thisBtn.dataset.time))
+        }else{
+            location.reload();
+        } 
     });
-})
-     
- 
+}) 
+
+
+let download_tsv = document.querySelector('#download-tsv')
+download_tsv.addEventListener('click', ()=>{window.location.href = '/download_tsv_report'})
+
+
+
+
+
 // WTF();
 
 //  

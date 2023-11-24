@@ -1,4 +1,8 @@
 /*Css для таблиці*/
+th[data-display="false"],td[data-display="false"]{
+    display: none;
+}
+
 th[data-column="Name"],
 td[data-column="Name"],
 th[data-column="index"],

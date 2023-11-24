@@ -1,5 +1,7 @@
 function Cuscomize() {
+
  
+
     const customizeButton = document.getElementById('customize-button');
     const customizeDialog = document.getElementById('customize-dialog');
     const customizeCheckboxes = document.getElementById('customize-checkboxes');
@@ -7,8 +9,8 @@ function Cuscomize() {
     const customizeCancelButton = document.getElementById('customize-cancel');
     // const customizeCloseButton = document.getElementById('customize-close');
     let tableHeaders = document.querySelectorAll('th[data-column]'); // Get table headers with data attributes
- 
-      
+
+
 
     // Function to hide the dialog
     function hideCustomizeDialog() {
@@ -16,24 +18,28 @@ function Cuscomize() {
     }
 
     // refresh arr elements tableHeaders
-    customizeButton.addEventListener("click",()=>{ 
-        tableHeaders = document.querySelectorAll('th[data-column]');  
+    customizeButton.addEventListener("click", () => {
+        tableHeaders = document.querySelectorAll('th[data-column]');
         return tableHeaders;
-    }); 
-    
+    });
+
 
     // Function to handle the "Close" button click
     // customizeCloseButton.addEventListener('click', hideCustomizeDialog);
 
     // Function to create checkboxes for column customization 
+    let ObjCustomCheck = JSON.parse(localStorage.getItem("ObjCustomCheck"));
+ 
+ 
     tableHeaders.forEach(header => {
         const column = header.getAttribute('data-column');
         const checkbox = document.createElement('input');
         checkbox.classList.add("form-check-input");
         checkbox.classList.add("me-2");
+        checkbox.classList.add("customCheckBox");
         checkbox.type = 'checkbox';
-        checkbox.value = column;
-        checkbox.checked = true; // Default: Show all columns
+        checkbox.value = column; 
+        checkbox.checked = (ObjCustomCheck && ObjCustomCheck[column] !== undefined ? ObjCustomCheck[column].checked: true); // Default: Show all columns
 
         const label = document.createElement('label');
         label.appendChild(checkbox);
@@ -47,8 +53,7 @@ function Cuscomize() {
 
     // Function to save customizations and apply them
     customizeSaveButton.addEventListener('click', function () {
-        const selectedColumns = Array.from(customizeCheckboxes.querySelectorAll('input:checked')).map(checkbox => checkbox.value);
-
+        const selectedColumns = Array.from(customizeCheckboxes.querySelectorAll('input:checked')).map(checkbox => checkbox.value); 
         // Show/hide table headers and data cells based on selected columns
         tableHeaders.forEach(header => {
             const column = header.getAttribute('data-column');
@@ -74,11 +79,21 @@ function Cuscomize() {
         });
 
         hideCustomizeDialog(); // Hide the dialog after saving customizations
+
+        let customCheckBox = document.querySelectorAll(".customCheckBox");
+        let newObjCustomCheck = new Object();
+        customCheckBox.forEach((e) => {
+            newObjCustomCheck[e.value] = {
+                "checked": e.checked
+            }
+        });
+        localStorage.setItem("ObjCustomCheck", JSON.stringify(newObjCustomCheck));
+        console.log(newObjCustomCheck);
     });
 
     // Function to cancel and close the dialog
     customizeCancelButton.addEventListener('click', hideCustomizeDialog);
- 
+
 }
 
 export default Cuscomize;

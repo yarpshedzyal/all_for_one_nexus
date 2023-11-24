@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify,  redirect, session, url_for
+from flask import Flask, render_template, request, jsonify,  redirect, session, url_for,send_file
 from pymongo import MongoClient
 from bson import ObjectId, json_util
 from bcrypt import checkpw
@@ -6,6 +6,10 @@ import json
 from werkzeug.utils import secure_filename
 import csv
 import os
+import pandas as pd
+
+
+
 
 class User:
     def __init__(self, id, user_name, password):
@@ -162,7 +166,8 @@ def add_product():
             'AZCount': data.get('AZCount'),
             'ItemNumber': data.get('ItemNumber'),
             'StockAviability': data.get('StockAviability'),
-            'FreeShippingWithPlus': data.get('FreeShippingWithPlus')
+            'FreeShippingWithPlus': data.get('FreeShippingWithPlus'),
+            'estimated_referral_fee': data.get('estimated_referral_fee')
             # Add other fields as needed
         }
         
@@ -284,7 +289,8 @@ def upload_csv():
                         'AZCount': row.get('AZCount'),
                         'ItemNumber': row.get('ItemNumber'),
                         'StockAviability': row.get('StockAviability'),
-                        'FreeShippingWithPlus': row.get('FreeShippingWithPlus')
+                        'FreeShippingWithPlus': row.get('FreeShippingWithPlus'),
+                        'estimated_referral_fee': row.get('estimated_referral_fee')
                     }
                     collection.insert_one(new_product)
 
@@ -295,7 +301,7 @@ def upload_csv():
         return jsonify({'success': False, 'message': 'Invalid file format'})
     
 # Add a new route to handle the update process
-@app.route('/update_product', methods=['POST'])
+@app.route('/update_product', methods=['POST','GET'])
 def update_product():
     data = request.get_json()
     product_id = data.get('_id', {}).get('$oid')
@@ -319,7 +325,8 @@ def update_product():
             'AZCount': data.get('AZCount'),
             'ItemNumber': data.get('ItemNumber'),
             'StockAviability': data.get('StockAviability'),
-            'FreeShippingWithPlus': data.get('FreeShippingWithPlus')
+            'FreeShippingWithPlus': data.get('FreeShippingWithPlus'),
+            'estimated_referral_fee': data.get('estimated_referral_fee')
         # Add more fields as needed
     }
 
@@ -328,17 +335,115 @@ def update_product():
 
     return jsonify({'success': True, 'message': 'Product updated successfully'})
 
-# @app.route('/AllItems', methods=['GET'])
-# def all_items():
-#     # Query the database to retrieve all items
-#     items = list(collection.find())
 
-#     # Serialize ObjectId to JSON-friendly format
-#     serialized_items = json_util.dumps(items)
+@app.route('/download_tsv_report', methods=['GET'])
+def download_tsv_report():
+    # Query the MongoDB collection to get the necessary data
+    items = collection.find()
 
-#     # Return the serialized list of items as JSON
-#     return jsonify({'items': serialized_items})
- 
+    # Create a TSV content string
+    tsv_content = "SKU\tPrice\tQuantity\tHandling-Time\tBusiness-Price\tQuantity-Price-Type\tQuantity-Lower-Bound1\tQuantity-Price1\tQuantity-Lower-Bound2\tQuantity-Price2\tQuantity-Lower-Bound3\tQuantity-Price3\n"
+
+    for item in items:
+        sku = item.get('SKU', '')
+        price = item.get('Price', '').strip()
+        stock_availability = item.get('StockAviability', '')
+
+        # Calculate quantity based on stock_availability
+        if stock_availability == 'Yes':
+            quantity = '99'
+        else:
+            quantity = '0'
+
+        # Calculate other fields based on quantity
+        if quantity == '0' or quantity == None:
+            handling_time = business_price = quantity_price_type = quantity_lower_bound1 = quantity_price1 = quantity_lower_bound2 = quantity_price2 = quantity_lower_bound3 = quantity_price3 = None
+        else:
+            handling_time = 3
+            business_price = float(price) - 1
+            quantity_price_type = 'PERCENT'
+            quantity_lower_bound1 = 2
+            quantity_price1 = 0.25
+            quantity_lower_bound2 = 4
+            quantity_price2 = 0.5
+            quantity_lower_bound3 = 8
+            quantity_price3 = 1
+
+        # Append the values to the TSV content string
+        tsv_content += f"{sku}\t{price}\t{quantity}\t{handling_time}\t{business_price}\t{quantity_price_type}\t{quantity_lower_bound1}\t{quantity_price1}\t{quantity_lower_bound2}\t{quantity_price2}\t{quantity_lower_bound3}\t{quantity_price3}\n"
+
+    # Create a temporary file to store the TSV content
+    with open('report.tsv', 'w') as tsv_file:
+        tsv_file.write(tsv_content)
+
+    # Send the file as a response
+    return send_file('report.tsv', as_attachment=True)
+
+@app.route('/upload_fee_report', methods=['POST'])
+def upload_fee_report():
+    try:
+        # Get the fee report file from the request
+        fee_report_file = request.files['fee_report_file']
+
+        # Read the CSV file into a pandas DataFrame
+        fee_report_df = pd.read_csv(fee_report_file)
+
+        # Iterate through the rows of the DataFrame and update the MongoDB collection
+        for index, row in fee_report_df.iterrows():
+            sku = row['SKU']
+            estimated_referral_fee = row['estimated-referral-fee-per-item']
+
+            # Update the corresponding item in the MongoDB collection
+            collection.update_one({'SKU': sku}, {'$set': {'estimated_referral_fee': estimated_referral_fee}})
+
+        return jsonify({'success': True, 'message': 'Fee report uploaded successfully'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
+
+
+@app.route('/all_items', methods=['GET', 'POST'])
+def get_all_items():
+    try:
+        # Query all items from the MongoDB collection
+        items = collection.find()
+
+        # Convert the MongoDB cursor to a list of dictionaries
+        data = [json_util.loads(json_util.dumps(item)) for item in items]
+
+        # Convert ObjectId to string in each item
+        for item in data:
+            item['_id'] = str(item['_id'])
+
+        return jsonify({'success': True, 'items': data})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
+
+
+@app.route('/all_search', methods=['GET', 'POST'])
+def get_all_search():
+    try:
+        # Get the search criteria from the request data
+        search_data = request.json
+        search_value = search_data.get('value', '')
+        search_category = search_data.get('category', '')
+
+        # Query items based on the search criteria
+        query = {}
+        if search_value:
+            query[search_category] = {"$regex": f".*{search_value}.*", "$options": "i"}
+
+        items = collection.find(query)
+
+        # Convert the MongoDB cursor to a list of dictionaries
+        data = [json_util.loads(json_util.dumps(item)) for item in items]
+
+        # Convert ObjectId to string in each item
+        for item in data:
+            item['_id'] = str(item['_id'])
+
+        return jsonify({'success': True, 'items': data})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0" ,port=8080)

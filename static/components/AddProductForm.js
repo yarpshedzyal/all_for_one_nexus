@@ -23,6 +23,7 @@ function AddProductForm() {
     const ItemNumber = document.getElementById('ItemNumber').value;
     const StockAviability = document.getElementById('StockAviability').value;
     const FreeShippingWithPlus = document.getElementById('FreeShippingWithPlus').value;
+    const estimated_referral_fee = document.getElementById('estimated_referral_fee').value;
 
     // Send the data to your Flask server using Fetch
     fetch('/add_product', {
@@ -47,7 +48,8 @@ function AddProductForm() {
             ItemNumber: ItemNumber,
             StockAviability: StockAviability,
             FreeShippingWithPlus: FreeShippingWithPlus,
-            Price: Price
+            Price: Price,
+            estimated_referral_fee : estimated_referral_fee
             // Add other fields as needed
         }),
         headers: {

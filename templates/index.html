@@ -66,12 +66,14 @@
                   <div class="collapse navbar-collapse">
                      <div class="navbar-nav">
                         <div id="menu-container" class="d-flex flex-wrap">
-                           <button class="m-2 btn btn-outline-light btnModal" id="add-product-button"
+                           <button class="m-2 btn btn-outline-light openW" id="add-product-button"
                               data-targetmodal="#Add_Product">Add Product</button>
-                           <button class="m-2 btn btn-outline-light" id="delete-selected-button">Delete
+                           <button class="m-2 btn btn-outline-light thisBtnRefresh" id="delete-selected-button">Delete
                               Selected</button>
+
                            <button class="m-2 btn btn-outline-light" id="add-via-csv-button"
                               onclick="handleCsvUpload()">Add via CSV</button>
+
                            <button class="m-2 btn btn-outline-light" id="parse-all-prices-button">Parse All
                               Prices</button>
                            <button class="m-2 btn btn-outline-light" id="parse-selected-prices-button">Parse Selected
@@ -82,10 +84,13 @@
                            <button class="m-2 btn btn-outline-light" id="parse-selected-delivery-prices-button">Parse
                               Selected
                               Delivery Prices</button>
-                           <button class="m-2 btn btn-outline-light btnModal" data-targetmodal="#Customize"
+                           <button class="m-2 btn btn-outline-light openW" data-targetmodal="#Customize"
                               id="customize-button">Customize</button>
-                           <button class="m-2 btn btn-outline-light" >Download Tsv</button>
-                           <button class="m-2 btn btn-outline-light" >Upload fee report</button>
+                           <button class="m-2 btn btn-outline-light" id="download-tsv">Download Tsv</button>
+                           <button class="m-2 btn btn-outline-light" id="upload-fee" onclick="handleFeeReportUpload()">
+                              <!-- Add this input element for fee report selection -->
+                              <input type="file" id="fee-report-file-input" accept=".csv" style="display:none;">
+                              Upload fee report</button>
                         </div>
                      </div>
                   </div>
@@ -95,11 +100,16 @@
       </div>
    </section>
 
+
    <!-- Add an edit form or modal to your HTML -->
+
+   <!-- Add an edit form or modal to your HTML -->
+
    <div class="modal fade" id="edit-modal" tabindex="-1" aria-labelledby="edit-modal-label" aria-hidden="true">
       <div class="modal-dialog">
          <div class="modal-content">
             <div class="modal-header">
+
                <h5 class="modal-title" id="edit-modal-label">Edit Product</h5>
                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -111,6 +121,19 @@
                   <!-- Add more fields as needed -->
                   <button type="submit" class="btn btn-primary">Save Changes</button>
                </form>
+
+               <h5 class="modal-title" id="edit-modal-label">Edit Product</h5>
+               <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+               <form id="edit-form">
+                  <input type="text" class="form-control" id="edit-sku" placeholder="SKU" required>
+                  <input type="text" class="form-control" id="edit-name" placeholder="Name" required>
+                  <input type="text" class="form-control" id="edit-thr-link" placeholder="THR Link">
+                  <!-- Add more fields as needed -->
+                  <button type="submit" class="btn btn-primary">Save Changes</button>
+               </form>
+
             </div>
          </div>
       </div>
@@ -120,12 +143,12 @@
    <!-- Modal Hidden modal dialog for column customization-->
    <section>
       <div id="customize-dialog" class="modalW modal fade  dNone" data-targetmodal="#Customize">
-         <div class="bgModalEvent btnModal" data-targetmodal="#Customize"></div>
+         <div class="bgModalEvent closeW" data-targetmodal="#Customize"></div>
          <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content ">
                <div class="modal-header">
                   <h1 class="modal-title fs-5">Customize Columns</h1>
-                  <button type="button" class="btn-close btnModal" data-targetmodal="#Customize"></button>
+                  <button type="button" class="btn-close closeW" data-targetmodal="#Customize"></button>
                </div>
                <div class="modal-body d-flex justify-content-between flex-wrap align-items-center customize-checkboxes"
                   id="customize-checkboxes">
@@ -141,8 +164,8 @@
                   </div>
                </div>
                <div class="modal-footer">
-                  <button type="button" class="btn btn-primary" id="customize-save">Save</button>
-                  <button type="button" class="btn btn-secondary btnModal" data-targetmodal="#Customize"
+                  <button type="button" class="btn btn-primary closeW" id="customize-save">Save</button>
+                  <button type="button" class="btn btn-secondary closeW" data-targetmodal="#Customize"
                      id="customize-cancel">Cancel</button>
 
                </div>
@@ -151,16 +174,17 @@
       </div>
 
       <div class="modalW modal fade  dNone" data-targetmodal="#Add_Product">
-         <div class="bgModalEvent btnModal" data-targetmodal="#Add_Product"></div>
+         <div class="bgModalEvent closeW" data-targetmodal="#Add_Product"></div>
          <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                <div class="modal-header">
                   <h1 class="modal-title fs-5">Add Product</h1>
-                  <button type="button" class="btn-close btnModal" data-targetmodal="#Add_Product"></button>
+                  <button type="button" class="btn-close closeW" data-targetmodal="#Add_Product"></button>
                </div>
                <div class="modal-body">
                   <form id="add-product-form">
                      <!-- Add input fields for product details -->
+
                      <div class="d-flex justify-content-between">
                         <div>
                            <input type="text" class="my-2 form-control" id="ASIN" placeholder="ASIN" required>
@@ -176,11 +200,11 @@
                            <input type="text" class="my-2 form-control" id="DeliveryPriceTHR10001"
                               placeholder="Delivery Price THR 10001">
                            <input type="text" class="my-2 form-control" id="DeliveryPriceWS10001"
-                              placeholder="Delivery Price WS 10001"> 
+                              placeholder="Delivery Price WS 10001">
                         </div>
                         <div>
                            <input type="text" class="my-2 form-control" id="DeliveryPriceTHR90001"
-                           placeholder="Delivery Price THR 90001">
+                              placeholder="Delivery Price THR 90001">
                            <input type="text" class="my-2 form-control" id="DeliveryPriceWS90001"
                               placeholder="Delivery Price WS 90001">
                            <input type="text" class="my-2 form-control" id="ThresholdForMedianHTCalculation"
@@ -195,15 +219,17 @@
                               placeholder="Stock Aviability">
                            <input type="text" class="my-2 form-control" id="FreeShippingWithPlus"
                               placeholder="Free Shipping With Plus">
+                           <input type="text" class="my-2 form-control" id="estimated_referral_fee"
+                              placeholder="estimated_referral_fee">
                         </div>
 
                      </div>
 
                      <!-- Add more input fields for other product details -->
                      <div class="modal-footer">
-                        <button type="submit" class="btn btn-success menu-container btnModal thisBtnRefresh"
-                           data-targetmodal="#Add_Product">Add</button>
-                        <button type="button" class="btn btn-secondary btnModal"
+                        <button type="submit" class="btn btn-success menu-container closeW thisBtnRefresh"
+                           data-targetmodal="#Add_Product" data-time="300">Add</button>
+                        <button type="button" class="btn btn-secondary closeW"
                            data-targetmodal="#Add_Product">Close</button>
                      </div>
                   </form>
@@ -211,27 +237,27 @@
             </div>
          </div>
       </div>
- 
+
       <div class="modalW modal fade dNone" data-targetmodal="#columnindex">
-         <div class="bgModalEvent btnModal" data-targetmodal="#columnindex"></div>
+         <div class="bgModalEvent closeW" data-targetmodal="#columnindex"></div>
          <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content mh-800">
                <div class="modal-header">
                   <h1 class="modal-title fs-5 titleModalAddViacsv"></h1>
-                  <button type="button" class="btn-close btnModal" data-targetmodal="#columnindex"></button>
+                  <button type="button" class="btn-close closeW" data-targetmodal="#columnindex"></button>
                </div>
                <div class="modal-body ContentModalAddViacsv">
                </div>
                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary btnModal"
+                  <button type="button" class="btn btn-secondary closeW"
                      data-targetmodal="#columnindex">Close</button>
-                  <button type="button" class="btn btn-primary POSTaddviascsv btnModal thisBtnRefresh" data-targetmodal="#columnindex">Save changes</button>
+                  <button type="button" class="btn btn-primary POSTaddviascsv closeW thisBtnRefresh" data-time="300"
+                     data-targetmodal="#columnindex">Save changes</button>
                </div>
             </div>
          </div>
       </div>
    </section>
-
 
 
 
@@ -256,14 +282,14 @@
                      </div>
                      <div class="d-flex">
                         <div class="form-check m-2">
-                           <input class="form-check-input" type="radio" title="ASIN" name="SearchRadio" id="RadiASIN"
-                              checked>
+                           <input class="form-check-input" type="radio" title="ASIN" name="SearchRadio" id="RadiASIN">
                            <label class="form-check-label" for="RadiASIN">
                               ASIN
                            </label>
                         </div>
                         <div class="form-check m-2">
-                           <input class="form-check-input" type="radio" title="SKU" name="SearchRadio" id="RadioSKU">
+                           <input class="form-check-input" type="radio" title="SKU" name="SearchRadio" id="RadioSKU"
+                              checked>
                            <label class="form-check-label" for="RadioSKU">
                               SKU
                            </label>
@@ -311,6 +337,9 @@
 
 
 
+
+
+
    <!-- Pagination -->
    <section>
       <div class="container-fluid">
@@ -346,6 +375,9 @@
 <!-- Add this script block with JavaScript code -->
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
+
+
+
    function handleCsvUpload() {
       // Trigger the file input click
       $("#csv-file-input").click();
@@ -381,7 +413,55 @@
          });
       });
    });
+
+
 </script>
+
+<!-- Add this script block with JavaScript code -->
+<script>
+   function handleFeeReportUpload() {
+      // Trigger the file input click
+      document.getElementById("fee-report-file-input").click();
+   }
+
+   // Handle fee report file selection and form submission
+   document.addEventListener("DOMContentLoaded", function () {
+      var feeReportInput = document.getElementById("fee-report-file-input");
+
+      feeReportInput.addEventListener("change", function () {
+         // Get the selected file
+         var file = this.files[0];
+
+         // Create a FormData object and append the file
+         var formData = new FormData();
+         formData.append("fee_report_file", file);
+
+         // Use XMLHttpRequest to submit the fee report
+         var xhr = new XMLHttpRequest();
+         xhr.open("POST", "/upload_fee_report", true);
+         xhr.onload = function () {
+            if (xhr.status === 200) {
+               // Handle the response from the server
+               var response = JSON.parse(xhr.responseText);
+               console.log(response);
+               // Optionally, you can display a message to the user
+               alert(response.message);
+            } else {
+               // Handle the error
+               console.error("Error uploading fee report:", xhr.statusText);
+            }
+         };
+
+         xhr.onerror = function (error) {
+            // Handle the network error
+            console.error("Network error:", error);
+         };
+
+         xhr.send(formData);
+      });
+   });
+</script>
+
 
 
 <!-- <script>

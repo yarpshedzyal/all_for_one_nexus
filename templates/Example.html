@@ -2,24 +2,24 @@
     Для активации кнопки нужен класс btnModal.
     data-targetmodal="#first" Уникальный айди, для понимание где окно находится, а также какие кнопки используются для закрытия 
     -->
-<button type="button" class="btn btn-primary btnModal" data-targetmodal="#first">
+<button type="button" class="btn btn-primary openW" data-targetmodal="#first">
    Launch demo modal
 </button>
 <!-- Modal -->
 <div class="modalW modal fade dNone" data-targetmodal="#first">
-   <div class="bgModalEvent btnModal" data-targetmodal="#first"></div>
+   <div class="bgModalEvent closeW" data-targetmodal="#first"></div>
    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
          <div class="modal-header">
             <h1 class="modal-title fs-5">Modal title</h1>
-            <button type="button" class="btn-close btnModal" data-targetmodal="#first"></button>
+            <button type="button" class="btn-close closeW" data-targetmodal="#first"></button>
          </div>
          <div class="modal-body">
             <p>Woo-hoo, you're reading this text in a modal!</p>
          </div>
          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary btnModal" data-targetmodal="#first">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-secondary closeW" data-targetmodal="#first">Close</button>
+            <button type="button" class="btn btn-primary closeW" data-targetmodal="#first">Save changes</button>
          </div>
       </div>
    </div>
@@ -158,4 +158,72 @@
             <button type="submit" class="menu-container button:hover">Add</button>
          </form>
       </div>
-   </div> -->
+   </div> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import FETCH from "./FETCH.js";
+import CreateTable from "./CreateTable.js";
+import addviascsv from "./addviacsv.js";
+
+function SearchRadio(ArrKeys) {
+  let RadioSearch = document.querySelectorAll('input[name="SearchRadio"]');
+  let SearchSubmit = document.querySelector("#SearchSubmit");
+  let InpSearch = document.querySelector("#InpSearch");
+
+  let newData = { items: [] };
+  // нужно чтобы FETCH получал от App.py все элементы.
+  setTimeout(async () => {
+
+    // Пределать на запрос AllItems FETCH("/AllItems")
+    FETCH("/all_items").then(async (data) => { 
+      newData = data;
+    });
+    SearchSubmit.disabled = false;
+    await SearchSubmit.addEventListener("click", () => {
+      RadioSearch.forEach((e) => {
+        if (e.checked === true) {
+          // На случай, если обработка Search будет на стороне сервера 
+          // FETCH("/AllItems" ,{value: InpSearch.value, category:e.title}).then(async (data)=>{
+          //   await CreateTable(data);
+          // });  
+          let RadioKey = e.title;
+          let sortedData = { items: [] };
+          console.log(newData.items);
+
+          newData.items.map((element, index) => { 
+            if (String(element[RadioKey]).toLowerCase().includes(String(InpSearch.value).toLowerCase()) === true) {
+              sortedData.items.push(element);
+            }
+          })
+          if (sortedData.items.length === 0) {
+            alert("Not found");
+          } else {
+            CreateTable(sortedData , ArrKeys);
+            addviascsv(sortedData , ArrKeys);
+          } 
+        }
+      })
+    });
+  }, 1000);
+}
+
+export default SearchRadio;
+
+
+
+
+-->

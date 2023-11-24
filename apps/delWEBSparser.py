@@ -9,10 +9,6 @@ from bs4 import BeautifulSoup
 import re
 import datetime
 
-import requests
-from bs4 import BeautifulSoup
-import re
-
 def clean_price_string(price_str):
     parts = price_str.split(".", 1)
     if len(parts) == 2:
