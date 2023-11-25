@@ -9,7 +9,7 @@ import csv
 import os
 import pandas as pd
 from apps.delWEBSparser import parser_solo,count
-from apps.delTHRparse import perform_add_to_cart_view_cart_calculate_and_retrieve_price
+# from apps.delTHRparse import perform_add_to_cart_view_cart_calculate_and_retrieve_price
 import traceback
 from datetime import datetime
 
@@ -355,7 +355,7 @@ def download_tsv_report():
 
     for item in items:
         sku = item.get('SKU', '')
-        price = item.get('Price', '').strip()
+        price = item.get('Price', '')
         stock_availability = item.get('StockAviability', '')
 
         # Calculate quantity based on stock_availability
