@@ -14,6 +14,8 @@ import traceback
 from datetime import datetime
 
 
+from flask import send_file
+
 
 class User:
     def __init__(self, id, user_name, password):
@@ -310,7 +312,7 @@ def upload_csv():
         return jsonify({'success': False, 'message': 'Invalid file format'})
     
 # Add a new route to handle the update process
-@app.route('/update_product', methods=['POST'])
+@app.route('/update_product', methods=['POST','GET'])
 def update_product():
     data = request.get_json()
     product_id = data.get('_id', {}).get('$oid')

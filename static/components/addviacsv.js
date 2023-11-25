@@ -2,7 +2,7 @@
 import FETCH from "./FETCH.js";
 
 export default function addviascsv(data, ArrKeys) {
-    let indextd = document.querySelectorAll('td[class="btnModal"][data-column="index"]');
+    let indextd = document.querySelectorAll('td[class="openW"][data-column="index"]');
     let titleModalAddViacsv = document.querySelector(".titleModalAddViacsv");
     let contentModalAddViacsv = document.querySelector(".ContentModalAddViacsv");
     let POSTaddviascsv = document.querySelector(".POSTaddviascsv");
@@ -31,18 +31,24 @@ export default function addviascsv(data, ArrKeys) {
             inpaddviascsv.forEach((thisInp) => {
                 thisInp.addEventListener("change", () => {
                     e[thisInp.dataset.column] = thisInp.value;
-                })
-            });
-            let test = false;
-            POSTaddviascsv.addEventListener("click", () => {
+                });
+            }); 
+             
+            POSTaddviascsv.addEventListener("click", () => {console.log(e);
+                let id = data.items[Number(thisTd.title)]._id;  
+                if( data.items[Number(thisTd.title)]._id.$oid === undefined){
+                    e._id={$oid:id}; 
+                }else{
+                    e._id=id;
+                } 
+                 
+          
                 FETCH("/update_product", e).then(async (r) => {
                     console.log(r);
                 })
             });
         });
-    });
-
-    console.log(indextd);
+    }); 
 }
 
 

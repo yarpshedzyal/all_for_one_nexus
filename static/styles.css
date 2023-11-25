@@ -37,6 +37,20 @@
     pointer-events: none !important;
 }
  
+.show > .modal-dialog{
+    animation: showModal 0.2s ease; 
+}
+@keyframes showModal {
+    0%{
+        opacity: 0;
+        top:10%;
+    }
+    100%{
+        top:0%;
+        opacity: 1;
+    }
+    
+}
 .show>.bgModalEvent {
     animation: bgModalEventShow 0.2s ease;
 }

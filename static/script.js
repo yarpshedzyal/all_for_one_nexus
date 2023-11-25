@@ -21,12 +21,11 @@ const ArrKeys = ["ASIN", "SKU", "Name", "ThrLink", "WSlink", "PricingStrategy", 
 "ItemNumber", "StockAviability", "FreeShippingWithPlus", "estimated_referral_fee",
 ]
  
-// ModalWindow2(); 
+ 
 CheckingStylesTable(); 
 fetch_data().then(async (data) => { 
-    CreateTable(data,ArrKeys);
-    await Cuscomize();
-    await ModalWindow();
+    await CreateTable(data,ArrKeys);
+    await Cuscomize(); 
     await addviascsv(data, ArrKeys); 
 });
  
@@ -37,10 +36,17 @@ DeleteSelectedButton();
 
 
 // Refresh по классу. Нужно только добавить на кнопку. thisBtnRefresh
+// data-time="300"
 let thisBtnRefresh = document.querySelectorAll(".thisBtnRefresh"); 
 thisBtnRefresh.forEach((thisBtn) =>{
     thisBtn.addEventListener("click",()=>{
-        location.reload();
+        if(thisBtn.dataset.time !== undefined){
+            setTimeout(()=>{
+                location.reload();
+            },Number(thisBtn.dataset.time))
+        }else{
+            location.reload();
+        } 
     });
 }) 
 
