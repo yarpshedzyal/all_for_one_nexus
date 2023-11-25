@@ -2,8 +2,7 @@
  
 
 async function CreateTable(data , ArrKeys) {
-  let ObjCustomCheck = JSON.parse(localStorage.getItem("ObjCustomCheck"));
-  console.log(ObjCustomCheck);
+  let ObjCustomCheck = JSON.parse(localStorage.getItem("ObjCustomCheck")); 
  
   let newTable = document.querySelector("#newTable");
   let NewTableHeaders = document.querySelector("#NewTableHeaders");
