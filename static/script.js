@@ -31,7 +31,7 @@ fetch_data().then(async (data) => {
  
 NumberOfItems(ArrKeys);
 SearchRadio(ArrKeys);
-AddProductForm();
+AddProductForm(); 
 DeleteSelectedButton(); 
 
 
@@ -48,9 +48,16 @@ thisBtnRefresh.forEach((thisBtn) =>{
             location.reload();
         } 
     });
-})
-     
- 
+}) 
+
+
+let download_tsv = document.querySelector('#download-tsv')
+download_tsv.addEventListener('click', ()=>{window.location.href = '/download_tsv_report'})
+
+
+
+
+
 // WTF();
 
 //  
