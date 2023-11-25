@@ -499,6 +499,35 @@ def delivery_parse_all():
 
     return jsonify({'message': 'All URLs delivery price parsed successfully.'})
 
+
+@app.route('/all_search', methods=['GET', 'POST'])
+def get_all_search():
+    try:
+        # Get the search criteria from the request data
+        search_data = request.json
+        search_value = search_data.get('value', '')
+        search_category = search_data.get('category', '')
+
+        # Query items based on the search criteria
+        query = {}
+        if search_value:
+            query[search_category] = {"$regex": f".*{search_value}.*", "$options": "i"}
+
+        items = collection.find(query)
+
+        # Convert the MongoDB cursor to a list of dictionaries
+        data = [json_util.loads(json_util.dumps(item)) for item in items]
+
+        # Convert ObjectId to string in each item
+        for item in data:
+            item['_id'] = str(item['_id'])
+
+        return jsonify({'success': True, 'items': data})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
+    
+
+
 if __name__ == '__main__':
     socketio.run(app,allow_unsafe_werkzeug=True , debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
 
