@@ -9,12 +9,10 @@ import csv
 import os
 import pandas as pd
 from apps.delWEBSparser import parser_solo,count
-# from apps.delTHRparse import perform_add_to_cart_view_cart_calculate_and_retrieve_price
+from apps.delTHRparse import perform_add_to_cart_view_cart_calculate_and_retrieve_price
 import traceback
 from datetime import datetime
-
-
-from flask import send_file
+import subprocess
 
 
 class User:
@@ -494,11 +492,6 @@ def parse_urls():
     # Return a JSON response with a success message
     return jsonify({'message': 'All URLs parsed successfully.'})
 
-@app.route('/delivery_parse_all', methods=['POST','GET'])
-def delivery_parse_all():
-
-    return jsonify({'message': 'All URLs delivery price parsed successfully.'})
-
 
 @app.route('/all_search', methods=['GET', 'POST'])
 def get_all_search():
@@ -526,6 +519,85 @@ def get_all_search():
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)})
     
+
+@app.route('/delivery_all_parse', methods=['GET'])
+def start_parsing():
+    global is_parsing_delivery
+
+    if is_parsing_delivery:
+        # Redirect to the main page with a message that parsing is ongoing
+        return jsonify({'message': 'Parsing delivery in progress. Please wait.'})
+
+    # Get all the URLs from MongoDB
+    urls = collection.find()
+
+    # Calculate the total number of URLs to parse
+    total_urls = count()
+
+    # Start parsing and emit progress updates
+    parsed_urls = 0
+
+    is_parsing_delivery = True
+
+    for index, url in enumerate(urls):
+        url_id = str(url['_id'])
+        link = url['ThrLink']
+
+        try:
+            # Perform parsing using the parsing function
+            parsed_data = perform_add_to_cart_view_cart_calculate_and_retrieve_price(link, 90001)
+            
+            # Update the document in MongoDB with the parsed data
+            collection.update_one(
+                {'_id': ObjectId(url_id)},
+                {'$set': {'DeliveryPriceTHR90001': parsed_data[0]}}
+            )
+
+            # Increment the parsed_urls counter
+            parsed_urls += 1
+
+            # Perform parsing for the other zip code (10001)
+            parsed_data_10001 = perform_add_to_cart_view_cart_calculate_and_retrieve_price(link, 10001)
+            
+            # Update the document in MongoDB with the parsed data for 10001
+            collection.update_one(
+                {'_id': ObjectId(url_id)},
+                {'$set': {'DeliveryPriceTHR10001': parsed_data_10001[0]}}
+            )
+
+        except Exception as e:
+            traceback.print_exc()  # Add this line to print the exception traceback
+
+            # Handle the exception here, for example, set the "Stock" field to "Out"
+            collection.update_one(
+                {'_id': ObjectId(url_id)},
+                {'$set': {'DeliveryPriceTHR90001': '0'}}
+            )
+
+            collection.update_one(
+                {'_id': ObjectId(url_id)},
+                {'$set': {'DeliveryPriceTHR10001': '0'}}
+            )
+
+        # Calculate progress and emit progress update
+        progress_delivery = int((parsed_urls / total_urls) * 100)
+        socketio.emit('progress_delivery_update', {'progress_delivery': progress_delivery}, namespace='/')
+        socketio.sleep(0.5)
+
+    is_parsing_delivery = False 
+
+    last_parsed_timestamp = datetime.now()
+    parsingdate.update_one(
+        {'name': 'parsing_status_delivery'},
+        {'$set': {'last_parsed_timestamp': last_parsed_timestamp}},
+        upsert=True
+    )
+
+    # Emit a message to indicate that all URLs are parsed successfully
+    socketio.emit('progress_delivery_update', {'message': 'All URLs delivery price parsed successfully.'}, namespace='/')
+
+    # Return a JSON response with a success message
+    return jsonify({'message': 'All URLs delivery price parsed successfully.'})
 
 
 if __name__ == '__main__':
