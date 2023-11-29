@@ -34,6 +34,7 @@ socketio = SocketIO(app)
 app.secret_key = 'supadupasecretkey10101010'
 
 is_parsing = False
+is_parsing_delivery = False
 
 # Read configuration from config.txt
 with open('config.txt') as config_file:
