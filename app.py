@@ -13,8 +13,8 @@ from apps.delTHRparse import perform_add_to_cart_view_cart_calculate_and_retriev
 import traceback
 from datetime import datetime
 import subprocess
-import threading  # Import the threading module
 import time
+import telebot
  
  
 class User:
@@ -31,7 +31,8 @@ users.append(User(id=1,user_name="test1",password="pass101010"))
 users.append(User(id=1, user_name="test2", password="pass1660"))
 print(users)
 
-
+TELEGRAM_TOKEN = '5423370550:AAHIePBnlWBpY4OfqOa24tSWKfX9wHQXiLQ'
+bot = telebot.TeleBot(TELEGRAM_TOKEN)
  
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -61,6 +62,11 @@ client = MongoClient(mongo_uri)
 db = client[database_name]
 collection = db[collection_name]
 parsingdate = db[parsingdate_name]
+
+@bot.message_handler(func=lambda message: True)
+def echo_all(message):
+    bot.reply_to(message, message.text)
+
 
 @app.before_request
 def check_authentication():
@@ -520,8 +526,11 @@ def get_all_search():
         for item in data:
             item['_id'] = str(item['_id'])
 
-        return jsonify({'success': True, 'items': data})
+        # json_data = json.dumps(data, indent=2)
+        # send_telegram_message(f"Search\n{json_data}")
+        return jsonify({'success': True, 'items': data}) 
     except Exception as e:
+        # send_telegram_message(f"Search\n{json_data}")
         return jsonify({'success': False, 'message': str(e)})
     
 
@@ -601,7 +610,7 @@ def start_parsing():
     # Emit a message to indicate that all URLs are parsed successfully
     socketio.emit('progress_delivery_update', {'message': 'All URLs delivery price parsed successfully.'}, namespace='/')
 
-    # Return a JSON response with a success message
+    # Return a JSON response with a success message 
     return jsonify({'message': 'All URLs delivery price parsed successfully.'})
 
 
@@ -609,15 +618,19 @@ def start_parsing():
 
  
 
-# @app.route('/test_progress', methods=['GET', 'POST'])
+# @app.route('/test_progress', methods=['GET', 'POST']) 
 @socketio.on('test_progress')
 def start_test_progress(data):
-    # Start a separate thread to emit progress updates
     for progress in range(101):
-        socketio.emit('progress_update', {'progress': progress})  
+        socketio.emit('progress_update', {'progress': progress})
         print(f"Sent progress: {progress}")
-        socketio.sleep(0.1)
-    return jsonify({'message': 'Progress updates finished'})
+        socketio.sleep(0.1) 
+    send_telegram_message("Progress updates have finished.{progress}")
+
+def send_telegram_message(message):
+    # Ваш chat_id в Telegram (можно получить, написав боту @userinfobot)
+    chat_id = '395879122'
+    bot.send_message(chat_id, message)
 
  
 @socketio.on('test_event')
@@ -634,6 +647,9 @@ def testttt(data):
     res =  "Server says: " + data['message']
     socketio.emit('resTest2',{'data':res}) 
 
+@socketio.on('PSDP')
+def psdp(data): 
+    print(data)
 
 
 if __name__ == '__main__':
