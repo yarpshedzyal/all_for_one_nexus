@@ -13,16 +13,20 @@ function SearchRadio(ArrKeys) {
     await SearchSubmit.addEventListener("click", () => {
       RadioSearch.forEach((e) => {
         if (e.checked === true) {
-          // На случай, если обработка Search будет на стороне сервера 
-          FETCH("/all_search" ,{value:InpSearch.value, category: e.title}).then(async (data)=>{
-            console.log(data);
-            if(data.items.length === 0){
-              alert("Not found");
-            }else{
-            await  CreateTable(data , ArrKeys);
-            await  addviascsv(data , ArrKeys);
-            }  
-          }); 
+          // На случай, если обработка Search будет на стороне сервера
+          if(InpSearch.value.trim() !== ""){
+            FETCH("/all_search" ,{value:InpSearch.value, category: e.title}).then(async (data)=>{
+              console.log(data);
+              if(data.items.length === 0){
+                alert("Not found");
+              }else{
+              await  CreateTable(data , ArrKeys);
+              await  addviascsv(data , ArrKeys);
+              }  
+            }); 
+          }else{
+            InpSearch.value = "";
+          }
         }
       })
     });

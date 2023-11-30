@@ -13,8 +13,8 @@ from apps.delTHRparse import perform_add_to_cart_view_cart_calculate_and_retriev
 import traceback
 from datetime import datetime
 import subprocess
-import threading  # Import the threading module
 import time
+import telebot
  
  
 class User:
@@ -31,7 +31,8 @@ users.append(User(id=1,user_name="test1",password="pass101010"))
 users.append(User(id=1, user_name="test2", password="pass1660"))
 print(users)
 
-
+TELEGRAM_TOKEN = '5423370550:AAHIePBnlWBpY4OfqOa24tSWKfX9wHQXiLQ'
+bot = telebot.TeleBot(TELEGRAM_TOKEN)
  
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -61,6 +62,11 @@ client = MongoClient(mongo_uri)
 db = client[database_name]
 collection = db[collection_name]
 parsingdate = db[parsingdate_name]
+
+@bot.message_handler(func=lambda message: True)
+def echo_all(message):
+    bot.reply_to(message, message.text)
+
 
 @app.before_request
 def check_authentication():

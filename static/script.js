@@ -13,6 +13,7 @@ import AddProductForm from "./components/AddProductForm.js";
 import DeleteSelectedButton from "./components/DeleteSelectedButton.js";
 import addviascsv from "./components/addviacsv.js"; 
 import ProgressBar from "./components/ProgressBar.js";
+import logoAnimate from "./components/logoAnimate.js";
 
 
 // Import Modules Sockets
@@ -46,7 +47,7 @@ const ArrKeys = ["ASIN", "SKU", "Name", "ThrLink", "WSlink", "PricingStrategy", 
  
 CheckingStylesTable(); 
 fetch_data().then(async (data) => { 
-    await CreateTable(data,ArrKeys);
+    await CreateTable(data,ArrKeys, socket);
     await Cuscomize(); 
     await addviascsv(data, ArrKeys); 
 });
@@ -56,6 +57,7 @@ SearchRadio(ArrKeys);
 AddProductForm(); 
 DeleteSelectedButton(); 
 ProgressBar(socket)
+logoAnimate();
 
 
 // Refresh по классу. Нужно только добавить на кнопку. thisBtnRefresh
@@ -83,6 +85,13 @@ document.querySelector("#parse-all-prices-button").addEventListener("click",()=>
         console.log(res);
     })
 });
+
+
+
+ 
+
+
+
 // parse_all
  
 

@@ -1,7 +1,7 @@
  import ModalWindow from "./ModalWindow.js";
  import ParseSelected from "./ParseSelected.js"
 
-async function CreateTable(data , ArrKeys) {
+async function CreateTable(data , ArrKeys, socket) {
   let ObjCustomCheck = JSON.parse(localStorage.getItem("ObjCustomCheck")); 
  
   let newTable = document.querySelector("#newTable");
@@ -11,7 +11,7 @@ async function CreateTable(data , ArrKeys) {
   OldTableHeaders(data, NewTableHeaders, ArrKeys,ObjCustomCheck)
   OldTable(data, newTable, ArrKeys,ObjCustomCheck);
   ModalWindow();
-  ParseSelected(data);
+  ParseSelected(data, socket);
 }
 function OldTableHeaders(data, NewTableHeaders , ArrKeys,ObjCustomCheck) {
   NewTableHeaders.insertAdjacentHTML("beforeend",`
