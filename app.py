@@ -13,8 +13,10 @@ from apps.delTHRparse import perform_add_to_cart_view_cart_calculate_and_retriev
 import traceback
 from datetime import datetime
 import subprocess
-
-
+import threading  # Import the threading module
+import time
+ 
+ 
 class User:
     def __init__(self, id, user_name, password):
         self.id = id
@@ -29,6 +31,8 @@ users.append(User(id=1,user_name="test1",password="pass101010"))
 users.append(User(id=1, user_name="test2", password="pass1660"))
 print(users)
 
+
+ 
 app = Flask(__name__)
 socketio = SocketIO(app)
 app.secret_key = 'supadupasecretkey10101010'
@@ -601,6 +605,37 @@ def start_parsing():
     return jsonify({'message': 'All URLs delivery price parsed successfully.'})
 
 
+ 
+
+ 
+
+# @app.route('/test_progress', methods=['GET', 'POST'])
+@socketio.on('test_progress')
+def start_test_progress(data):
+    # Start a separate thread to emit progress updates
+    for progress in range(101):
+        socketio.emit('progress_update', {'progress': progress})  
+        print(f"Sent progress: {progress}")
+        socketio.sleep(0.1)
+    return jsonify({'message': 'Progress updates finished'})
+
+ 
+@socketio.on('test_event')
+def handle_test_event(data):
+    # ваш код обработки данных
+    result = "Server says: " + data['message']
+    # отправляем данные обратно клиенту
+    socketio.emit('test_response', {'data': result})
+
+ 
+ 
+@socketio.on('test2')
+def testttt(data):
+    res =  "Server says: " + data['message']
+    socketio.emit('resTest2',{'data':res}) 
+
+
+
 if __name__ == '__main__':
-    socketio.run(app,allow_unsafe_werkzeug=True , debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+    socketio.run(app,allow_unsafe_werkzeug=True , debug=True, host="127.0.0.1", port=int(os.environ.get("PORT", 8080)))
 

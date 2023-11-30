@@ -11,7 +11,7 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url, zipindex):
 
         # Navigate to the specified URL
         page.goto(url)
-
+        print('came to url: ', url)
         # # Click on the "Add to Cart" button
         add_to_cart_button_selector = '#item-page > div > div:nth-child(2) > div > div.product-page > div > div:nth-child(3) > div:nth-child(2) > div.add-to-cart-button > div > div.my-6 > div > button'
 

@@ -1,16 +1,38 @@
+const socket = io.connect("http://" + document.domain + ":" + location.port);
+
+// Import Components
 import CheckingStylesTable from "./components/CheckingStylesTable.js";
 import fetch_data from "./components/fetch_data.js";
 import CreateTable from "./components/CreateTable.js";
 import ModalWindow from "./components/ModalWindow.js";
-import Cuscomize from "./components/Customize.js"
-import WTF from "./components/WTF.js";
+import Cuscomize from "./components/Customize.js" 
 import FETCH from "./components/FETCH.js";
 import NumberOfItems from "./components/NumberOfItems.js";
 import SearchRadio from "./components/SearchRadio.js";
 import AddProductForm from "./components/AddProductForm.js";
 import DeleteSelectedButton from "./components/DeleteSelectedButton.js";
-import addviascsv from "./components/addviacsv.js";
+import addviascsv from "./components/addviacsv.js"; 
+import ProgressBar from "./components/ProgressBar.js";
+
+
+// Import Modules Sockets
+import SocketGet from "./Socket/modules/SocketGet.js";
+import SocketPost from "./Socket/modules/SocketPost.js";
  
+
+SocketPost(socket,'test_event',{ message: "text test 1 2 3" })
+SocketGet(socket,'test_response').then((res)=>{
+    console.log(res);
+})
+
+SocketPost(socket,'test2',{ message: "qweqwe" })
+SocketGet(socket,'resTest2').then((res)=>{
+    console.log(res);
+})
+
+ 
+
+
 document.querySelector("#btnCollapse").addEventListener("click",()=>{
     document.querySelector(".navbar-collapse").classList.toggle("show");
 });
@@ -33,6 +55,7 @@ NumberOfItems(ArrKeys);
 SearchRadio(ArrKeys);
 AddProductForm(); 
 DeleteSelectedButton(); 
+ProgressBar(socket)
 
 
 // Refresh по классу. Нужно только добавить на кнопку. thisBtnRefresh
@@ -52,11 +75,16 @@ thisBtnRefresh.forEach((thisBtn) =>{
 
 
 let download_tsv = document.querySelector('#download-tsv')
-download_tsv.addEventListener('click', ()=>{window.location.href = '/download_tsv_report'})
-
-
-
-
+download_tsv.addEventListener('click', ()=>{window.location.href = '/download_tsv_report'}) 
+ 
+document.querySelector("#parse-all-prices-button").addEventListener("click",()=>{
+    FETCH("/parse_all").then((res)=>{
+        alert(res.message)
+        console.log(res);
+    })
+});
+// parse_all
+ 
 
 // WTF();
 
