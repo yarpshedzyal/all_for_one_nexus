@@ -551,25 +551,27 @@ def start_parsing():
         try:
             # Perform parsing using the parsing function
             parsed_data = perform_add_to_cart_view_cart_calculate_and_retrieve_price(link, 90001)
-            
-            # Update the document in MongoDB with the parsed data
-            collection.update_one(
-                {'_id': ObjectId(url_id)},
-                {'$set': {'DeliveryPriceTHR90001': parsed_data[0]}}
-            )
-
             # Increment the parsed_urls counter
             parsed_urls += 1
-
-            # Perform parsing for the other zip code (10001)
-            parsed_data_10001 = perform_add_to_cart_view_cart_calculate_and_retrieve_price(link, 10001)
             
-            # Update the document in MongoDB with the parsed data for 10001
-            collection.update_one(
-                {'_id': ObjectId(url_id)},
-                {'$set': {'DeliveryPriceTHR10001': parsed_data_10001[0]}}
-            )
+            if parsed_data[0] != 'Out':
 
+                # Update the document in MongoDB with the parsed data
+                collection.update_one(
+                    {'_id': ObjectId(url_id)},
+                    {'$set': {'DeliveryPriceTHR90001': parsed_data[0]}}
+                )
+
+
+                # Perform parsing for the other zip code (10001)
+                parsed_data_10001 = perform_add_to_cart_view_cart_calculate_and_retrieve_price(link, 10001)
+                
+                # Update the document in MongoDB with the parsed data for 10001
+                collection.update_one(
+                    {'_id': ObjectId(url_id)},
+                    {'$set': {'DeliveryPriceTHR10001': parsed_data_10001[0]}}
+                )
+            
         except Exception as e:
             traceback.print_exc()  # Add this line to print the exception traceback
 
