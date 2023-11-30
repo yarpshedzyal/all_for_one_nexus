@@ -1,7 +1,10 @@
 import re
 from playwright.sync_api import sync_playwright
+import random
 
-def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url):
+double_button_selector = '#vuetify > div.v-dialog__content.v-dialog__content--active > div > form > div > div > footer > div > button'
+
+def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url, zipindex):
     with sync_playwright() as p:
         browser = p.chromium.launch()
         page = browser.new_page()
@@ -9,13 +12,21 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url):
         # Navigate to the specified URL
         page.goto(url)
 
-        # Click on the "Add to Cart" button
-        add_to_cart_button_selector = '.flex-grow.v-btn.v-btn--is-elevated.v-btn--has-bg.v-btn--rounded.theme--light.v-size--large.cart.text-lg'
+        # # Click on the "Add to Cart" button
+        add_to_cart_button_selector = '#item-page > div > div:nth-child(2) > div > div.product-page > div > div:nth-child(3) > div:nth-child(2) > div.add-to-cart-button > div > div.my-6 > div > button'
+
         add_to_cart_button = page.locator(add_to_cart_button_selector)
+
+        
         add_to_cart_button.click()
 
         # Wait for some time to allow any JavaScript code triggered by the click to execute
-        page.wait_for_timeout(2000)  # Adjust the timeout based on your specific case
+        page.wait_for_timeout(random.uniform(2000, 3000))  # Adjust the timeout based on your specific case
+
+        double_button = page.locator(double_button_selector)
+        if double_button.is_enabled():
+            double_button.click()
+            page.wait_for_timeout(random.uniform(2000, 3000))
 
         # Print a message after clicking the "Add to Cart" button
         print("Add to Cart button clicked!")
@@ -26,7 +37,7 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url):
         cart_link.click()
 
         # Wait for some time to allow any JavaScript code triggered by the click to execute
-        page.wait_for_timeout(2000)  # Adjust the timeout based on your specific case
+        page.wait_for_timeout(random.uniform(2000, 3000))  # Adjust the timeout based on your specific case
 
         # Get the current URL of the page
         current_url = page.url
@@ -39,11 +50,11 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url):
         zip_code_field = page.locator(zip_code_field_selector)
 
         # Replace '90001' with the zip code you want to input
-        zip_code_to_input = '90001'
+        zip_code_to_input = str(zipindex)
         zip_code_field.type(zip_code_to_input)
 
         # Wait for some time to allow any JavaScript code triggered by the input to execute
-        page.wait_for_timeout(2000)  # Adjust the timeout based on your specific case
+        page.wait_for_timeout(random.uniform(2000, 3000))  # Adjust the timeout based on your specific case
 
         # Print a message after typing into the zip code field
         print(f"Typed '{zip_code_to_input}' into the zip code field.")
@@ -54,7 +65,7 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url):
         calculate_button.click()
 
         # Wait for some time to allow any JavaScript code triggered by the click to execute
-        page.wait_for_timeout(2000)  # Adjust the timeout based on your specific case
+        page.wait_for_timeout(random.uniform(2000, 3000))  # Adjust the timeout based on your specific case
 
         # Print a message after clicking the "Calculate" button
         print("Calculate button clicked!")
@@ -71,11 +82,12 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url):
             cleaned_price = re.sub(r'[^0-9.]', '', shipping_price_text)
 
             print(f"Shipping Method Price {index + 1}:", cleaned_price)
+            break
 
         # Close the browser
         browser.close()
+        
+    return [cleaned_price, zipindex]
 
-if __name__ == "__main__":
-    # Replace 'https://example.com' with the URL of the website you want to interact with
-    website_url = 'https://www.therestaurantstore.com/items/36165'
-    perform_add_to_cart_view_cart_calculate_and_retrieve_price(website_url)
+
+# print(perform_add_to_cart_view_cart_calculate_and_retrieve_price('https://www.therestaurantstore.com/items/198586','90001'))

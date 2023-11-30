@@ -28,8 +28,7 @@ function ModalWindow() {
            if(modal.classList.contains("dNone") === true){  
              modal.classList.remove("dNone");
              modal.classList.add("dBlock");
-           }
-            
+           } 
          },100)
         }
      });

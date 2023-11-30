@@ -79,7 +79,13 @@ def parser_solo(url):
         if minimum_buy:
             price = str(float(price) * minimum_buy)
 
-    return [price, stock]
+        small_plus_text =soup.find('a', {'href': '/plus/', 'class': 'small plus-text'})
+        plus_text - 'No'
+        if small_plus_text:
+            plus_text = 'Yes'
+         
+
+    return [price, stock, plus_text]
 
 # # new options
 # chrome_options = Options()

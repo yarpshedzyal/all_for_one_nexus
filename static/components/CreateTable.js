@@ -1,5 +1,5 @@
  import ModalWindow from "./ModalWindow.js";
- 
+ import ParseSelected from "./ParseSelected.js"
 
 async function CreateTable(data , ArrKeys) {
   let ObjCustomCheck = JSON.parse(localStorage.getItem("ObjCustomCheck")); 
@@ -11,6 +11,7 @@ async function CreateTable(data , ArrKeys) {
   OldTableHeaders(data, NewTableHeaders, ArrKeys,ObjCustomCheck)
   OldTable(data, newTable, ArrKeys,ObjCustomCheck);
   ModalWindow();
+  ParseSelected(data);
 }
 function OldTableHeaders(data, NewTableHeaders , ArrKeys,ObjCustomCheck) {
   NewTableHeaders.insertAdjacentHTML("beforeend",`
@@ -32,7 +33,7 @@ function OldTable(data, newTable , ArrKeys,ObjCustomCheck) {
   data.items.map((e, i) => { 
     newTable.insertAdjacentHTML("beforeend", `
     <tr>
-      <td data-column="checkbox" ${ObjCustomCheck && ObjCustomCheck["checkbox"] === undefined ?"" : `data-display=${ObjCustomCheck && ObjCustomCheck["checkbox"].checked}`}><input style="width: 100%;text-align: center;" type="checkbox" name="selected_product" value="${e._id.$oid}" title="${e._id.$oid}"></td>
+      <td data-column="checkbox" ${ObjCustomCheck && ObjCustomCheck["checkbox"] === undefined ?"" : `data-display=${ObjCustomCheck && ObjCustomCheck["checkbox"].checked}`}><input class="InpSelected" style="width: 100%;text-align: center;" type="checkbox" name="selected_product" value="${e._id.$oid}" title="${e._id.$oid}"></td>
       <td class="openW" ${ ObjCustomCheck && ObjCustomCheck["index"] === undefined ?"" : `data-display=${ObjCustomCheck && ObjCustomCheck["index"].checked}`} data-column="index" data-targetmodal="#columnindex" scope="row" title="${i}">${i}</td>
       ${ArrKeys.map((key) => `
         ${e[key] === undefined ? "" : `<td ${ ObjCustomCheck && ObjCustomCheck[key] === undefined ?"" : `data-display=${ObjCustomCheck && ObjCustomCheck[key].checked}`} data-column="${key}" title='${e[key] === undefined ? "" : e[key]}'> 

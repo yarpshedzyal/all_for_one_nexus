@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, jsonify,  redirect, session, url_for,send_file
+from flask import Flask, render_template, request, jsonify,  redirect, session, url_for,send_file, make_response
+from flask_socketio import SocketIO, emit
 from pymongo import MongoClient
 from bson import ObjectId, json_util
 from bcrypt import checkpw
@@ -7,10 +8,15 @@ from werkzeug.utils import secure_filename
 import csv
 import os
 import pandas as pd
-
-
-
-
+from apps.delWEBSparser import parser_solo,count
+from apps.delTHRparse import perform_add_to_cart_view_cart_calculate_and_retrieve_price
+import traceback
+from datetime import datetime
+import subprocess
+import threading  # Import the threading module
+import time
+ 
+ 
 class User:
     def __init__(self, id, user_name, password):
         self.id = id
@@ -25,8 +31,14 @@ users.append(User(id=1,user_name="test1",password="pass101010"))
 users.append(User(id=1, user_name="test2", password="pass1660"))
 print(users)
 
+
+ 
 app = Flask(__name__)
+socketio = SocketIO(app)
 app.secret_key = 'supadupasecretkey10101010'
+
+is_parsing = False
+is_parsing_delivery = False
 
 # Read configuration from config.txt
 with open('config.txt') as config_file:
@@ -41,12 +53,14 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 mongo_uri = config[0].strip().split('=')[1]
 database_name = config[1].strip().split('=')[1]
 collection_name = config[2].strip().split('=')[1]
+parsingdate_name = config[3].strip().split('=')[1]
 
 
 # MongoDB Configuration
 client = MongoClient(mongo_uri)
 db = client[database_name]
 collection = db[collection_name]
+parsingdate = db[parsingdate_name]
 
 @app.before_request
 def check_authentication():
@@ -346,11 +360,11 @@ def download_tsv_report():
 
     for item in items:
         sku = item.get('SKU', '')
-        price = item.get('Price', '').strip()
+        price = item.get('Price', '')
         stock_availability = item.get('StockAviability', '')
 
         # Calculate quantity based on stock_availability
-        if stock_availability == 'Yes':
+        if stock_availability == 'In':
             quantity = '99'
         else:
             quantity = '0'
@@ -418,6 +432,71 @@ def get_all_items():
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)})
 
+@app.route('/parse_all', methods=['POST','GET'])
+def parse_urls():
+    global is_parsing
+
+    if is_parsing:
+        # Redirect to the main page with a message that parsing is ongoing
+        return jsonify({'message': 'Parsing in progress. Please w8'})
+
+    # Get all the URLs from MongoDB
+    urls = collection.find()
+
+    # Calculate the total number of URLs to parse
+    total_urls = count()
+
+    # Start parsing and emit progress updates
+    parsed_urls = 0
+
+    is_parsing = True
+
+    for index, url in enumerate(urls):
+        url_id = str(url['_id'])
+        link = url['WSlink']
+
+        try:
+            # Perform parsing using the parser_solo function
+            parsed_data = parser_solo(link)
+
+            # Update the document in MongoDB with the parsed data
+            collection.update_one(
+                {'_id': ObjectId(url_id)},
+                {'$set': {'Price': parsed_data[0], 'StockAviability': parsed_data[1], 'FreeShippingWithPlus' : parsed_data[2]}}
+            )
+
+            # Increment the parsed_urls counter
+            parsed_urls += 1
+
+        except Exception as e:
+            traceback.print_exc()  # Add this line to print the exception traceback
+
+            # Handle the exception here, for example, set the "Stock" field to "Out"
+            collection.update_one(
+                {'_id': ObjectId(url_id)},
+                {'$set': {'StockAviability': 'Out'}}
+            )
+
+        # Calculate progress and emit progress update
+        progress = int((parsed_urls / total_urls) * 100)
+        socketio.emit('progress_update', {'progress': progress}, namespace='/')
+        socketio.sleep(0.5)
+
+    is_parsing = False 
+
+    last_parsed_timestamp = datetime.now()
+    parsingdate.update_one(
+        {'name': 'parsing_status'},
+        {'$set': {'last_parsed_timestamp': last_parsed_timestamp}},
+        upsert=True
+    )
+
+    # Emit a message to indicate that all URLs are parsed successfully
+    socketio.emit('progress_update', {'message': 'All URLs parsed successfully.'}, namespace='/')
+
+    # Return a JSON response with a success message
+    return jsonify({'message': 'All URLs parsed successfully.'})
+
 
 @app.route('/all_search', methods=['GET', 'POST'])
 def get_all_search():
@@ -444,8 +523,119 @@ def get_all_search():
         return jsonify({'success': True, 'items': data})
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)})
+    
+
+@app.route('/delivery_all_parse', methods=['GET'])
+def start_parsing():
+    global is_parsing_delivery
+
+    if is_parsing_delivery:
+        # Redirect to the main page with a message that parsing is ongoing
+        return jsonify({'message': 'Parsing delivery in progress. Please wait.'})
+
+    # Get all the URLs from MongoDB
+    urls = collection.find()
+
+    # Calculate the total number of URLs to parse
+    total_urls = count()
+
+    # Start parsing and emit progress updates
+    parsed_urls = 0
+
+    is_parsing_delivery = True
+
+    for index, url in enumerate(urls):
+        url_id = str(url['_id'])
+        link = url['ThrLink']
+
+        try:
+            # Perform parsing using the parsing function
+            parsed_data = perform_add_to_cart_view_cart_calculate_and_retrieve_price(link, 90001)
+            
+            # Update the document in MongoDB with the parsed data
+            collection.update_one(
+                {'_id': ObjectId(url_id)},
+                {'$set': {'DeliveryPriceTHR90001': parsed_data[0]}}
+            )
+
+            # Increment the parsed_urls counter
+            parsed_urls += 1
+
+            # Perform parsing for the other zip code (10001)
+            parsed_data_10001 = perform_add_to_cart_view_cart_calculate_and_retrieve_price(link, 10001)
+            
+            # Update the document in MongoDB with the parsed data for 10001
+            collection.update_one(
+                {'_id': ObjectId(url_id)},
+                {'$set': {'DeliveryPriceTHR10001': parsed_data_10001[0]}}
+            )
+
+        except Exception as e:
+            traceback.print_exc()  # Add this line to print the exception traceback
+
+            # Handle the exception here, for example, set the "Stock" field to "Out"
+            collection.update_one(
+                {'_id': ObjectId(url_id)},
+                {'$set': {'DeliveryPriceTHR90001': '0'}}
+            )
+
+            collection.update_one(
+                {'_id': ObjectId(url_id)},
+                {'$set': {'DeliveryPriceTHR10001': '0'}}
+            )
+
+        # Calculate progress and emit progress update
+        progress_delivery = int((parsed_urls / total_urls) * 100)
+        socketio.emit('progress_delivery_update', {'progress_delivery': progress_delivery}, namespace='/')
+        socketio.sleep(0.5)
+
+    is_parsing_delivery = False 
+
+    last_parsed_timestamp = datetime.now()
+    parsingdate.update_one(
+        {'name': 'parsing_status_delivery'},
+        {'$set': {'last_parsed_timestamp': last_parsed_timestamp}},
+        upsert=True
+    )
+
+    # Emit a message to indicate that all URLs are parsed successfully
+    socketio.emit('progress_delivery_update', {'message': 'All URLs delivery price parsed successfully.'}, namespace='/')
+
+    # Return a JSON response with a success message
+    return jsonify({'message': 'All URLs delivery price parsed successfully.'})
+
+
+ 
+
+ 
+
+# @app.route('/test_progress', methods=['GET', 'POST'])
+@socketio.on('test_progress')
+def start_test_progress(data):
+    # Start a separate thread to emit progress updates
+    for progress in range(101):
+        socketio.emit('progress_update', {'progress': progress})  
+        print(f"Sent progress: {progress}")
+        socketio.sleep(0.1)
+    return jsonify({'message': 'Progress updates finished'})
+
+ 
+@socketio.on('test_event')
+def handle_test_event(data):
+    # ваш код обработки данных
+    result = "Server says: " + data['message']
+    # отправляем данные обратно клиенту
+    socketio.emit('test_response', {'data': result})
+
+ 
+ 
+@socketio.on('test2')
+def testttt(data):
+    res =  "Server says: " + data['message']
+    socketio.emit('resTest2',{'data':res}) 
+
+
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0" ,port=8080)
-
+    socketio.run(app,allow_unsafe_werkzeug=True , debug=True, host="127.0.0.1", port=int(os.environ.get("PORT", 8080)))
 
