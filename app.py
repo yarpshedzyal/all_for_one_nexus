@@ -738,30 +738,29 @@ def collect_and_start_delivery(data):
 
 
 # @app.route('/test_progress', methods=['GET', 'POST'])
-@socketio.on('test_progress')
-def start_test_progress(data):
-    # Start a separate thread to emit progress updates
+@socketio.on('TestProgress1')
+def start_test_progress_1(data):
+    # Send progress updates synchronously
     for progress in range(101):
-        socketio.emit('progress_update', {'progress': progress})  
-        print(f"Sent progress: {progress}")
+        socketio.emit('progress_1', {'progress': progress, 'category': "progress_1"})
         socketio.sleep(0.1)
-    return jsonify({'message': 'Progress updates finished'})
+    return jsonify({'message': 'Progress updates finished for TestProgress1'})
 
- 
-@socketio.on('test_event')
-def handle_test_event(data):
-    # ваш код обработки данных
-    result = "Server says: " + data['message']
-    # отправляем данные обратно клиенту
-    socketio.emit('test_response', {'data': result})
+@socketio.on('TestProgress2')
+def start_test_progress_2(data):
+    # Send progress updates synchronously
+    for progress in range(101):
+        socketio.emit('progress_2', {'progress': progress, 'category': "progress_2"})
+        socketio.sleep(0.5)
+    return jsonify({'message': 'Progress updates finished for TestProgress2'})
 
- 
- 
-@socketio.on('test2')
-def testttt(data):
-    res =  "Server says: " + data['message']
-    socketio.emit('resTest2',{'data':res}) 
-
+@socketio.on('TestProgress3')
+def start_test_progress_3(data):
+    # Send progress updates synchronously 
+    for progress in range(101):
+        socketio.emit('progress_3', {'progress': progress, 'category': "progress_3"})
+        socketio.sleep(1)
+    return jsonify({'message': 'Progress updates finished for TestProgress3'})
 
 
 if __name__ == '__main__':
