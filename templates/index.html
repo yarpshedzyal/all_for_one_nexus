@@ -300,8 +300,12 @@
       <div class="container-fluid">
          <div class="row mt-10">
             <div class="col-12 d-flex flex-column my-2">
-               <div class="d-flex my-2">
-
+               <div class="d-flex">
+                  <button id="TestProgress1" class="btn btn-success m-2">Test Progress 1</button>
+                  <button id="TestProgress2" class="btn btn-success m-2">Test Progress 2</button>
+                  <button id="TestProgress3" class="btn btn-success m-2">Test Progress 3</button>
+               </div>
+               <div class="d-flex my-2"> 
                   <div class="d-flex flex-column m-2">
                      <div>
                         <form class="form-inline">
@@ -349,17 +353,7 @@
                   </div>
                </div>
 
-               <div class="d-flex flex-column">
-                  <div>
-                     <p>
-                        <strong>Progress</strong>
-                        Parse: <b id="textProgress">0%</b>
-                     </p>
-                  </div>
-                  <div id="progressBlock" class="progress progress-bar-striped bg-warning">
-                     <div id="progressBar" class="progress-bar progress-bar-striped" role="progressbar"
-                        aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
-                  </div>
+               <div id="ProgressInformation" class="d-flex flex-column"> 
                </div>
 
             </div>
@@ -381,7 +375,7 @@
 
 
 
-
+ 
 
    <!-- Pagination -->
    <section>

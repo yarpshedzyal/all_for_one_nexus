@@ -177,9 +177,9 @@ def parser_solo(url):
 
 
 def count():
-    client = MongoClient('mongodb+srv://user_yarpshe:Q1w2e3r4_0@cluster0.aktya2j.mongodb.net/')
-    db = client['test_1506']
-    collection = db['test']
+    client = MongoClient('mongodb+srv://yarpshe:A0qrXtAga3ss0gkr@nexust1.hqjwu9g.mongodb.net')
+    db = client['product_catalog']
+    collection = db['productstest']
     count = collection.count_documents({})
     return count
 
