@@ -61,7 +61,7 @@ parsingdate_name = config[3].strip().split('=')[1]
 
 
 # MongoDB Configuration
-client = MongoClient(mongo_uri)
+client = MongoClient(mongo_uri)  
 db = client[database_name]
 collection = db[collection_name]
 parsingdate = db[parsingdate_name]

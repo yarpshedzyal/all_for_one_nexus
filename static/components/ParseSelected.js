@@ -11,26 +11,16 @@ function ParseSelected(data) {
 
     let setData = new Set();
     ParseSelectedPrices.addEventListener("click", () => {
-      setData.clear();
-
+      setData.clear(); 
       ForInpSelected()
-      let arrData = Array.from(setData);
-      // socket.emit("PSDP", { arrData });
-      SocketPost(socket,"selected_parse", {arrData});
-      console.log(arrData);
-      arrData = [];
-      console.log(setData);
+      let arrData = Array.from(setData); 
+      SocketPost(socket,"PSDP", {arrData}); 
     }, false);
     ParseSelectedDeliveryPrices.addEventListener("click", () => {
-      setData.clear();
-
+      setData.clear(); 
       ForInpSelected()
-      let arrData = Array.from(setData);
-      // socket.emit("PSDP", { arrData });
-      SocketPost(socket,"delivery_selected_parse", {arrData});
-      console.log(arrData);
-      arrData = [];
-      console.log(setData);
+      let arrData = Array.from(setData); 
+      SocketPost(socket,"PSDP", {arrData}); 
     }, false);
 
 
