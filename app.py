@@ -15,6 +15,7 @@ from datetime import datetime
 import subprocess
 import time
 import telebot
+import threading
  
  
 class User:
@@ -545,9 +546,17 @@ def start_parsing():
     # Calculate the total number of URLs to parse
     total_urls = count()
 
-    # Start parsing and emit progress updates
-    parsed_urls = 0
+    # Start parsing in a separate thread
+    parse_thread = threading.Thread(target=perform_parsing_async, args=(urls, total_urls))
+    parse_thread.start()
 
+    # Return a JSON response with a success message
+    return jsonify({'message': 'Parsing delivery started successfully.'})
+
+def perform_parsing_async(urls, total_urls):
+    global is_parsing_delivery
+
+    parsed_urls = 0
     is_parsing_delivery = True
 
     for index, url in enumerate(urls):
@@ -567,7 +576,6 @@ def start_parsing():
                     {'_id': ObjectId(url_id)},
                     {'$set': {'DeliveryPriceTHR90001': parsed_data[0]}}
                 )
-
 
                 # Perform parsing for the other zip code (10001)
                 parsed_data_10001 = perform_add_to_cart_view_cart_calculate_and_retrieve_price(link, 10001)
@@ -608,9 +616,6 @@ def start_parsing():
 
     # Emit a message to indicate that all URLs are parsed successfully
     socketio.emit('progress_delivery_update', {'message': 'All URLs delivery price parsed successfully.'}, namespace='/')
-
-    # Return a JSON response with a success message
-    return jsonify({'message': 'All URLs delivery price parsed successfully.'})
 
 
  
