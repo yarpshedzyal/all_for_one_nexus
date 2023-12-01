@@ -16,7 +16,7 @@ function ParseSelected(data) {
       ForInpSelected()
       let arrData = Array.from(setData);
       // socket.emit("PSDP", { arrData });
-      SocketPost(socket,"PSDP", {arrData});
+      SocketPost(socket,"selected_parse", {arrData});
       console.log(arrData);
       arrData = [];
       console.log(setData);
@@ -27,7 +27,7 @@ function ParseSelected(data) {
       ForInpSelected()
       let arrData = Array.from(setData);
       // socket.emit("PSDP", { arrData });
-      SocketPost(socket,"PSDP", {arrData});
+      SocketPost(socket,"delivery_selected_parse", {arrData});
       console.log(arrData);
       arrData = [];
       console.log(setData);

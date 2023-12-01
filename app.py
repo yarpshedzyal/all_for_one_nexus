@@ -17,7 +17,7 @@ import time
 import telebot
 import threading
  
- 
+
 class User:
     def __init__(self, id, user_name, password):
         self.id = id
@@ -41,6 +41,8 @@ app.secret_key = 'supadupasecretkey10101010'
 
 is_parsing = False
 is_parsing_delivery = False
+is_parsing_delivery_selected = False
+is_parsing_selected = False
 
 # Read configuration from config.txt
 with open('config.txt') as config_file:
@@ -505,6 +507,56 @@ def parse_urls():
     return jsonify({'message': 'All URLs parsed successfully.'})
 
 
+@socketio.on('selected_parse')
+def handle_selected_parse(data):
+    try:
+        # Check if the emitted data contains the 'arrData' field
+        if 'arrData' in data:
+            arr_data = data['arrData']
+            parsed_urls = 0
+            # Process the received data as needed
+            print("Selected items:", arr_data)
+            total_urls_selected = len(arr_data)
+            # Perform the parsing with the received data
+            # Call your parsing function here and pass arr_data as needed
+
+            for index, item_data in enumerate(arr_data):
+                item_id = str(item_data['_id']['$oid'])
+                link = item_data['WSlink']
+
+                try:
+                    # Perform parsing using the parser_solo function
+                    parsed_data = parser_solo(link)
+
+                    # Update the document in MongoDB with the parsed data
+                    collection.update_one(
+                        {'_id': ObjectId(item_id)},
+                        {'$set': {'Price': parsed_data[0], 'StockAviability': parsed_data[1], 'FreeShippingWithPlus' : parsed_data[2]}}
+                    )
+
+                    # Increment the parsed_urls counter
+                    parsed_urls += 1
+
+                except Exception as e:
+                    traceback.print_exc()  # Add this line to print the exception traceback
+
+                    # Handle the exception here, for example, set the "DeliveryPrice" field to an error value
+                    print(f"Error parsing item {item_id}: {e}")
+
+                progress = int((parsed_urls / total_urls_selected) * 100)
+                socketio.emit('progress_update_selected', {'progress': progress}, namespace='/')
+                socketio.sleep(0.5)
+
+            # Emit a message or result back to the frontend if needed
+            socketio.emit('selected_parse_result', {'message': 'Parsing completed successfully'}, namespace='/')
+        else:
+            print("Invalid data format for 'selected_parse'")
+    except Exception as e:
+        print(f"Error processing 'selected_parse' event: {e}")
+        socketio.emit('selected_parse_result', {'error': str(e)}, namespace='/')
+
+
+
 @app.route('/all_search', methods=['GET', 'POST'])
 def get_all_search():
     try:
@@ -532,7 +584,7 @@ def get_all_search():
         return jsonify({'success': False, 'message': str(e)})
     
 
-@app.route('/delivery_all_parse', methods=['GET'])
+@app.route('/delivery_all_parse', methods=['GET', 'POST'])
 def start_parsing():
     global is_parsing_delivery
 
@@ -547,8 +599,9 @@ def start_parsing():
     total_urls = count()
 
     # Start parsing in a separate thread
-    parse_thread = threading.Thread(target=perform_parsing_async, args=(urls, total_urls))
-    parse_thread.start()
+    # parse_thread = threading.Thread(target=perform_parsing_async, args=(urls, total_urls))
+    # parse_thread.start()
+    socketio.start_background_task(target=perform_parsing_async, urls=urls, total_urls=total_urls)
 
     # Return a JSON response with a success message
     return jsonify({'message': 'Parsing delivery started successfully.'})
@@ -602,8 +655,9 @@ def perform_parsing_async(urls, total_urls):
 
         # Calculate progress and emit progress update
         progress_delivery = int((parsed_urls / total_urls) * 100)
-        socketio.emit('progress_delivery_update', {'progress_delivery': progress_delivery}, namespace='/')
+        socketio.emit('progress_delivery_update', {'progress': progress_delivery}, namespace='/')
         socketio.sleep(0.5)
+        print(progress_delivery)
 
     is_parsing_delivery = False 
 
@@ -617,10 +671,71 @@ def perform_parsing_async(urls, total_urls):
     # Emit a message to indicate that all URLs are parsed successfully
     socketio.emit('progress_delivery_update', {'message': 'All URLs delivery price parsed successfully.'}, namespace='/')
 
+@socketio.on('delivery_selected_parse')
+def collect_and_start_delivery(data):
+    try:
+        # Check if the emitted data contains the 'arrData' field
+        if 'arrData' in data:
+            arr_data = data['arrData']
+            
+            # Process the received data as needed
+            print("Selected items:", arr_data)
+            total_urls_selected = len(arr_data)
+            print(total_urls_selected)
+            # Perform the delivery selected parsing with the received data
+            # Call your parsing function here and pass arr_data as needed
+            parsed_urls = 0
+            for index, data_item in enumerate(arr_data):
+                url_id = str(data_item['_id']['$oid'])
+                link = data_item['ThrLink']
 
- 
+                try:
+                    # Perform parsing using the parsing function
+                    parsed_data = perform_add_to_cart_view_cart_calculate_and_retrieve_price(link, 90001)
+                    # Increment the parsed_urls counter
+                    parsed_urls += 1
+                    if parsed_data[0] != 'Out':
 
- 
+                        # Update the document in MongoDB with the parsed data
+                        collection.update_one(
+                            {'_id': ObjectId(url_id)},
+                            {'$set': {'DeliveryPriceTHR90001': parsed_data[0]}}
+                        )
+
+                        # Perform parsing for the other zip code (10001)
+                        parsed_data_10001 = perform_add_to_cart_view_cart_calculate_and_retrieve_price(link, 10001)
+                        
+                        # Update the document in MongoDB with the parsed data for 10001
+                        collection.update_one(
+                            {'_id': ObjectId(url_id)},
+                            {'$set': {'DeliveryPriceTHR10001': parsed_data_10001[0]}}
+                        )
+                    
+                except Exception as e:
+                    traceback.print_exc()  # Add this line to print the exception traceback
+
+                    # Handle the exception here, for example, set the "Stock" field to "Out"
+                    collection.update_one(
+                        {'_id': ObjectId(url_id)},
+                        {'$set': {'DeliveryPriceTHR90001': '0'}}
+                    )
+
+                    collection.update_one(
+                        {'_id': ObjectId(url_id)},
+                        {'$set': {'DeliveryPriceTHR10001': '0'}}
+                    )
+                progress_delivery = int((parsed_urls / total_urls_selected) * 100)
+                socketio.emit('progress_delivery_update_selected', {'progress': progress_delivery}, namespace='/')
+                socketio.sleep(0.5)
+                print(progress_delivery)
+                # Emit a message or result back to the frontend if needed
+                socketio.emit('delivery_selected_parse_result', {'message': 'Parsing completed successfully'}, namespace='/')
+        else:
+            print("Invalid data format for 'delivery_selected_parse'")
+    except Exception as e:
+        print(f"Error processing 'delivery_selected_parse' event: {e}")
+        socketio.emit('delivery_selected_parse_result', {'error': str(e)}, namespace='/')
+
 
 # @app.route('/test_progress', methods=['GET', 'POST'])
 @socketio.on('test_progress')
