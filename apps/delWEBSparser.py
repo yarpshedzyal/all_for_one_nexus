@@ -30,6 +30,7 @@ def parser_solo(url):
     response = requests.get(url)
     stock = "Out"
     price = "0"
+    plus_text = "No"
 
     if response.status_code == 200:
         soup = BeautifulSoup(response.content, "html.parser")
@@ -80,7 +81,7 @@ def parser_solo(url):
             price = str(float(price) * minimum_buy)
 
         small_plus_text =soup.find('a', {'href': '/plus/', 'class': 'small plus-text'})
-        plus_text - 'No'
+
         if small_plus_text:
             plus_text = 'Yes'
          
@@ -177,9 +178,9 @@ def parser_solo(url):
 
 
 def count():
-    client = MongoClient('mongodb+srv://user_yarpshe:Q1w2e3r4_0@cluster0.aktya2j.mongodb.net/')
-    db = client['test_1506']
-    collection = db['test']
+    client = MongoClient('mongodb+srv://yarpshe:A0qrXtAga3ss0gkr@nexust1.hqjwu9g.mongodb.net')
+    db = client['product_catalog']
+    collection = db['productstest']
     count = collection.count_documents({})
     return count
 
