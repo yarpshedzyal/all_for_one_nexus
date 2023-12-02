@@ -1,32 +1,35 @@
 # Use an official Python runtime as a parent image
-FROM python:3.10
+FROM ubuntu:20.04
 
 # Set the working directory to /app
 WORKDIR /app_1
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+# Use an official Python runtime as a base image
+FROM ubuntu:20.04
 
-# Install Playwright dependencies
-RUN apt-get update && apt-get install -y \
-    libnss3 \
-    libgbm-dev
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-# Copy the virtual environment into the container
-COPY .venv /app/.venv
+RUN apt update 
+RUN apt install -y python3.9
+RUN apt install -y python3-pip
+# Create and set the working directory
+WORKDIR /app
 
-# Set the virtual environment as the default Python environment
-ENV VIRTUAL_ENV /app/.venv
-ENV PATH /app/.venv/bin:$PATH
+# Copy the requirements file into the container at /app
+COPY requirements.txt /app/
 
 # Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+RUN playwright install
+RUN playwright install-deps
+# Copy the content of the local src directory to the working directory
+COPY . /app/
 
-# Make port 8080 available to the world outside this container
+# Expose port 8080 to the outside world
 EXPOSE 8080
 
-# Define environment variable
-ENV NAME World
-
-# Run app.py when the container launches
-CMD ["python3", "appp.py", "--host", "0.0.0.0", "--port", "8080"]
+# Command to run on container start
+CMD ["python3", "app.py"]
