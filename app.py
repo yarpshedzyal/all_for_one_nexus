@@ -455,7 +455,7 @@ def get_all_items():
 
  
 @socketio.on('parse_all')
-def parse_urls():
+def parse_urls(message):
     global is_parsing
 
     if is_parsing:
@@ -600,7 +600,7 @@ def get_all_search():
         return jsonify({'success': False, 'message': str(e)})
     
 @socketio.on('delivery_all_parse') 
-def start_parsing():
+def start_parsing(message):
     global is_parsing_delivery
 
     if is_parsing_delivery:
