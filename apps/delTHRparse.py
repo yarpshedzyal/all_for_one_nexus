@@ -50,7 +50,7 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url, zipindex):
 
             # Print a message after clicking the "Add to Cart" button
             print("Add to Cart button clicked!")
-
+            page.wait_for_timeout(random.uniform(2000, 3000))
             # Click on the "Cart" link
             cart_link_selector = '.flex.items-center.justify-center.w-24.h-28.bg-gray-200'
             cart_link = page.locator(cart_link_selector)
