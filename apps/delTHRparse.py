@@ -66,6 +66,7 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url, zipindex):
 
             # Find and fill in the zip code field
             zip_code_field_selector = '#new-zipcode'
+            page.wait_for_selector(zip_code_field_selector)
             zip_code_field = page.locator(zip_code_field_selector)
 
             # Replace '90001' with the zip code you want to input
