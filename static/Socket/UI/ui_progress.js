@@ -1,11 +1,11 @@
-function ui_progress(data) { 
+function ui_progress(data, text) { 
   let ProgressInformation = document.querySelector('#ProgressInformation');
   ProgressInformation.insertAdjacentHTML("beforeend", ` 
-  <div class="d-flex flex-column progressBlock" data-category="${data.category}">
+  <div class="d-flex my-2 flex-column progressBlock" data-category="${data.category}">
     <div>
-      <p>
+      <p class="mb-1">
         <strong>Progress</strong>
-        Parse: <b class="textProgress" data-category="${data.category}">${data.progress}%</b>
+        ${text}: <b class="textProgress" data-category="${data.category}">${data.progress}%</b>
       </p>
     </div>
     <div class="progress progress-bar-striped bg-warning progressBar progress-bar-animated" data-category="${data.category}">

@@ -1,12 +1,12 @@
 import SocketGet from "../modules/SocketGet.js";
 import ui_progress from "../UI/ui_progress.js";
-function progress_update(socket, url) {
+function progress_update(socket, url, text) {
   socket.on(url, async (res) => {
     let ProgressInformation = document.querySelector("#ProgressInformation");
     console.log(res);
     if (res.progress) {
       if (ProgressInformation.children.length === 0) {
-        ui_progress(res);
+        ui_progress(res, text);
       } else {
         let progressBlock = document.querySelectorAll(".progressBlock");
         console.log(progressBlock);
@@ -28,7 +28,7 @@ function progress_update(socket, url) {
 
             progressBar.forEach((thisBar) => {
               if (thisBar.dataset.category === res.category) {
-                if (res.progress <= 0) {
+                if (res.progress !== 100) {
                   thisBar.classList.add("progress-bar-animated");
                   thisBar.classList.remove("bg-success");
                 }
@@ -49,7 +49,7 @@ function progress_update(socket, url) {
 
         // Если не найден существующий блок, создаем новый
         if (!blockFound) {
-          ui_progress(res);
+          ui_progress(res, text);
         }
       }
     }
