@@ -111,8 +111,7 @@
                               Prices</button>
                            <button class="m-2 btn btn-outline-light" id="parse-selected-prices-button">Parse Selected
                               Prices</button>
-                           <button class="m-2 btn btn-outline-light"
-                              id="parse-all-delivery-prices-button">Parse All
+                           <button class="m-2 btn btn-outline-light" id="parse-all-delivery-prices-button">Parse All
                               Delivery
                               Prices</button>
                            <button class="m-2 btn btn-outline-light" id="parse-selected-delivery-prices-button">Parse
@@ -290,6 +289,24 @@
             </div>
          </div>
       </div>
+
+      <!-- Modal Message -->
+      <div id="ModalMessage" class="modalW modal fade dNone" data-targetmodal="#Modal_Message">
+         <div class="bgModalEvent closeWMessage" data-targetmodal="#Modal_Message"></div>
+         <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h1 class="modal-title fs-5">Modal Message</h1>
+                  <button type="button" class="btn-close closeWMessage" data-targetmodal="#Modal_Message"></button>
+               </div>
+               <div id="MessageContent" class="modal-body"> 
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary closeWMessage" data-targetmodal="#Modal_Message">Close</button> 
+               </div>
+            </div>
+         </div>
+      </div>
    </section>
 
 
@@ -299,61 +316,74 @@
    <section>
       <div class="container-fluid">
          <div class="row mt-10">
-            <div class="col-12 d-flex flex-column my-2">
-               <div class="d-flex">
-                  <button id="TestProgress1" class="btn btn-success m-2">Test Progress 1</button>
-                  <button id="TestProgress2" class="btn btn-success m-2">Test Progress 2</button>
-                  <button id="TestProgress3" class="btn btn-success m-2">Test Progress 3</button>
-               </div>
-               <div class="d-flex my-2"> 
-                  <div class="d-flex flex-column m-2">
-                     <div>
-                        <form class="form-inline">
-                           <strong>Search</strong>
-                           <div class="input-group mb-3">
-                              <input id="InpSearch" type="text" class="form-control" placeholder="Text...">
-                              <button class="btn btn-outline-secondary" type="button" id="SearchSubmit"
-                                 disabled>Apply</button>
+            <div class="col-12 d-flex flex-wrap my-2">
+               <div class="col-12 col-md-6">
+                  <div class="pe-3">
+                     <div class="d-flex my-2 flex-wrap">
+                        <div class="d-flex flex-column flex-wrap m-2">
+                           <div>
+                              <form class="form-inline">
+                                 <strong>Search</strong>
+                                 <div class="input-group mb-3">
+                                    <input id="InpSearch" type="text" class="form-control" placeholder="Text...">
+                                    <button class="btn btn-outline-secondary" type="button" id="SearchSubmit"
+                                       disabled>Apply</button>
+                                 </div>
+                              </form>
                            </div>
-                        </form>
+                           <div class="d-flex">
+                              <div class="form-check m-2">
+                                 <input class="form-check-input" type="radio" title="ASIN" name="SearchRadio"
+                                    id="RadiASIN">
+                                 <label class="form-check-label" for="RadiASIN">
+                                    ASIN
+                                 </label>
+                              </div>
+                              <div class="form-check m-2">
+                                 <input class="form-check-input" type="radio" title="SKU" name="SearchRadio"
+                                    id="RadioSKU" checked>
+                                 <label class="form-check-label" for="RadioSKU">
+                                    SKU
+                                 </label>
+                              </div>
+                              <div class="form-check m-2">
+                                 <input class="form-check-input" type="radio" title="PricingStrategy"
+                                    name="SearchRadio" id="RadioPricingStrategy">
+                                 <label class="form-check-label" for="RadioPricingStrategy">
+                                    Pricing Strategy
+                                 </label>
+                              </div>
+                           </div>
+                        </div>
+
+                        <div class="d-flex m-2">
+                           <form class="form-inline">
+                              <strong>Number of items</strong>
+                              <div class="input-group mb-3">
+                                 <input id="InpNumberOfItems" value="10" type="number" class="form-control"
+                                    placeholder="Number of items">
+                                 <button class="btn btn-outline-secondary" type="button"
+                                    id="BtnNumberOfItems">Apply</button>
+                              </div>
+                           </form>
+                        </div>
                      </div>
-                     <div class="d-flex">
-                        <div class="form-check m-2">
-                           <input class="form-check-input" type="radio" title="ASIN" name="SearchRadio" id="RadiASIN">
-                           <label class="form-check-label" for="RadiASIN">
-                              ASIN
-                           </label>
-                        </div>
-                        <div class="form-check m-2">
-                           <input class="form-check-input" type="radio" title="SKU" name="SearchRadio" id="RadioSKU"
-                              checked>
-                           <label class="form-check-label" for="RadioSKU">
-                              SKU
-                           </label>
-                        </div>
-                        <div class="form-check m-2">
-                           <input class="form-check-input" type="radio" title="Pricing Strategy" name="SearchRadio"
-                              id="RadioPricingStrategy">
-                           <label class="form-check-label" for="RadioPricingStrategy">
-                              Pricing Strategy
-                           </label>
-                        </div>
+                     <!-- Progress Bar -->
+                     <div id="ProgressInformation" class="d-flex flex-column">
                      </div>
                   </div>
 
-                  <div class="d-flex m-2">
-                     <form class="form-inline">
-                        <strong>Number of items</strong>
-                        <div class="input-group mb-3">
-                           <input id="InpNumberOfItems" value="10" type="number" class="form-control"
-                              placeholder="Number of items">
-                           <button class="btn btn-outline-secondary" type="button" id="BtnNumberOfItems">Apply</button>
-                        </div>
-                     </form>
-                  </div>
                </div>
+               <div class="col-12 col-md-6">
+                  <div class="ps-3"> 
+                     <div >
+                        <h4><b>Webstaurant Parser</b>, last time parsed.</h4>
+                     </div>
+                     <div id="ConnectionMessage">
 
-               <div id="ProgressInformation" class="d-flex flex-column"> 
+                     </div>
+                  </div>
+
                </div>
 
             </div>
@@ -375,7 +405,7 @@
 
 
 
- 
+
 
    <!-- Pagination -->
    <section>

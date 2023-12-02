@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, jsonify,  redirect, session, url_for,send_file, make_response
 from flask_socketio import SocketIO, emit
+from flask import Flask, render_template, request, jsonify,  redirect, session, url_for,send_file, make_response
+from flask_socketio import SocketIO, emit
 from pymongo import MongoClient
 from bson import ObjectId, json_util
 from bcrypt import checkpw
@@ -364,8 +366,7 @@ def update_product():
     }
 
     # Update the product in the MongoDB collection
-    collection.update_one({'_id': ObjectId(product_id)}, {'$set': new_data})
-
+    collection.update_one({'_id': ObjectId(product_id)}, {'$set': new_data}) 
     return jsonify({'success': True, 'message': 'Product updated successfully'})
 
 
@@ -453,7 +454,7 @@ def get_all_items():
 
  
 @socketio.on('parse_all')
-def parse_urls():
+def parse_urls(message):
     global is_parsing
 
     if is_parsing:
@@ -598,7 +599,7 @@ def get_all_search():
         return jsonify({'success': False, 'message': str(e)})
     
 @socketio.on('delivery_all_parse') 
-def start_parsing():
+def start_parsing(message):
     global is_parsing_delivery
 
     if is_parsing_delivery:
@@ -754,39 +755,14 @@ def collect_and_start_delivery(data):
         socketio.emit('message', {'error': str(e)})
 
 
-# @app.route('/test_progress', methods=['GET', 'POST'])
-@socketio.on('TestProgress1')
-def start_test_progress_1(data):
-    # Send progress updates synchronously
-    for progress in range(101):
-        socketio.emit('progress_1', {'progress': progress, 'category': "progress_1"})
-        socketio.sleep(0.1)
 
-    send_telegram_message("Progress updates have finished.")
-    return jsonify({'message': 'Progress updates finished for TestProgress1'})
+@socketio.on('connect')
+def handle_connect():
+    print('Client connected')
+    socketio.emit('ConnectionMessage', {'data': 'Welcome to the server!'})
+     
 
-@socketio.on('TestProgress2')
-def start_test_progress_2(data):
-    # Send progress updates synchronously
-    for progress in range(101):
-        socketio.emit('progress_2', {'progress': progress, 'category': "progress_2"})
-        socketio.sleep(0.5)
-    return jsonify({'message': 'Progress updates finished for TestProgress2'})
-
-@socketio.on('TestProgress3')
-def start_test_progress_3(data):
-    # Send progress updates synchronously 
-    for progress in range(101):
-        socketio.emit('progress_3', {'progress': progress, 'category': "progress_3"})
-        socketio.sleep(1)
-    return jsonify({'message': 'Progress updates finished for TestProgress3'})
-
-
-def send_telegram_message(message):
-    # Ваш chat_id в Telegram (можно получить, написав боту @userinfobot)  
-    chat_id = '-1002093650751'
-    bot.send_message(chat_id, message)
-
+ 
 if __name__ == '__main__':
     socketio.run(app,allow_unsafe_werkzeug=True , debug=True, host="127.0.0.1", port=int(os.environ.get("PORT", 8080)))
 

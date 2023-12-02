@@ -30,6 +30,6 @@ td[data-column="SKU"] {
 
 th[data-column="checkbox"],
 th[data-column="index"] {
-    width: 35px;
+    width: 40px;
     /* Укажите необходимую ширину */
 }

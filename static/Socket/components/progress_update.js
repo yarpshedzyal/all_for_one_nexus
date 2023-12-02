@@ -2,14 +2,12 @@ import SocketGet from "../modules/SocketGet.js";
 import ui_progress from "../UI/ui_progress.js";
 function progress_update(socket, url, text) {
   socket.on(url, async (res) => {
-    let ProgressInformation = document.querySelector("#ProgressInformation");
-    console.log(res);
+    let ProgressInformation = document.querySelector("#ProgressInformation"); 
     if (res.progress) {
       if (ProgressInformation.children.length === 0) {
         ui_progress(res, text);
       } else {
-        let progressBlock = document.querySelectorAll(".progressBlock");
-        console.log(progressBlock);
+        let progressBlock = document.querySelectorAll(".progressBlock"); 
 
         // Используем флаг для отслеживания, найден ли существующий блок
         let blockFound = false;

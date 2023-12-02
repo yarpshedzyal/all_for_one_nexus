@@ -87,8 +87,7 @@ function Cuscomize() {
                 "checked": e.checked
             }
         });
-        localStorage.setItem("ObjCustomCheck", JSON.stringify(newObjCustomCheck));
-        console.log(newObjCustomCheck);
+        localStorage.setItem("ObjCustomCheck", JSON.stringify(newObjCustomCheck)); 
     });
 
     // Function to cancel and close the dialog
