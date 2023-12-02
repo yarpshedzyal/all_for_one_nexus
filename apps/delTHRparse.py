@@ -12,7 +12,8 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url, zipindex):
     cleaned_price = None  # Initialize with a default value
     with sync_playwright() as p:
         browser = p.chromium.launch()
-        page = browser.new_page()
+        context = browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
+        page = context.new_page()
 
         # Navigate to the specified URL
         page.goto(url)
@@ -114,4 +115,4 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url, zipindex):
         return [cleaned_price, zipindex]
 
 
-# print(perform_add_to_cart_view_cart_calculate_and_retrieve_price('https://www.therestaurantstore.com/items/452809','90001'))
+print(perform_add_to_cart_view_cart_calculate_and_retrieve_price('https://www.therestaurantstore.com/items/452809','90001'))
