@@ -14,13 +14,13 @@ function ParseSelected(data) {
       setData.clear(); 
       ForInpSelected()
       let arrData = Array.from(setData); 
-      SocketPost(socket,"PSDP", {arrData}); 
+      SocketPost(socket,"selected_parse", {arrData}); 
     }, false);
     ParseSelectedDeliveryPrices.addEventListener("click", () => {
       setData.clear(); 
       ForInpSelected()
       let arrData = Array.from(setData); 
-      SocketPost(socket,"PSDP", {arrData}); 
+      SocketPost(socket,"delivery_selected_parse", {arrData}); 
     }, false);
 
 

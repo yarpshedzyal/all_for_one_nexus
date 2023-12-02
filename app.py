@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, jsonify,  redirect, session, url_for,send_file, make_response
-from flask_socketio import SocketIO 
- 
+from flask_socketio import SocketIO, emit
 from pymongo import MongoClient
 from bson import ObjectId, json_util
 from bcrypt import checkpw
@@ -14,9 +13,10 @@ from apps.delTHRparse import perform_add_to_cart_view_cart_calculate_and_retriev
 import traceback
 from datetime import datetime
 import subprocess
-import time 
+import time
 import telebot
-import threading 
+import threading
+ 
 
 class User:
     def __init__(self, id, user_name, password):
@@ -31,9 +31,21 @@ users = []
 users.append(User(id=1,user_name="test1",password="pass101010"))     
 users.append(User(id=1, user_name="test2", password="pass1660"))
 print(users)
+ 
 
-TELEGRAM_TOKEN = '5423370550:AAHIePBnlWBpY4OfqOa24tSWKfX9wHQXiLQ'
+# TELEGRAM
+# 6516311619:AAFBIJhirKEdhONp2Ypf9ckXwqlUwYXM6tg 
+TELEGRAM_TOKEN = '6516311619:AAFBIJhirKEdhONp2Ypf9ckXwqlUwYXM6tg'
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
+
+@bot.message_handler(func=lambda message: True)
+def echo_all(message):
+    bot.reply_to(message, message.text)
+
+def send_telegram_message(message):
+# Ваш chat_id в Telegram (можно получить, написав боту @userinfobot)  
+    chat_id = '-1002093650751'
+    bot.send_message(chat_id, message)
  
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -41,6 +53,8 @@ app.secret_key = 'supadupasecretkey10101010'
 
 is_parsing = False
 is_parsing_delivery = False
+is_parsing_delivery_selected = False
+is_parsing_selected = False
 
 # Read configuration from config.txt
 with open('config.txt') as config_file:
@@ -64,9 +78,7 @@ db = client[database_name]
 collection = db[collection_name]
 parsingdate = db[parsingdate_name]
 
-@bot.message_handler(func=lambda message: True)
-def echo_all(message):
-    bot.reply_to(message, message.text)
+ 
 
 
 @app.before_request
@@ -439,15 +451,14 @@ def get_all_items():
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)})
 
-
-
-# @app.route('/parse_all', methods=['POST','GET'])
+ 
 @socketio.on('parse_all')
 def parse_urls():
     global is_parsing
 
     if is_parsing:
         # Redirect to the main page with a message that parsing is ongoing
+        socketio.emit('message', {'message': 'Parsing in progress. Please w8'})
         return jsonify({'message': 'Parsing in progress. Please w8'})
 
     # Get all the URLs from MongoDB
@@ -488,9 +499,9 @@ def parse_urls():
             )
 
         # Calculate progress and emit progress update
-        progress = int((parsed_urls / total_urls) * 100)
-        socketio.emit('progress_update', {'progress': progress})
-        socketio.sleep(0.5)
+        progress = int((parsed_urls / total_urls) * 100) 
+        socketio.emit('progress_update', {'progress': progress, 'category': "progress_update"})
+        socketio.sleep(0.5) 
 
     is_parsing = False 
 
@@ -502,10 +513,62 @@ def parse_urls():
     )
 
     # Emit a message to indicate that all URLs are parsed successfully
-    socketio.emit('progress_update', {'message': 'All URLs parsed successfully.'})
+    send_telegram_message("All URLs parsed successfully.")
+    socketio.emit('message', {'message': 'All URLs parsed successfully.'})
 
     # Return a JSON response with a success message
     return jsonify({'message': 'All URLs parsed successfully.'})
+
+
+@socketio.on('selected_parse')
+def handle_selected_parse(data):
+    try:
+        # Check if the emitted data contains the 'arrData' field
+        if 'arrData' in data:
+            arr_data = data['arrData']
+            parsed_urls = 0
+            # Process the received data as needed
+            print("Selected items:", arr_data)
+            total_urls_selected = len(arr_data)
+            # Perform the parsing with the received data
+            # Call your parsing function here and pass arr_data as needed
+
+            for index, item_data in enumerate(arr_data):
+                item_id = str(item_data['_id']['$oid'])
+                link = item_data['WSlink']
+
+                try:
+                    # Perform parsing using the parser_solo function
+                    parsed_data = parser_solo(link)
+
+                    # Update the document in MongoDB with the parsed data
+                    collection.update_one(
+                        {'_id': ObjectId(item_id)},
+                        {'$set': {'Price': parsed_data[0], 'StockAviability': parsed_data[1], 'FreeShippingWithPlus' : parsed_data[2]}}
+                    )
+
+                    # Increment the parsed_urls counter
+                    parsed_urls += 1
+
+                except Exception as e: 
+                    traceback.print_exc()  # Add this line to print the exception traceback
+
+                    # Handle the exception here, for example, set the "DeliveryPrice" field to an error value
+                    print(f"Error parsing item {item_id}: {e}")
+
+                progress = int((parsed_urls / total_urls_selected) * 100)
+                socketio.emit('progress_update_selected', {'progress': progress, 'category': "progress_update_selected"})  
+                socketio.sleep(0.5)
+
+            # Emit a message or result back to the frontend if needed
+            send_telegram_message("Parse Selected Prices: Parsing completed successfully.")
+            socketio.emit('message', {'message': 'Parsing completed successfully'})
+        else:
+            print("Invalid data format for 'selected_parse'")
+    except Exception as e:
+        print(f"Error processing 'selected_parse' event: {e}")
+        socketio.emit('message', {'error': str(e)})
+
 
 
 @app.route('/all_search', methods=['GET', 'POST'])
@@ -534,24 +597,28 @@ def get_all_search():
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)})
     
-
-# @app.route('/delivery_all_parse', methods=['GET'])
-@socketio.on('delivery_all_parse')
-def start_parsing(data):
+@socketio.on('delivery_all_parse') 
+def start_parsing():
     global is_parsing_delivery
- 
-    if is_parsing_delivery == True:
+
+    if is_parsing_delivery:
         # Redirect to the main page with a message that parsing is ongoing
-        socketio.emit('message',{'message': 'Parsing delivery in progress. Please wait.'})
-        return jsonify({'message': 'Parsing delivery in progress. Please wait.'}) 
+        socketio.emit('message', {'message': 'Parsing delivery in progress. Please wait.'})
+        return jsonify({'message': 'Parsing delivery in progress. Please wait.'})
+
     # Get all the URLs from MongoDB
-    urls = collection.find() 
+    urls = collection.find()
+
     # Calculate the total number of URLs to parse
-    total_urls = count()  
-    # Start parsing in a separate thread 
-    socketio.start_background_task(target=perform_parsing_async, urls=urls, total_urls=total_urls) 
+    total_urls = count()
+
+    # Start parsing in a separate thread
+    # parse_thread = threading.Thread(target=perform_parsing_async, args=(urls, total_urls))
+    # parse_thread.start()
+    socketio.start_background_task(target=perform_parsing_async, urls=urls, total_urls=total_urls)
+
     # Return a JSON response with a success message
-    socketio.emit('progress_delivery_update', {'start': True})
+    socketio.emit('message', {'message': 'Parsing delivery started successfully.'})
     return jsonify({'message': 'Parsing delivery started successfully.'})
 
 def perform_parsing_async(urls, total_urls):
@@ -603,14 +670,9 @@ def perform_parsing_async(urls, total_urls):
 
         # Calculate progress and emit progress update
         progress_delivery = int((parsed_urls / total_urls) * 100)
-        # progress_callback(progress_delivery)
-        print(f"=======================================")
-        print(f"Sent progress: {progress_delivery}")
-        print(f"Sent parsed_urls: {parsed_urls}")
-        print(f"Sent total_urls: {total_urls}")
-        print(f"=======================================") 
-        socketio.emit('progress_delivery_update', {'progress': progress_delivery, 'category': "progress_delivery_update"})
-        # socketio.sleep(0.5)
+        socketio.emit('progress_delivery_update', {'progress': progress_delivery, 'category': "progress_delivery_update"}) 
+        socketio.sleep(0.5)
+        print(progress_delivery)
 
     is_parsing_delivery = False 
 
@@ -622,12 +684,75 @@ def perform_parsing_async(urls, total_urls):
     )
 
     # Emit a message to indicate that all URLs are parsed successfully
-    # progress_callback({'message': 'All URLs delivery price parsed successfully'})
-    socketio.emit('progress_delivery_update', {'message': 'All URLs delivery price parsed successfully.'})
+    send_telegram_message("All URLs delivery price parsed successfully.")
+    socketio.emit('message', {'message': 'All URLs delivery price parsed successfully.'})
 
- 
+@socketio.on('delivery_selected_parse')
+def collect_and_start_delivery(data):
+    try:
+        # Check if the emitted data contains the 'arrData' field
+        if 'arrData' in data:
+            arr_data = data['arrData']
+            
+            # Process the received data as needed
+            print("Selected items:", arr_data)
+            total_urls_selected = len(arr_data)
+            print(total_urls_selected)
+            # Perform the delivery selected parsing with the received data
+            # Call your parsing function here and pass arr_data as needed
+            parsed_urls = 0
+            for index, data_item in enumerate(arr_data):
+                url_id = str(data_item['_id']['$oid'])
+                link = data_item['ThrLink']
 
- 
+                try:
+                    # Perform parsing using the parsing function
+                    parsed_data = perform_add_to_cart_view_cart_calculate_and_retrieve_price(link, 90001)
+                    # Increment the parsed_urls counter
+                    parsed_urls += 1
+                    if parsed_data[0] != 'Out':
+
+                        # Update the document in MongoDB with the parsed data
+                        collection.update_one(
+                            {'_id': ObjectId(url_id)},
+                            {'$set': {'DeliveryPriceTHR90001': parsed_data[0]}}
+                        )
+
+                        # Perform parsing for the other zip code (10001)
+                        parsed_data_10001 = perform_add_to_cart_view_cart_calculate_and_retrieve_price(link, 10001)
+                        
+                        # Update the document in MongoDB with the parsed data for 10001
+                        collection.update_one(
+                            {'_id': ObjectId(url_id)},
+                            {'$set': {'DeliveryPriceTHR10001': parsed_data_10001[0]}}
+                        )
+                    
+                except Exception as e:
+                    traceback.print_exc()  # Add this line to print the exception traceback
+
+                    # Handle the exception here, for example, set the "Stock" field to "Out"
+                    collection.update_one(
+                        {'_id': ObjectId(url_id)},
+                        {'$set': {'DeliveryPriceTHR90001': '0'}}
+                    )
+
+                    collection.update_one(
+                        {'_id': ObjectId(url_id)},
+                        {'$set': {'DeliveryPriceTHR10001': '0'}}
+                    )
+                progress_delivery = int((parsed_urls / total_urls_selected) * 100) 
+                socketio.emit('progress_delivery_update_selected', {'progress': progress_delivery, 'category': "progress_delivery_update_selected"})
+                socketio.sleep(0.5)
+                print(progress_delivery)
+                # Emit a message or result back to the frontend if needed 
+            send_telegram_message("Parse Selected Prices: Parsing completed successfully.")
+            socketio.emit('message', {'message': 'Parsing completed successfully'})
+        else:
+            print("Invalid data format for 'delivery_selected_parse'")
+    except Exception as e:
+        print(f"Error processing 'delivery_selected_parse' event: {e}")
+        socketio.emit('message', {'error': str(e)})
+
 
 # @app.route('/test_progress', methods=['GET', 'POST'])
 @socketio.on('TestProgress1')
@@ -636,6 +761,8 @@ def start_test_progress_1(data):
     for progress in range(101):
         socketio.emit('progress_1', {'progress': progress, 'category': "progress_1"})
         socketio.sleep(0.1)
+
+    send_telegram_message("Progress updates have finished.")
     return jsonify({'message': 'Progress updates finished for TestProgress1'})
 
 @socketio.on('TestProgress2')
@@ -655,6 +782,10 @@ def start_test_progress_3(data):
     return jsonify({'message': 'Progress updates finished for TestProgress3'})
 
 
+def send_telegram_message(message):
+    # Ваш chat_id в Telegram (можно получить, написав боту @userinfobot)  
+    chat_id = '-1002093650751'
+    bot.send_message(chat_id, message)
 
 if __name__ == '__main__':
     socketio.run(app,allow_unsafe_werkzeug=True , debug=True, host="127.0.0.1", port=int(os.environ.get("PORT", 8080)))

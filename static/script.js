@@ -23,7 +23,11 @@ import progress_update from "./Socket/components/progress_update.js"
  
 
 socket.on("message", async (res) => {   
-    alert(res);
+    if(res.message){
+        alert(res.message);
+    }else if(res.error){
+        alert(res.error);
+    }
     console.log(res);
 });
 
@@ -50,11 +54,14 @@ AddProductForm();
 DeleteSelectedButton();  
 logoAnimate();
 
-//socket get pregress
-progress_update(socket, "progress_delivery_update");
-progress_update(socket, "progress_1");
-progress_update(socket, "progress_2");
-progress_update(socket, "progress_3");
+//socket get pregress (1: socket, 2: url 3: Text Parser)
+progress_update(socket, "progress_delivery_update","Parse All Delivery Prices");
+progress_update(socket, "progress_delivery_update_selected","Parse Selected Delivery Prices");
+progress_update(socket, "progress_update_selected","Parse Selected Prices");
+progress_update(socket, "progress_update","Parse All Prices");
+progress_update(socket, "progress_1", "progress_1");
+progress_update(socket, "progress_2", "progress_2");
+progress_update(socket, "progress_3", "progress_3");
 
 
 // Refresh по классу. Нужно только добавить на кнопку. thisBtnRefresh
@@ -107,4 +114,4 @@ document.querySelector("#TestProgress3").addEventListener("click", () => {
       console.log(res);
     });
 });  
- 
+  

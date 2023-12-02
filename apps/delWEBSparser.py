@@ -30,6 +30,7 @@ def parser_solo(url):
     response = requests.get(url)
     stock = "Out"
     price = "0"
+    plus_text = "No"
 
     if response.status_code == 200:
         soup = BeautifulSoup(response.content, "html.parser")
@@ -80,7 +81,7 @@ def parser_solo(url):
             price = str(float(price) * minimum_buy)
 
         small_plus_text =soup.find('a', {'href': '/plus/', 'class': 'small plus-text'})
-        plus_text - 'No'
+
         if small_plus_text:
             plus_text = 'Yes'
          
