@@ -6,10 +6,10 @@ function logoAnimate() {
     // Проверка, прошло ли 7 часов с момента последнего выполнения
     const lastExecutionTime = localStorage.getItem('lastExecutionTime');
     const currentTime = new Date().getTime();
-    const sevenHoursInMilliseconds = 7 * 60 * 60 * 1000; // 7 часов в миллисекундах
+    const oneHourInMilliseconds = 1 * 60 * 60 * 1000;
     // const sevenHoursInMilliseconds = 30 * 1000; // 30сек
   
-    if (!lastExecutionTime || currentTime - lastExecutionTime >= sevenHoursInMilliseconds) {
+    if (!lastExecutionTime || currentTime - lastExecutionTime >= oneHourInMilliseconds) {
       // Добавление класса .SVGanimate
       animFolder.setAttribute('data-set', 'SVGanim');
       animText.setAttribute('data-set', 'SVGanim');

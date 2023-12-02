@@ -1,7 +1,5 @@
 from flask import Flask, render_template, request, jsonify,  redirect, session, url_for,send_file, make_response
 from flask_socketio import SocketIO, emit
-from flask import Flask, render_template, request, jsonify,  redirect, session, url_for,send_file, make_response
-from flask_socketio import SocketIO, emit
 from pymongo import MongoClient
 from bson import ObjectId, json_util
 from bcrypt import checkpw
@@ -79,8 +77,6 @@ client = MongoClient(mongo_uri)
 db = client[database_name]
 collection = db[collection_name]
 parsingdate = db[parsingdate_name]
-
- 
 
 
 @app.before_request
@@ -366,8 +362,7 @@ def update_product():
     }
 
     # Update the product in the MongoDB collection
-    collection.update_one({'_id': ObjectId(product_id)}, {'$set': new_data})
-
+    collection.update_one({'_id': ObjectId(product_id)}, {'$set': new_data}) 
     return jsonify({'success': True, 'message': 'Product updated successfully'})
 
 
@@ -756,39 +751,20 @@ def collect_and_start_delivery(data):
         socketio.emit('message', {'error': str(e)})
 
 
-# @app.route('/test_progress', methods=['GET', 'POST'])
-@socketio.on('TestProgress1')
-def start_test_progress_1(data):
-    # Send progress updates synchronously
-    for progress in range(101):
-        socketio.emit('progress_1', {'progress': progress, 'category': "progress_1"})
-        socketio.sleep(0.1)
 
-    send_telegram_message("Progress updates have finished.")
-    return jsonify({'message': 'Progress updates finished for TestProgress1'})
+@socketio.on('connect')
+def handle_connect():
+    print('Client connected')
+    document1 = parsingdate.find_one({'name': 'parsing_status'})
+    document2 = parsingdate.find_one({'name': 'parsing_status_delivery'})
+    last_parsed_timestamp1 = document1['last_parsed_timestamp']
+    last_parsed_timestamp2 = document2['last_parsed_timestamp']
+    socketio.emit('ConnectionMessage', [{'data': f'Last time prices was parsed {last_parsed_timestamp1}'},{'data': f'Last time delivery prices was parsed{last_parsed_timestamp2}'}])
+    print('=========================')
+    print(last_parsed_timestamp1, last_parsed_timestamp2)
+     
 
-@socketio.on('TestProgress2')
-def start_test_progress_2(data):
-    # Send progress updates synchronously
-    for progress in range(101):
-        socketio.emit('progress_2', {'progress': progress, 'category': "progress_2"})
-        socketio.sleep(0.5)
-    return jsonify({'message': 'Progress updates finished for TestProgress2'})
-
-@socketio.on('TestProgress3')
-def start_test_progress_3(data):
-    # Send progress updates synchronously 
-    for progress in range(101):
-        socketio.emit('progress_3', {'progress': progress, 'category': "progress_3"})
-        socketio.sleep(1)
-    return jsonify({'message': 'Progress updates finished for TestProgress3'})
-
-
-def send_telegram_message(message):
-    # Ваш chat_id в Telegram (можно получить, написав боту @userinfobot)  
-    chat_id = '-1002093650751'
-    bot.send_message(chat_id, message)
-
+ 
 if __name__ == '__main__':
     socketio.run(app,allow_unsafe_werkzeug=True , debug=True, host="127.0.0.1", port=int(os.environ.get("PORT", 8080)))
 

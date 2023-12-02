@@ -11,11 +11,13 @@ async function CreateTable(data , ArrKeys, socket) {
   OldTableHeaders(data, NewTableHeaders, ArrKeys,ObjCustomCheck)
   OldTable(data, newTable, ArrKeys,ObjCustomCheck);
   ModalWindow();
-  ParseSelected(data, socket);
+  await ParseSelected(data, socket);
 }
 function OldTableHeaders(data, NewTableHeaders , ArrKeys,ObjCustomCheck) {
   NewTableHeaders.insertAdjacentHTML("beforeend",`
-  <th scope="col" ${ObjCustomCheck && ObjCustomCheck["checkbox"] === undefined ?"" : `data-display=${ObjCustomCheck && ObjCustomCheck["checkbox"].checked}`} data-column="checkbox"></th>
+  <th scope="col" ${ObjCustomCheck && ObjCustomCheck["checkbox"] === undefined ?"" : `data-display=${ObjCustomCheck && ObjCustomCheck["checkbox"].checked}`} data-column="checkbox">
+    <button class="noStyleBtn CheckAll"><strong>All</strong></button>
+  </th>
   <th scope="col" ${ObjCustomCheck && ObjCustomCheck["index"] === undefined ?"" : `data-display=${ObjCustomCheck && ObjCustomCheck["index"].checked}`} data-column="index" title="#">#</th>  
   `)
   

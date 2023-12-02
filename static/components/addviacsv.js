@@ -13,8 +13,7 @@ export default function addviascsv(data, ArrKeys) {
             contentModalAddViacsv.innerHTML = "";
             titleModalAddViacsv.textContent = `${title} id: ${thisTd.title}`;
 
-            let e = data.items[Number(thisTd.title)];
-            console.log(e);
+            let e = data.items[Number(thisTd.title)]; 
             contentModalAddViacsv.insertAdjacentHTML("beforeend", `
                 <div class="d-flex justify-content-between col-12 flex-wrap"> 
                 ${ArrKeys.map((key) => `
@@ -34,7 +33,7 @@ export default function addviascsv(data, ArrKeys) {
                 });
             }); 
              
-            POSTaddviascsv.addEventListener("click", () => {console.log(e);
+            POSTaddviascsv.addEventListener("click", () => {
                 let id = data.items[Number(thisTd.title)]._id;  
                 if( data.items[Number(thisTd.title)]._id.$oid === undefined){
                     e._id={$oid:id}; 

@@ -19,17 +19,9 @@ import logoAnimate from "./components/logoAnimate.js";
 import SocketGet from "./Socket/modules/SocketGet.js";
 import SocketPost from "./Socket/modules/SocketPost.js";
 import progress_update from "./Socket/components/progress_update.js"
- 
- 
-
-socket.on("message", async (res) => {   
-    if(res.message){
-        alert(res.message);
-    }else if(res.error){
-        alert(res.error);
-    }
-    console.log(res);
-});
+import Message from "./Socket/components/Message.js";
+import Connection from "./Socket/components/Connection.js";
+  
 
 document.querySelector("#btnCollapse").addEventListener("click",()=>{
     document.querySelector(".navbar-collapse").classList.toggle("show");
@@ -58,10 +50,10 @@ logoAnimate();
 progress_update(socket, "progress_delivery_update","Parse All Delivery Prices");
 progress_update(socket, "progress_delivery_update_selected","Parse Selected Delivery Prices");
 progress_update(socket, "progress_update_selected","Parse Selected Prices");
-progress_update(socket, "progress_update","Parse All Prices");
-progress_update(socket, "progress_1", "progress_1");
-progress_update(socket, "progress_2", "progress_2");
-progress_update(socket, "progress_3", "progress_3");
+progress_update(socket, "progress_update","Parse All Prices"); 
+Message(socket);
+Connection(socket);
+ 
 
 
 // Refresh по классу. Нужно только добавить на кнопку. thisBtnRefresh
@@ -98,20 +90,4 @@ document.querySelector("#parse-all-delivery-prices-button").addEventListener("cl
       console.log(res);
     });
 });  
-
-document.querySelector("#TestProgress1").addEventListener("click", () => {    
-    SocketPost(socket,"TestProgress1").then((res)=>{
-      console.log(res);
-    });
-});  
-document.querySelector("#TestProgress2").addEventListener("click", () => {    
-    SocketPost(socket,"TestProgress2").then((res)=>{
-      console.log(res);
-    });
-});  
-document.querySelector("#TestProgress3").addEventListener("click", () => {    
-    SocketPost(socket,"TestProgress3").then((res)=>{
-      console.log(res);
-    });
-});  
-  
+ 

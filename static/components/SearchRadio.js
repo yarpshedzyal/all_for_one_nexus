@@ -14,7 +14,7 @@ function SearchRadio(ArrKeys) {
       RadioSearch.forEach((e) => {
         if (e.checked === true) {
           // На случай, если обработка Search будет на стороне сервера
-          if(InpSearch.value.trim() !== ""){
+          // if(InpSearch.value.trim() !== ""){
             FETCH("/all_search" ,{value:InpSearch.value, category: e.title}).then(async (data)=>{
               console.log(data);
               if(data.items.length === 0){
@@ -24,9 +24,9 @@ function SearchRadio(ArrKeys) {
               await  addviascsv(data , ArrKeys);
               }  
             }); 
-          }else{
+          // }else{
             InpSearch.value = "";
-          }
+          // }
         }
       })
     });
