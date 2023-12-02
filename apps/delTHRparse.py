@@ -115,4 +115,4 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url, zipindex):
         return [cleaned_price, zipindex]
 
 
-print(perform_add_to_cart_view_cart_calculate_and_retrieve_price('https://www.therestaurantstore.com/items/452809','90001'))
+# print(perform_add_to_cart_view_cart_calculate_and_retrieve_price('https://www.therestaurantstore.com/items/452809','90001'))
