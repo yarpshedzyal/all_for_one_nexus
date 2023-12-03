@@ -9,6 +9,7 @@ add_to_cart_button_selector = '#item-page > div > div:nth-child(2) > div > div.p
 lift_gate_selector = '#cart > div > div:nth-child(2) > div.cart-footer > div > div.box > div.block.deliveryopts > div > div.left > label > input'
 add_to_cart_modal_selector = '#main > div:nth-child(1) > div > div'
 emptyy_cart_selector = '#cart > div > div:nth-child(2) > div.placehold-message'
+change_index_button_selector = '#zipcode-change-button'
 
 def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url, zipindex):
     cleaned_price = None  # Initialize with a default value
@@ -69,10 +70,13 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url, zipindex):
             emptyy_cart = page.locator(emptyy_cart_selector)
             if emptyy_cart.is_visible():
                 print("cart empty")
+            
 
+            change_index_button = page.locator(change_index_button_selector)
+            change_index_button.click()
             # Find and fill in the zip code field
             zip_code_field_selector = '#new-zipcode'
-            page.wait_for_selector(zip_code_field_selector , timeout=60000)
+            page.wait_for_selector(zip_code_field_selector)
             zip_code_field = page.locator(zip_code_field_selector)
 
             # Replace '90001' with the zip code you want to input
