@@ -36,7 +36,7 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url, zipindex):
             add_to_cart_button.click()
 
             # Wait for some time to allow any JavaScript code triggered by the click to execute
-            page.wait_for_timeout(random.uniform(10000))  # Adjust the timeout based on your specific case
+            page.wait_for_timeout(random.uniform(10000,11000))  # Adjust the timeout based on your specific case
 
             double_button = page.locator(double_button_selector)
 
