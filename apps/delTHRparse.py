@@ -8,6 +8,7 @@ out_of_stock_selector = '#item-page > div > div:nth-child(2) > div > div.product
 add_to_cart_button_selector = '#item-page > div > div:nth-child(2) > div > div.product-page > div > div:nth-child(3) > div:nth-child(2) > div.add-to-cart-button > div > div.my-6 > div > button'
 lift_gate_selector = '#cart > div > div:nth-child(2) > div.cart-footer > div > div.box > div.block.deliveryopts > div > div.left > label > input'
 add_to_cart_modal_selector = '#main > div:nth-child(1) > div > div'
+emptyy_cart_selector = '#cart > div > div:nth-child(2) > div.placehold-message'
 
 def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url, zipindex):
     cleaned_price = None  # Initialize with a default value
@@ -65,6 +66,7 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url, zipindex):
 
             # Print the URL of the page after clicking the "Cart" link
             print("URL after Cart link click:", current_url)
+            emptyy_cart = print(page.text_content(emptyy_cart_selector))
 
             # Find and fill in the zip code field
             zip_code_field_selector = '#new-zipcode'
