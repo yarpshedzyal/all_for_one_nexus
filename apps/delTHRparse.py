@@ -66,7 +66,9 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url, zipindex):
 
             # Print the URL of the page after clicking the "Cart" link
             print("URL after Cart link click:", current_url)
-            emptyy_cart = print(page.text_content(emptyy_cart_selector))
+            emptyy_cart = page.locator(emptyy_cart_selector)
+            if emptyy_cart.is_visible():
+                print("cart empty")
 
             # Find and fill in the zip code field
             zip_code_field_selector = '#new-zipcode'
