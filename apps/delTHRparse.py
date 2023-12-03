@@ -7,6 +7,7 @@ max_timeout = 3000
 out_of_stock_selector = '#item-page > div > div:nth-child(2) > div > div.product-page > div > div:nth-child(3) > div:nth-child(1) > div > div > div.flex.flex-wrap.justify-center.space-x-2.float-left.mb-2 > span.bg-red-500.mb-2.rounded.text-light.px-4.py-1.inline-block.text-sm'
 add_to_cart_button_selector = '#item-page > div > div:nth-child(2) > div > div.product-page > div > div:nth-child(3) > div:nth-child(2) > div.add-to-cart-button > div > div.my-6 > div > button'
 lift_gate_selector = '#cart > div > div:nth-child(2) > div.cart-footer > div > div.box > div.block.deliveryopts > div > div.left > label > input'
+add_to_cart_modal_selector = '#main > div:nth-child(1) > div > div'
 
 def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url, zipindex):
     cleaned_price = None  # Initialize with a default value
@@ -35,7 +36,7 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url, zipindex):
             add_to_cart_button.click()
 
             # Wait for some time to allow any JavaScript code triggered by the click to execute
-            page.wait_for_timeout(random.uniform(2000, 3000))  # Adjust the timeout based on your specific case
+            page.wait_for_timeout(random.uniform(10000))  # Adjust the timeout based on your specific case
 
             double_button = page.locator(double_button_selector)
 
