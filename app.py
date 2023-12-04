@@ -759,7 +759,7 @@ def handle_connect():
     document2 = parsingdate.find_one({'name': 'parsing_status_delivery'})
     last_parsed_timestamp1 = document1['last_parsed_timestamp']
     last_parsed_timestamp2 = document2['last_parsed_timestamp']
-    socketio.emit('ConnectionMessage', [{'data': f'Last time prices was parsed {last_parsed_timestamp1}'},{'data': f'Last time delivery prices was parsed{last_parsed_timestamp2}'}])
+    socketio.emit('ConnectionMessage', [{'data': f'Last time prices was parsed {last_parsed_timestamp1}'},{'data': f'Last time delivery prices was parsed {last_parsed_timestamp2}'}])
     print('=========================')
     print(last_parsed_timestamp1, last_parsed_timestamp2)
      
