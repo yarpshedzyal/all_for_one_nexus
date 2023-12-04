@@ -7,18 +7,22 @@ max_timeout = 3000
 out_of_stock_selector = '#item-page > div > div:nth-child(2) > div > div.product-page > div > div:nth-child(3) > div:nth-child(1) > div > div > div.flex.flex-wrap.justify-center.space-x-2.float-left.mb-2 > span.bg-red-500.mb-2.rounded.text-light.px-4.py-1.inline-block.text-sm'
 add_to_cart_button_selector = '#item-page > div > div:nth-child(2) > div > div.product-page > div > div:nth-child(3) > div:nth-child(2) > div.add-to-cart-button > div > div.my-6 > div > button'
 lift_gate_selector = '#cart > div > div:nth-child(2) > div.cart-footer > div > div.box > div.block.deliveryopts > div > div.left > label > input'
+add_to_cart_modal_selector = '#main > div:nth-child(1) > div > div'
+emptyy_cart_selector = '#cart > div > div:nth-child(2) > div.placehold-message'
+change_index_button_selector = '#zipcode-change-button'
 
 def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url, zipindex):
     cleaned_price = None  # Initialize with a default value
     with sync_playwright() as p:
         browser = p.chromium.launch()
-        page = browser.new_page()
+        context = browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
+        page = context.new_page()
 
         # Navigate to the specified URL
         page.goto(url)
         print('came to url: ', url)
 
-        page.wait_for_timeout(random.uniform(2000, 3000))
+        page.wait_for_timeout(random.uniform(1000, 1500))
         out_of_stock_element = page.locator(out_of_stock_selector)
         if out_of_stock_element.is_visible():
             print("Product is out of stock. Skipping...")
@@ -34,14 +38,14 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url, zipindex):
             add_to_cart_button.click()
 
             # Wait for some time to allow any JavaScript code triggered by the click to execute
-            page.wait_for_timeout(random.uniform(2000, 3000))  # Adjust the timeout based on your specific case
+            page.wait_for_timeout(random.uniform(1000,1500))  # Adjust the timeout based on your specific case
 
             double_button = page.locator(double_button_selector)
 
             # Try to click the double button (modal), handle exception if not clickable
             try:
                 double_button.click(timeout=max_timeout)
-                page.wait_for_timeout(random.uniform(2000, 3000))
+                page.wait_for_timeout(random.uniform(1000, 1500))
             except Exception as e:
                 print(f"Failed to click the double button: {e}")
 
@@ -49,23 +53,30 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url, zipindex):
 
             # Print a message after clicking the "Add to Cart" button
             print("Add to Cart button clicked!")
-
+            page.wait_for_timeout(random.uniform(1000, 1500))
             # Click on the "Cart" link
             cart_link_selector = '.flex.items-center.justify-center.w-24.h-28.bg-gray-200'
             cart_link = page.locator(cart_link_selector)
             cart_link.click()
 
             # Wait for some time to allow any JavaScript code triggered by the click to execute
-            page.wait_for_timeout(random.uniform(2000, 3000))  # Adjust the timeout based on your specific case
+            page.wait_for_timeout(random.uniform(1000, 1500))  # Adjust the timeout based on your specific case
 
             # Get the current URL of the page
             current_url = page.url
 
             # Print the URL of the page after clicking the "Cart" link
             print("URL after Cart link click:", current_url)
+            emptyy_cart = page.locator(emptyy_cart_selector)
+            if emptyy_cart.is_visible():
+                print("cart empty")
+            
 
+            change_index_button = page.locator(change_index_button_selector)
+            change_index_button.click()
             # Find and fill in the zip code field
             zip_code_field_selector = '#new-zipcode'
+            page.wait_for_selector(zip_code_field_selector)
             zip_code_field = page.locator(zip_code_field_selector)
 
             # Replace '90001' with the zip code you want to input
@@ -73,7 +84,7 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url, zipindex):
             zip_code_field.type(zip_code_to_input)
 
             # Wait for some time to allow any JavaScript code triggered by the input to execute
-            page.wait_for_timeout(random.uniform(2000, 3000))  # Adjust the timeout based on your specific case
+            page.wait_for_timeout(random.uniform(1000, 1500))  # Adjust the timeout based on your specific case
 
             # Print a message after typing into the zip code field
             print(f"Typed '{zip_code_to_input}' into the zip code field.")
@@ -84,7 +95,7 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url, zipindex):
             calculate_button.click()
 
             # Wait for some time to allow any JavaScript code triggered by the click to execute
-            page.wait_for_timeout(random.uniform(2000, 3000))  # Adjust the timeout based on your specific case
+            page.wait_for_timeout(max_timeout)  # Adjust the timeout based on your specific case
 
             # Print a message after clicking the "Calculate" button
             print("Calculate button clicked!")

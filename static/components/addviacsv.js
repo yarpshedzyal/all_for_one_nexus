@@ -11,7 +11,7 @@ export default function addviascsv(data, ArrKeys) {
     indextd.forEach((thisTd) => {
         thisTd.addEventListener("click", () => {
             contentModalAddViacsv.innerHTML = "";
-            titleModalAddViacsv.textContent = `${title} id: ${thisTd.title}`;
+            titleModalAddViacsv.textContent = `${title} id: ${Number(thisTd.title) +1}`;
 
             let e = data.items[Number(thisTd.title)]; 
             contentModalAddViacsv.insertAdjacentHTML("beforeend", `

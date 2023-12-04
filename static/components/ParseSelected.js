@@ -31,17 +31,25 @@ function ParseSelected(data) {
     let ParseSelectedDeliveryPrices = document.querySelector("#parse-selected-delivery-prices-button");
   
     let setData = new Set();
-    ParseSelectedPrices.addEventListener("click", () => {
+    ParseSelectedPrices.addEventListener("click", () => { 
       setData.clear();
       ForInpSelected()
       let arrData = Array.from(setData);
       SocketPost(socket, "selected_parse", { arrData });
+      console.log(arrData);
+      if(arrData.length !== 0){
+        ParseSelectedPrices.disabled = true;
+      } 
     }, false);
     ParseSelectedDeliveryPrices.addEventListener("click", () => {
       setData.clear();
       ForInpSelected()
       let arrData = Array.from(setData);
       SocketPost(socket, "delivery_selected_parse", { arrData });
+      if(arrData.length !== 0){
+        ParseSelectedDeliveryPrices.disabled = true;
+      }
+       
     }, false);
 
 

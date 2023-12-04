@@ -1,7 +1,5 @@
 from flask import Flask, render_template, request, jsonify,  redirect, session, url_for,send_file, make_response
 from flask_socketio import SocketIO, emit
-from flask import Flask, render_template, request, jsonify,  redirect, session, url_for,send_file, make_response
-from flask_socketio import SocketIO, emit
 from pymongo import MongoClient
 from bson import ObjectId, json_util
 from bcrypt import checkpw
@@ -79,8 +77,6 @@ client = MongoClient(mongo_uri)
 db = client[database_name]
 collection = db[collection_name]
 parsingdate = db[parsingdate_name]
-
- 
 
 
 @app.before_request
@@ -456,7 +452,7 @@ def get_all_items():
 @socketio.on('parse_all')
 def parse_urls(message):
     global is_parsing
-
+    socketio.emit('message', {'message': 'Wait, the parser will start now..'}) 
     if is_parsing:
         # Redirect to the main page with a message that parsing is ongoing
         socketio.emit('message', {'message': 'Parsing in progress. Please w8'})
@@ -474,9 +470,9 @@ def parse_urls(message):
     is_parsing = True
 
     for index, url in enumerate(urls):
+        socketio.emit('parse_all_started', {'disabled': True}) 
         url_id = str(url['_id'])
-        link = url['WSlink']
-
+        link = url['WSlink'] 
         try:
             # Perform parsing using the parser_solo function
             parsed_data = parser_solo(link)
@@ -514,6 +510,7 @@ def parse_urls(message):
     )
 
     # Emit a message to indicate that all URLs are parsed successfully
+    socketio.emit('parse_all_started', {'disabled': False})  
     send_telegram_message("All URLs parsed successfully.")
     socketio.emit('message', {'message': 'All URLs parsed successfully.'})
 
@@ -523,6 +520,7 @@ def parse_urls(message):
 
 @socketio.on('selected_parse')
 def handle_selected_parse(data):
+    socketio.emit('message', {'message': 'Wait, the parser will start now..'})  
     try:
         # Check if the emitted data contains the 'arrData' field
         if 'arrData' in data:
@@ -558,10 +556,12 @@ def handle_selected_parse(data):
                     print(f"Error parsing item {item_id}: {e}")
 
                 progress = int((parsed_urls / total_urls_selected) * 100)
-                socketio.emit('progress_update_selected', {'progress': progress, 'category': "progress_update_selected"})  
+                socketio.emit('progress_update_selected', {'progress': progress, 'category': "progress_update_selected"})    
                 socketio.sleep(0.5)
+                socketio.emit('selected_parse_started', {'disabled': True})
 
             # Emit a message or result back to the frontend if needed
+            socketio.emit('selected_parse_started', {'disabled': False})  
             send_telegram_message("Parse Selected Prices: Parsing completed successfully.")
             socketio.emit('message', {'message': 'Parsing completed successfully'})
         else:
@@ -602,6 +602,8 @@ def get_all_search():
 def start_parsing(message):
     global is_parsing_delivery
 
+    socketio.emit('message', {'message': 'Wait, the parser will start now..'}) 
+
     if is_parsing_delivery:
         # Redirect to the main page with a message that parsing is ongoing
         socketio.emit('message', {'message': 'Parsing delivery in progress. Please wait.'})
@@ -616,19 +618,17 @@ def start_parsing(message):
     # Start parsing in a separate thread
     # parse_thread = threading.Thread(target=perform_parsing_async, args=(urls, total_urls))
     # parse_thread.start()
-    socketio.start_background_task(target=perform_parsing_async, urls=urls, total_urls=total_urls)
-
-    # Return a JSON response with a success message
-    socketio.emit('message', {'message': 'Parsing delivery started successfully.'})
+    socketio.start_background_task(target=perform_parsing_async, urls=urls, total_urls=total_urls) 
+    # Return a JSON response with a success message 
     return jsonify({'message': 'Parsing delivery started successfully.'})
 
 def perform_parsing_async(urls, total_urls):
     global is_parsing_delivery
 
     parsed_urls = 0
-    is_parsing_delivery = True
-
+    is_parsing_delivery = True 
     for index, url in enumerate(urls):
+        socketio.emit('delivery_all_parse_started', {'disabled': True}) 
         url_id = str(url['_id'])
         link = url['ThrLink']
 
@@ -670,8 +670,8 @@ def perform_parsing_async(urls, total_urls):
             )
 
         # Calculate progress and emit progress update
-        progress_delivery = int((parsed_urls / total_urls) * 100)
-        socketio.emit('progress_delivery_update', {'progress': progress_delivery, 'category': "progress_delivery_update"}) 
+        progress_delivery = int((parsed_urls / total_urls) * 100) 
+        socketio.emit('progress_delivery_update', {'progress': progress_delivery, 'category': "progress_delivery_update"})  
         socketio.sleep(0.5)
         print(progress_delivery)
 
@@ -686,10 +686,12 @@ def perform_parsing_async(urls, total_urls):
 
     # Emit a message to indicate that all URLs are parsed successfully
     send_telegram_message("All URLs delivery price parsed successfully.")
+    socketio.emit('delivery_all_parse_started', {'disabled': False}) 
     socketio.emit('message', {'message': 'All URLs delivery price parsed successfully.'})
 
 @socketio.on('delivery_selected_parse')
-def collect_and_start_delivery(data):
+def collect_and_start_delivery(data): 
+    socketio.emit('message', {'message': 'Wait, the parser will start now..'})  
     try:
         # Check if the emitted data contains the 'arrData' field
         if 'arrData' in data:
@@ -742,11 +744,13 @@ def collect_and_start_delivery(data):
                         {'$set': {'DeliveryPriceTHR10001': '0'}}
                     )
                 progress_delivery = int((parsed_urls / total_urls_selected) * 100) 
-                socketio.emit('progress_delivery_update_selected', {'progress': progress_delivery, 'category': "progress_delivery_update_selected"})
+                socketio.emit('progress_delivery_update_selected', {'progress': progress_delivery, 'category': "progress_delivery_update_selected"}) 
                 socketio.sleep(0.5)
+                socketio.emit('delivery_selected_parse_started', {'disabled': True}) 
                 print(progress_delivery)
                 # Emit a message or result back to the frontend if needed 
-            send_telegram_message("Parse Selected Prices: Parsing completed successfully.")
+            socketio.emit('delivery_selected_parse_started', {'disabled': False}) 
+            send_telegram_message("Parse Selected Prices: Parsing completed successfully.") 
             socketio.emit('message', {'message': 'Parsing completed successfully'})
         else:
             print("Invalid data format for 'delivery_selected_parse'")
@@ -759,10 +763,23 @@ def collect_and_start_delivery(data):
 @socketio.on('connect')
 def handle_connect():
     print('Client connected')
-    socketio.emit('ConnectionMessage', {'data': 'Welcome to the server!'})
+    document1 = parsingdate.find_one({'name': 'parsing_status'})
+    document2 = parsingdate.find_one({'name': 'parsing_status_delivery'})
+    last_parsed_timestamp1 = document1['last_parsed_timestamp']
+    last_parsed_timestamp2 = document2['last_parsed_timestamp']
+    
+    # Преобразование временных меток в строки
+    last_parsed_timestamp1_str = last_parsed_timestamp1.strftime("%Y-%m-%d %H:%M:%S")
+    last_parsed_timestamp2_str = last_parsed_timestamp2.strftime("%Y-%m-%d %H:%M:%S")
+    
+    CMData = [
+        {'title': 'Last time prices was parsed', 'time': last_parsed_timestamp1_str},
+        {'title': 'Last time delivery prices was parsed', 'time': last_parsed_timestamp2_str}
+    ] 
+    socketio.emit('ConnectionMessage', CMData)  
      
 
  
 if __name__ == '__main__':
-    socketio.run(app,allow_unsafe_werkzeug=True , debug=True, host="127.0.0.1", port=int(os.environ.get("PORT", 8080)))
+    socketio.run(app,allow_unsafe_werkzeug=True , debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
 
