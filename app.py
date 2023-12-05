@@ -390,7 +390,7 @@ def download_tsv_report():
             handling_time = business_price = quantity_price_type = quantity_lower_bound1 = quantity_price1 = quantity_lower_bound2 = quantity_price2 = quantity_lower_bound3 = quantity_price3 = None
         else:
             handling_time = 3
-            business_price = float(price) - 1
+            business_price = round(float(price), 2) - 1
             quantity_price_type = 'PERCENT'
             quantity_lower_bound1 = 2
             quantity_price1 = 0.25
@@ -400,7 +400,7 @@ def download_tsv_report():
             quantity_price3 = 1
 
         # Append the values to the TSV content string
-        tsv_content += f"{sku}\t{price}\t{quantity}\t{handling_time}\t{business_price}\t{quantity_price_type}\t{quantity_lower_bound1}\t{quantity_price1}\t{quantity_lower_bound2}\t{quantity_price2}\t{quantity_lower_bound3}\t{quantity_price3}\n"
+        tsv_content += f"{sku}\t{ round(float(price), 2)}\t{quantity}\t{handling_time}\t{business_price}\t{quantity_price_type}\t{quantity_lower_bound1}\t{quantity_price1}\t{quantity_lower_bound2}\t{quantity_price2}\t{quantity_lower_bound3}\t{quantity_price3}\n"
 
     # Create a temporary file to store the TSV content
     with open('report.tsv', 'w') as tsv_file:

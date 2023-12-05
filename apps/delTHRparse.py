@@ -91,7 +91,10 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url, zipindex):
 
             # Click on the "Calculate" button
             calculate_button_selector = '#zipcode-submit'
+            
             calculate_button = page.locator(calculate_button_selector)
+            if not calculate_button.is_visible():
+                print('calcualte is not visible')
             calculate_button.click()
 
             # Wait for some time to allow any JavaScript code triggered by the click to execute
