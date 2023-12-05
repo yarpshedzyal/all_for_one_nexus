@@ -5,7 +5,7 @@ function Connection(socket) {
     console.log(res)
     res.forEach(element => {
       ConnectionMessage.insertAdjacentHTML("beforeend", ` 
-    <p>${element.data}</p>
+      <p class="mb-1">${element.title}:<b class="ps-1">${element.time}</b></p>
     `); 
     });
 } );

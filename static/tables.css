@@ -1,4 +1,36 @@
 /*Css для таблиці*/
+.ChangingTheStyle{
+    cursor: pointer;
+    position: relative;
+}
+.ChangingTheStyle:hover::before {
+    display: block; 
+}
+.ChangingTheStyle::before {
+    transition: 0.3s ease;
+    display     : none;
+    content     : "";
+    width       : 100%;
+    height      : 100%;
+    border      : 1px solid #198754; 
+    position    : absolute;
+    top         : 50%;
+    left        : 50%;
+    margin-right: -50%;
+    transform   : translate(-50%, -50%);
+}
+
+th,
+td {
+    white-space  : nowrap;
+    overflow     : hidden;
+    text-overflow: ellipsis; 
+    min-width : 100px; 
+    width     : 125px;
+    /* Укажите необходимую ширину */
+    text-align: center !important;
+}
+
 th[data-display="false"],td[data-display="false"]{
     display: none;
 }
@@ -32,4 +64,8 @@ th[data-column="checkbox"],
 th[data-column="index"] {
     width: 40px;
     /* Укажите необходимую ширину */
+}
+td[data-column="checkbox"] > input{
+    width: 20px;
+    height: 20px;
 }

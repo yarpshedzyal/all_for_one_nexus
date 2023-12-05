@@ -63,7 +63,7 @@
 @keyframes showModal {
     0% {
         opacity: 0;
-        top    : 10%;
+        top    : -10%;
     }
 
     100% {
@@ -73,9 +73,10 @@
 
 }
 
-.show>.bgModalEvent {
+.show>.bgModalEvent { 
     animation: bgModalEventShow 0.2s ease;
 }
+ 
 
 @keyframes bgModalEventShow {
     0% {
@@ -111,18 +112,7 @@ tbody {
     /* Или укажите конкретную ширину */
 }
 
-th,
-td {
-    white-space  : nowrap;
-    overflow     : hidden;
-    text-overflow: ellipsis;
-
-    min-width : 100px;
-    max-width : 220px;
-    width     : auto;
-    /* Укажите необходимую ширину */
-    text-align: center !important;
-}
+ 
 
 td[data-column="index"] {
     cursor: pointer;

@@ -6,7 +6,7 @@
 
    <link rel="preconnect" href="https://fonts.googleapis.com">
    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-   <link rel="shortcut icon" href="{{ url_for('static', filename='./img/NXSLOGO.png') }}" type="image/png">
+   <link rel="shortcut icon" href="{{ url_for('static', filename='img/NXSLOGO.png') }}" type="image/png">
    <link
       href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Neucha&family=Open+Sans:ital,wght@0,400;0,600;0,800;1,400;1,700;1,800&display=swap"
       rel="stylesheet">
@@ -221,11 +221,11 @@
 
                      <div class="d-flex justify-content-between">
                         <div>
-                           <input type="text" class="my-2 form-control" id="ASIN" placeholder="ASIN" required>
-                           <input type="text" class="my-2 form-control" id="SKU" placeholder="SKU" required>
-                           <input type="text" class="my-2 form-control" id="Name" placeholder="Name">
-                           <input type="text" class="my-2 form-control" id="ThrLink" placeholder="Thr Link">
-                           <input type="text" class="my-2 form-control" id="WSlink" placeholder="WS link">
+                           <input type="text" class="my-2 form-control RequiredFields" id="ASIN" placeholder="ASIN" required>
+                           <input type="text" class="my-2 form-control RequiredFields" id="SKU" placeholder="SKU" required>
+                           <input type="text" class="my-2 form-control RequiredFields" id="Name" placeholder="Name">
+                           <input type="text" class="my-2 form-control RequiredFields" id="ThrLink" placeholder="Thr Link">
+                           <input type="text" class="my-2 form-control RequiredFields" id="WSlink" placeholder="WS link">
                            <input type="text" class="my-2 form-control" id="PricingStrategy"
                               placeholder="Pricing Strategy">
                            <input type="text" class="my-2 form-control" id="BasicHndlingTime"
@@ -257,16 +257,14 @@
                               placeholder="estimated_referral_fee">
                         </div>
 
-                     </div>
-
-                     <!-- Add more input fields for other product details -->
-                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-success menu-container closeW thisBtnRefresh"
-                           data-targetmodal="#Add_Product" data-time="300">Add</button>
-                        <button type="button" class="btn btn-secondary closeW"
-                           data-targetmodal="#Add_Product">Close</button>
-                     </div>
+                     </div> 
                   </form>
+                  <div class="modal-footer">
+                     <button type="submit"  class="btn btn-success menu-container closeW Add_Product"
+                        data-targetmodal="#Add_Product">Add</button>
+                     <button type="button" class="btn btn-secondary closeW"
+                        data-targetmodal="#Add_Product">Close</button>
+                  </div>
                </div>
             </div>
          </div>
@@ -300,10 +298,33 @@
                   <h1 class="modal-title fs-5">Modal Message</h1>
                   <button type="button" class="btn-close closeWMessage" data-targetmodal="#Modal_Message"></button>
                </div>
-               <div id="MessageContent" class="modal-body"> 
+               <div id="MessageContent" class="modal-body">
                </div>
                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary closeWMessage" data-targetmodal="#Modal_Message">Close</button> 
+                  <button type="button" class="btn btn-secondary closeWMessage"
+                     data-targetmodal="#Modal_Message">Close</button>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <!-- ChangingTheStyle Tables -->
+      <div class="modalW modal fade dNone" data-targetmodal="#ChangingTheStyle">
+         <div class="bgModalEvent closeW" data-targetmodal="#ChangingTheStyle"></div>
+         <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h1 class="modal-title fs-5">Changing Column Width</h1>
+                  <button type="button" class="btn-close closeW" data-targetmodal="#ChangingTheStyle"></button>
+               </div>
+               <div class="modal-body">
+                  <label>Set the block width:</label>
+                  <input class="form-control" value="200" type="number" id="inpChangingTheStyle"
+                     placeholder="Your number...">
+               </div>
+               <div class="modal-footer">
+                  <button id="SaveChangesColumnWidth" type="button" class="btn btn-primary closeW"
+                     data-targetmodal="#ChangingTheStyle">Save changes</button>
                </div>
             </div>
          </div>
@@ -325,7 +346,7 @@
                            <div>
                               <form class="form-inline">
                                  <strong>Search</strong>
-                                 <div class="input-group mb-3">
+                                 <div class="input-group mb-1">
                                     <input id="InpSearch" type="text" class="form-control" placeholder="Text...">
                                     <button class="btn btn-outline-secondary" type="button" id="SearchSubmit"
                                        disabled>Apply</button>
@@ -346,14 +367,7 @@
                                  <label class="form-check-label" for="RadioSKU">
                                     SKU
                                  </label>
-                              </div>
-                              <div class="form-check m-2">
-                                 <input class="form-check-input" type="radio" title="PricingStrategy"
-                                    name="SearchRadio" id="RadioPricingStrategy">
-                                 <label class="form-check-label" for="RadioPricingStrategy">
-                                    Pricing Strategy
-                                 </label>
-                              </div>
+                              </div> 
                            </div>
                         </div>
 
@@ -376,8 +390,8 @@
 
                </div>
                <div class="col-12 col-md-6">
-                  <div class="ps-3"> 
-                     <div >
+                  <div class="ps-3">
+                     <div>
                         <h4><b>Webstaurant Parser</b>, last time parsed.</h4>
                      </div>
                      <div id="ConnectionMessage">
