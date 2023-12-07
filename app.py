@@ -712,6 +712,7 @@ def collect_and_start_delivery(data):
 
                 try:
                     # Perform parsing using the parsing function
+                    time.sleep(5)
                     parsed_data = perform_add_to_cart_view_cart_calculate_and_retrieve_price(link)
                     # Increment the parsed_urls counter
                     parsed_urls += 1
