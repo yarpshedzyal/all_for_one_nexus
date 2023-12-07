@@ -711,8 +711,8 @@ def collect_and_start_delivery(data):
             for index, data_item in enumerate(arr_data):
                 url_id = str(data_item['_id']['$oid'])
                 link = data_item['ThrLink']
-                old_delivery_90001 = url_id['DeliveryPriceTHR90001']
-                old_delivery_10001 = url_id['DeliveryPriceTHR10001']
+                old_delivery_90001 = data_item['DeliveryPriceTHR90001']
+                old_delivery_10001 = data_item['DeliveryPriceTHR10001']
 
                 try:
                     # Perform parsing using the parsing function
