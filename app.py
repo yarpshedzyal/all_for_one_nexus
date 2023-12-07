@@ -627,17 +627,21 @@ def perform_parsing_async(urls, total_urls):
 
     parsed_urls = 0
     is_parsing_delivery = True 
+    # proxy_p = True
     for index, url in enumerate(urls):
         socketio.emit('delivery_all_parse_started', {'disabled': True}) 
         url_id = str(url['_id'])
         link = url['ThrLink']
-
         try:
             # Perform parsing using the parsing function
-            parsed_data = perform_add_to_cart_view_cart_calculate_and_retrieve_price(link, 90001)
+            time.sleep(5)
+            parsed_data = perform_add_to_cart_view_cart_calculate_and_retrieve_price(link)
             # Increment the parsed_urls counter
             parsed_urls += 1
-            
+            # if int(parsed_urls%2) == 0:
+            #     proxy_p = True
+            # else:
+            #     proxy_p =False
             if parsed_data[0] != 'Out':
 
                 # Update the document in MongoDB with the parsed data
@@ -645,16 +649,14 @@ def perform_parsing_async(urls, total_urls):
                     {'_id': ObjectId(url_id)},
                     {'$set': {'DeliveryPriceTHR90001': parsed_data[0]}}
                 )
-
-                # Perform parsing for the other zip code (10001)
-                parsed_data_10001 = perform_add_to_cart_view_cart_calculate_and_retrieve_price(link, 10001)
                 
-                # Update the document in MongoDB with the parsed data for 10001
                 collection.update_one(
                     {'_id': ObjectId(url_id)},
-                    {'$set': {'DeliveryPriceTHR10001': parsed_data_10001[0]}}
+                    {'$set': {'DeliveryPriceTHR10001': parsed_data[1]}}
                 )
-            
+                # Perform parsing for the other zip code (10001)
+                # time.sleep(5)
+
         except Exception as e:
             traceback.print_exc()  # Add this line to print the exception traceback
 
@@ -710,7 +712,7 @@ def collect_and_start_delivery(data):
 
                 try:
                     # Perform parsing using the parsing function
-                    parsed_data = perform_add_to_cart_view_cart_calculate_and_retrieve_price(link, 90001)
+                    parsed_data = perform_add_to_cart_view_cart_calculate_and_retrieve_price(link)
                     # Increment the parsed_urls counter
                     parsed_urls += 1
                     if parsed_data[0] != 'Out':
@@ -721,13 +723,11 @@ def collect_and_start_delivery(data):
                             {'$set': {'DeliveryPriceTHR90001': parsed_data[0]}}
                         )
 
-                        # Perform parsing for the other zip code (10001)
-                        parsed_data_10001 = perform_add_to_cart_view_cart_calculate_and_retrieve_price(link, 10001)
                         
                         # Update the document in MongoDB with the parsed data for 10001
                         collection.update_one(
                             {'_id': ObjectId(url_id)},
-                            {'$set': {'DeliveryPriceTHR10001': parsed_data_10001[0]}}
+                            {'$set': {'DeliveryPriceTHR10001': parsed_data[1]}}
                         )
                     
                 except Exception as e:

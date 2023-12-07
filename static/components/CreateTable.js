@@ -20,39 +20,70 @@ async function CreateTable(data, ArrKeys, socket) {
   await ParseSelected(data, socket);
 
 
-
- 
-
-  let ChangingTheStyle = document.querySelectorAll(".ChangingTheStyle");
-  let inpChangingTheStyle = document.querySelector("#inpChangingTheStyle");
-  let SaveChangesColumnWidth = document.querySelector("#SaveChangesColumnWidth");
-
-  ChangingTheStyle.forEach((el) => {
-    el.addEventListener("click", (etarget) => {
-      // Сохранение данных в объект ColumnStyle при клике
-      const columnName = el.dataset.column;
-      SaveChangesColumnWidth.addEventListener("click", () => { 
-        ColumnStyle[columnName] = inpChangingTheStyle.value;
-        localStorage.setItem("ColumnStyle", JSON.stringify(ColumnStyle)); 
-        etarget.target.style.width = inpChangingTheStyle.value+"px";
-      }); 
-    }); 
+  function onMouseDown(e, th) {
+    const initialX = e.clientX;
+    const initialWidth = th.getBoundingClientRect().width;
+  
+    function onMouseMove(mousemove) {
+      const newWidth = initialWidth + (mousemove.clientX - initialX);
+      th.style.width = newWidth + 'px';
+    }
+  
+    function onMouseUp() { 
+      const columnName = th.dataset.column;
+      ColumnStyle[columnName] = th.style.width;
+      localStorage.setItem("ColumnStyle", JSON.stringify(ColumnStyle)); 
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+    }
+  
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+  }
+  
+  document.querySelectorAll('.ChangingTheStyle').forEach(function(th) {
+    th.addEventListener('mousedown', function(e) {
+      onMouseDown(e, th);
+    });
   });
+  
+  
+
+  // let ChangingTheStyle = document.querySelectorAll(".ChangingTheStyle");
+  // let inpChangingTheStyle = document.querySelector("#inpChangingTheStyle");
+  // let SaveChangesColumnWidth = document.querySelector("#SaveChangesColumnWidth");
+
+  // let columnName;
+  // let ElTarget;
+  // ChangingTheStyle.forEach((el) => {
+  //   el.addEventListener("click", (etarget) => {
+  //     // Сохранение данных в объект ColumnStyle при клике
+  //     columnName = el.dataset.column; 
+  //     ElTarget = etarget.target;
+  //   }); 
+  // });
+ 
+  // SaveChangesColumnWidth.addEventListener("click", () => {  
+  //   columnName = el.dataset.column; 
+  //   ColumnStyle[columnName] = inpChangingTheStyle.value;
+  //   localStorage.setItem("ColumnStyle", JSON.stringify(ColumnStyle)); 
+  //   ElTarget.style.width = inpChangingTheStyle.value+"px";
+  // }); 
 
 }
 function OldTableHeaders(data, NewTableHeaders, ArrKeys, ObjCustomCheck,ColumnStyle) {
- 
+  console.log(ColumnStyle);
   NewTableHeaders.insertAdjacentHTML("beforeend", `
   <th scope="col" ${ObjCustomCheck && ObjCustomCheck["checkbox"] === undefined ? "" : `data-display=${ObjCustomCheck && ObjCustomCheck["checkbox"].checked}`} data-column="checkbox">
     <button class="noStyleBtn CheckAll"><strong>All</strong></button>
   </th>
   <th scope="col" ${ObjCustomCheck && ObjCustomCheck["index"] === undefined ? "" : `data-display=${ObjCustomCheck && ObjCustomCheck["index"].checked}`} data-column="index" title="#">#</th>  
   `)
-
+  // openW
   ArrKeys.forEach((Key, index) => {  
     NewTableHeaders.insertAdjacentHTML("beforeend", `  
-    ${data.items[0][Key] === undefined ? "" : `<th class="ChangingTheStyle openW" data-targetmodal="#ChangingTheStyle" scope="col" ${ObjCustomCheck && ObjCustomCheck[Key] === undefined ? "" : `data-display=${ObjCustomCheck && ObjCustomCheck[Key].checked}`} data-column="${Key}" title='${data.items[0][Key] === undefined ? "" : Key}'
-    ${ColumnStyle[Key] === undefined ? "" : `style="width:${ColumnStyle[Key]}px"`} >${Key}</th>`
+    ${data.items[0][Key] === undefined ? "" : `<th class="ChangingTheStyle" data-targetmodal="#ChangingTheStyle" scope="col" ${ObjCustomCheck && ObjCustomCheck[Key] === undefined ? "" : `data-display=${ObjCustomCheck && ObjCustomCheck[Key].checked}`} data-column="${Key}" title='${data.items[0][Key] === undefined ? "" : Key}'
+    ${ColumnStyle[Key] === undefined ? "" : `style="width:${ColumnStyle[Key]}"`} >${Key}</th>`
       } 
    `);
   })

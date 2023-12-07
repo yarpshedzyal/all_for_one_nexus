@@ -69,3 +69,17 @@ td[data-column="checkbox"] > input{
     width: 20px;
     height: 20px;
 }
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    resize: horizontal; /* Дозволяє розтягувати стовпці горизонтально */
+    overflow: hidden;   /* Приховує зайвий вміст */
+  }
