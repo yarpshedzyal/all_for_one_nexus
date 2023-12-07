@@ -634,7 +634,9 @@ def perform_parsing_async(urls, total_urls):
         link = url['ThrLink']
         try:
             # Perform parsing using the parsing function
-            time.sleep(5)
+            time.sleep(5.5)
+            old_delivery_90001 = url['DeliveryPriceTHR90001']
+            old_delivery_10001 = url['DeliveryPriceTHR10001']
             parsed_data = perform_add_to_cart_view_cart_calculate_and_retrieve_price(link)
             # Increment the parsed_urls counter
             parsed_urls += 1
@@ -663,12 +665,12 @@ def perform_parsing_async(urls, total_urls):
             # Handle the exception here, for example, set the "Stock" field to "Out"
             collection.update_one(
                 {'_id': ObjectId(url_id)},
-                {'$set': {'DeliveryPriceTHR90001': '0'}}
+                {'$set': {'DeliveryPriceTHR90001': old_delivery_90001}}
             )
 
             collection.update_one(
                 {'_id': ObjectId(url_id)},
-                {'$set': {'DeliveryPriceTHR10001': '0'}}
+                {'$set': {'DeliveryPriceTHR10001': old_delivery_10001}}
             )
 
         # Calculate progress and emit progress update
@@ -709,10 +711,12 @@ def collect_and_start_delivery(data):
             for index, data_item in enumerate(arr_data):
                 url_id = str(data_item['_id']['$oid'])
                 link = data_item['ThrLink']
+                old_delivery_90001 = url_id['DeliveryPriceTHR90001']
+                old_delivery_10001 = url_id['DeliveryPriceTHR10001']
 
                 try:
                     # Perform parsing using the parsing function
-                    time.sleep(5)
+                    time.sleep(5.5)
                     parsed_data = perform_add_to_cart_view_cart_calculate_and_retrieve_price(link)
                     # Increment the parsed_urls counter
                     parsed_urls += 1
@@ -737,12 +741,12 @@ def collect_and_start_delivery(data):
                     # Handle the exception here, for example, set the "Stock" field to "Out"
                     collection.update_one(
                         {'_id': ObjectId(url_id)},
-                        {'$set': {'DeliveryPriceTHR90001': '0'}}
+                        {'$set': {'DeliveryPriceTHR90001': old_delivery_90001}}
                     )
 
                     collection.update_one(
                         {'_id': ObjectId(url_id)},
-                        {'$set': {'DeliveryPriceTHR10001': '0'}}
+                        {'$set': {'DeliveryPriceTHR10001': old_delivery_10001}}
                     )
                 progress_delivery = int((parsed_urls / total_urls_selected) * 100) 
                 socketio.emit('progress_delivery_update_selected', {'progress': progress_delivery, 'category': "progress_delivery_update_selected"}) 
