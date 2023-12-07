@@ -634,7 +634,7 @@ def perform_parsing_async(urls, total_urls):
         link = url['ThrLink']
         try:
             # Perform parsing using the parsing function
-            time.sleep(5.5)
+            time.sleep(6)
             old_delivery_90001 = url['DeliveryPriceTHR90001']
             old_delivery_10001 = url['DeliveryPriceTHR10001']
             parsed_data = perform_add_to_cart_view_cart_calculate_and_retrieve_price(link)
@@ -716,7 +716,7 @@ def collect_and_start_delivery(data):
 
                 try:
                     # Perform parsing using the parsing function
-                    time.sleep(5.5)
+                    time.sleep(6)
                     parsed_data = perform_add_to_cart_view_cart_calculate_and_retrieve_price(link)
                     # Increment the parsed_urls counter
                     parsed_urls += 1
