@@ -3,3 +3,4 @@ Dockerfile
 *pyc
 .venv
 proxy_test.py
+config.txt
