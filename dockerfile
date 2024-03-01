@@ -6,7 +6,29 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # Install system dependencies
-RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y python3.9 python3-pip nodejs npm curl
+RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y python3.9 python3-pip curl
+
+# Install Node Version Manager (nvm)
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+
+# Source nvm to make it available in the current shell
+RUN export NVM_DIR="$HOME/.nvm" \
+    && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
+    && [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+# Install Node.js version 16 using nvm
+RUN nvm install 16
+
+# Verify Node.js installation
+RUN node --version
+
+# Install npm globally
+RUN npm install -g npm@latest
+
+# Install Playwright
+RUN npm install -g playwright \
+    && playwright install \
+    && playwright install-deps
 
 # Create and set the working directory
 WORKDIR /app
@@ -17,11 +39,6 @@ COPY requirements.txt /app/
 # Install Python dependencies
 RUN pip install --upgrade pip \
     && pip install -r requirements.txt
-
-# Install Playwright version 1.17.1 (compatible with Node.js 10.x)
-RUN npm install -g playwright@1.17.1 \
-    && playwright install \
-    && playwright install-deps
 
 # Copy the rest of the application files
 COPY . /app/
