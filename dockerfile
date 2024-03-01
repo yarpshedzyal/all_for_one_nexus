@@ -18,22 +18,22 @@ COPY requirements.txt /app/
 RUN pip install --upgrade pip \
     && pip install -r requirements.txt
 
-# Install Node.js version manager (nvm) and set up Node.js version 16
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash \
-    && export NVM_DIR="$HOME/.nvm" \
-    && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
-    && nvm install 16 \
-    && nvm use 16 \
-    && npm install -g playwright \
+# Copy package.json and package-lock.json files
+COPY package.json package-lock.json /app/
+
+# Install Node.js dependencies
+RUN npm install
+
+# Copy the rest of the application files
+COPY . /app/
+
+# Install Playwright
+RUN npm install -g playwright \
     && playwright install \
     && playwright install-deps
 
-# Copy the content of the local src directory to the working directory
-COPY . /app/
-
 # Install Node.js dependencies and build your project
-RUN npm install \
-    && npm run build
+RUN npm run build
 
 # Expose port 8080 to the outside world (if needed)
 EXPOSE 8080
