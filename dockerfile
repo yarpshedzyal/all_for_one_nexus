@@ -8,7 +8,6 @@ ENV PYTHONUNBUFFERED 1
 # Install system dependencies
 RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y python3.9 python3-pip nodejs npm
 
-
 # Create and set the working directory
 WORKDIR /app
 
@@ -19,25 +18,15 @@ COPY requirements.txt /app/
 RUN pip install --upgrade pip \
     && pip install -r requirements.txt
 
-# Install Node.js version manager (nvm)
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-
-# Source nvm to make it available in the current shell
-RUN export NVM_DIR="$HOME/.nvm" \
+# Install Node.js version manager (nvm) and set up Node.js version 16
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash \
+    && export NVM_DIR="$HOME/.nvm" \
     && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
-    && [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-
-# Install Node.js version 16 using nvm
-RUN nvm install 16
-
-# Use Node.js version 16
-RUN nvm use 16
-
-# Install Playwright
-RUN npm install -g playwright \
+    && nvm install 16 \
+    && nvm use 16 \
+    && npm install -g playwright \
     && playwright install \
     && playwright install-deps
-
 
 # Copy the content of the local src directory to the working directory
 COPY . /app/
