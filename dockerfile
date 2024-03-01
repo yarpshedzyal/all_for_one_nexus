@@ -5,6 +5,7 @@ FROM python:3.9-slim
 RUN apt-get update && apt-get install -y \
     curl \
     wget \
+    gnupg \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Node.js
@@ -15,11 +16,11 @@ RUN apt-get update && apt-get install -y nodejs
 WORKDIR /app
 
 # Copy requirements.txt and package.json to the working directory
-COPY requirements.txt ./
+COPY requirements.txt package.json ./
 
 # Install Python and Node.js dependencies
 RUN pip install --no-cache-dir -r requirements.txt
-RUN npm install
+RUN npm install --force
 
 # Install playwright for Python
 RUN pip install playwright
