@@ -674,4 +674,11 @@ def collect_and_start_delivery(data):
  
 
 if __name__ == '__main__':
+    '''[<User: test1>, <User: test2>, <User: q>]
+Traceback (most recent call last):
+  File "/app/app2.py", line 677, in <module>
     socketio.run(app, debug=True, host="0.0.0.0", port=8080)
+  File "/usr/local/lib/python3.9/site-packages/flask_socketio/__init__.py", line 640, in run
+    raise RuntimeError('The Werkzeug web server is not '
+RuntimeError: The Werkzeug web server is not designed to run in production. Pass allow_unsafe_werkzeug=True to the run() method to disable this error.'''
+    socketio.run(app, debug=True, allow_unsafe_werkzeug=True, host="0.0.0.0", port=8080)
