@@ -6,8 +6,8 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # Install system dependencies
-RUN apt update \
-    && apt install -y python3.9 python3-pip nodejs npm
+RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y python3.9 python3-pip nodejs npm
+
 
 # Create and set the working directory
 WORKDIR /app
