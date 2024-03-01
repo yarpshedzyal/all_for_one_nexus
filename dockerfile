@@ -18,16 +18,17 @@ COPY requirements.txt /app/
 RUN pip install --upgrade pip \
     && pip install -r requirements.txt
 
-# Copy the rest of the application files
-COPY . /app/
-
-# Install Playwright
-RUN npm install -g playwright \
+# Install Playwright version 1.17.1 (compatible with Node.js 10.x)
+RUN npm install -g playwright@1.17.1 \
     && playwright install \
     && playwright install-deps
 
+# Copy the rest of the application files
+COPY . /app/
+
 # Install Node.js dependencies and build your project
-RUN npm run build
+RUN npm install \
+    && npm run build
 
 # Expose port 8080 to the outside world (if needed)
 EXPOSE 8080
