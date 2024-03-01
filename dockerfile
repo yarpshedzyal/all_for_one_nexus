@@ -19,6 +19,9 @@ COPY requirements.txt /app/
 RUN pip install --upgrade pip \
     && pip install -r requirements.txt
 
+# Install Node.js 16.x
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt-get install -y nodejs
 # Install Playwright dependencies
 RUN npm install -g playwright \
     && playwright install \
