@@ -17,7 +17,7 @@ RUN source ~/.nvm/nvm.sh \
     && source ~/.bashrc \
     && nvm install 16 \
     && nvm alias default 16 \
-    && npm install -g npm@latest
+    && npm install -g npm@8.19.4
 
 # Verify Node.js installation
 RUN node --version
@@ -48,4 +48,4 @@ RUN npm install \
 EXPOSE 8080
 
 # Command to run on container start
-CMD ["python3", "app
+CMD ["python3", "app.py"]
