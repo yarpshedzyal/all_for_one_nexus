@@ -18,12 +18,6 @@ COPY requirements.txt /app/
 RUN pip install --upgrade pip \
     && pip install -r requirements.txt
 
-# Copy package.json and package-lock.json files
-COPY package.json package-lock.json /app/
-
-# Install Node.js dependencies
-RUN npm install
-
 # Copy the rest of the application files
 COPY . /app/
 
