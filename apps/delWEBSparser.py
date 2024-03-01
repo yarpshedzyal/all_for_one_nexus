@@ -174,6 +174,21 @@ def parser_solo(url):
     
 #     return [format_price(price_text), Stock]
 
+def multiparse(ulrs):
+
+    total_price = 0
+    stock_status = "Out"
+    plus_text = "No"
+
+    split_urls = ulrs.split()
+
+    for url in split_urls:
+        result = parser_solo(url)
+        if result[1] == 'Out':
+            return [total_price, stock_status, plus_text]
+            break
+        total_price += result[0]
+    return [total_price, result[1], result[2]]
 
 
 

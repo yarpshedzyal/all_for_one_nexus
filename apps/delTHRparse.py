@@ -27,14 +27,7 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price(url):
         
 
     with sync_playwright() as p:
-        # if proxy_bool:
-        #     browser = p.chromium.launch(
-        #         proxy={'server':'185.174.100.76:8080',
-        #                'username':'yaroslav',
-        #                 'password':'q1w2e3r4_0'}
-		#     )
-        #     print('using proxy')
-        # else:    
+ 
         browser = p.chromium.launch()
             
         context = browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")

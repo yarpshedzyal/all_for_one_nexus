@@ -4,3 +4,4 @@ Dockerfile
 .venv
 proxy_test.py
 config.txt
+configemailfortracknubers.txt

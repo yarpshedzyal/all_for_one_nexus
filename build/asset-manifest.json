@@ -1,0 +1,28 @@
+{
+  "files": {
+    "main.css": "/static/css/main.68abc684.css",
+    "main.js": "/static/js/main.3b46dad7.js",
+    "static/media/nexuslogo.svg": "/static/media/nexuslogo.b4c131f5998ecd506d25037a889f4b85.svg",
+    "static/media/Resized.svg": "/static/media/Resized.f65927644319daf6f09a83e20073664e.svg",
+    "static/media/dollar.svg": "/static/media/dollar.eb56229342393b13b63f2bf20c5071db.svg",
+    "static/media/price.svg": "/static/media/price.588df9e37afb898a8321712b865efbde.svg",
+    "static/media/disc_remove.svg": "/static/media/disc_remove.59000b632abf44bdefec72a2524ace49.svg",
+    "static/media/download_csv.svg": "/static/media/download_csv.927cf45076d0d795f138554ed4dd4064.svg",
+    "index.html": "/index.html",
+    "static/media/delete2.svg": "/static/media/delete2.fdb5bbc7bd9aa5814f6859b18edb3948.svg",
+    "static/media/pencil.svg": "/static/media/pencil.2169068dcc7deb2dd58863a203a211cd.svg",
+    "static/media/filearrow.svg": "/static/media/filearrow.90ecbf7fa844c5ebaa41cfb282825b62.svg",
+    "static/media/add.svg": "/static/media/add.df337b697caa4803183ff5eb9ecfe136.svg",
+    "static/media/upload.svg": "/static/media/upload.9da3c0fc11438f8591a96059f71b050a.svg",
+    "static/media/list.svg": "/static/media/list.4fd76c5e497688358c04c19eaaeb619e.svg",
+    "static/media/delete.svg": "/static/media/delete.776ae4a2ba6684475e9e2089ef99853d.svg",
+    "static/media/link.svg": "/static/media/link.93ed5e95165a8e0cb977c1102015223d.svg",
+    "static/media/show.svg": "/static/media/show.f39ee5571a50d0c14513310e26553d7a.svg",
+    "main.68abc684.css.map": "/static/css/main.68abc684.css.map",
+    "main.3b46dad7.js.map": "/static/js/main.3b46dad7.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.68abc684.css",
+    "static/js/main.3b46dad7.js"
+  ]
+}
