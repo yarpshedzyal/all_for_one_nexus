@@ -17,10 +17,8 @@ RUN source ~/.nvm/nvm.sh \
     && source ~/.bashrc \
     && nvm install 16 \
     && nvm alias default 16 \
-    && npm install -g npm@8.19.4
-
-# Verify Node.js installation
-RUN node --version
+    && npm install -g npm@8.19.4 \
+    && node --version
 
 # Install Playwright
 RUN npm install -g playwright \
