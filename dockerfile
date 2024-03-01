@@ -12,18 +12,15 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y python3.9 python
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 
 # Source nvm to make it available in the current shell
-RUN export NVM_DIR="$HOME/.nvm" \
-    && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
-    && [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-
-# Install Node.js version 16 using nvm
-RUN nvm install 16
+SHELL ["/bin/bash", "--login", "-c"]
+RUN source ~/.nvm/nvm.sh \
+    && source ~/.bashrc \
+    && nvm install 16 \
+    && nvm alias default 16 \
+    && npm install -g npm@latest
 
 # Verify Node.js installation
 RUN node --version
-
-# Install npm globally
-RUN npm install -g npm@latest
 
 # Install Playwright
 RUN npm install -g playwright \
@@ -51,4 +48,4 @@ RUN npm install \
 EXPOSE 8080
 
 # Command to run on container start
-CMD ["python3", "app.py"]
+CMD ["python3", "app
