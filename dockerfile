@@ -25,6 +25,9 @@ RUN npm install --force
 # Install playwright for Python
 RUN pip install playwright
 
+# Install browsers for playwright
+RUN playwright install
+
 # Expose port 8080
 EXPOSE 8080
 
