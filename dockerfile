@@ -35,4 +35,4 @@ EXPOSE 8080
 COPY . .
 
 # Run the Flask application
-CMD ["python", "app2.py"]
+CMD ["python3", "app2.py"]
