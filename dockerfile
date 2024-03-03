@@ -27,7 +27,17 @@ RUN pip install playwright
 
 # Install browsers for playwright
 RUN playwright install
-
+    apt-get install libnss3\                        
+        libnspr4\                                   
+        libatk1.0-0\                                
+        libatk-bridge2.0-0\                          
+         libcups2\                                   
+         libxkbcommon0\                               
+         libatspi2.0-0\                              
+         libxdamage1\                                 
+         libpango-1.0-0\                             
+         libcairo2\                                  
+         libasound2
 # Expose port 8080
 EXPOSE 8080
 
