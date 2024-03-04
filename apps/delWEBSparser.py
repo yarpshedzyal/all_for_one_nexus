@@ -198,7 +198,7 @@ def count():
     count = collection.count_documents({})
     return count
 
-urls = 'https://www.therestaurantstore.com/items/516137 https://www.therestaurantstore.com/items/516128'
+urls = 'https://www.webstaurantstore.com/choice-40-qt-standard-weight-aluminum-stock-pot/471SP40QT.html https://www.webstaurantstore.com/vigor-17-1316-x-22-stainless-steel-stock-pot-dolly/473SP18DLY.html'
 print(urls.split())
 
 print(multiparse(urls))
