@@ -392,7 +392,7 @@ def parse_urls(message):
                 this_item = collection.find_one({'_id': ObjectId(url_id)})
                 socketio.emit("new_item", dumps(this_item))
             elif multi == 'Yes' and multipack_quantity != 1:
-                parsed_data = parser_solo(link) 
+                parsed_data = multiparse(link) 
             # Update the document in MongoDB with the parsed data  
                 collection.update_one(
                     {'_id': ObjectId(url_id)},
@@ -488,7 +488,7 @@ def handle_selected_parse(data):
                     this_item = collection.find_one({'_id': ObjectId(item_id)})
                     socketio.emit("new_item", dumps(this_item))
                 elif multi == 'Yes' and multipack_quantity != 1:
-                    parsed_data = parser_solo(link) 
+                    parsed_data = multiparse(link) 
                 # Update the document in MongoDB with the parsed data  
                     collection.update_one(
                         {'_id': ObjectId(item_id)},
