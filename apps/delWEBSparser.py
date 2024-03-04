@@ -190,7 +190,6 @@ def multiparse(ulrs:str):
     return [round(total_price, 2), result[1], result[2]]
 
 
-
 def count():
     client = MongoClient('mongodb+srv://yarpshe:A0qrXtAga3ss0gkr@nexust1.hqjwu9g.mongodb.net')
     db = client['product_catalog']

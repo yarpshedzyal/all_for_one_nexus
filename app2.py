@@ -444,6 +444,7 @@ def handle_selected_parse(data):
             item_id = str(item_data['_id']['$oid'])
             link = item_data['WSlink']  
             multi = item_data['multiurl']
+            multipack_quantity = item_data['multipack_quantity']
 
             try:
                 if multi == 'No':
@@ -461,12 +462,24 @@ def handle_selected_parse(data):
                     # Emit new_item only if parsing and updating were successful
                     this_item = collection.find_one({'_id': ObjectId(item_id)})
                     socketio.emit("new_item", dumps(this_item))
-                elif multi == 'Yes':
+                elif multi == 'Yes' and multipack_quantity == 1:
                     parsed_data = multiparse(link) 
                 # Update the document in MongoDB with the parsed data  
                     collection.update_one(
                         {'_id': ObjectId(item_id)},
                         {'$set': {'Price': parsed_data[0], 'StockAviability': parsed_data[1], 'FreeShippingWithPlus' : parsed_data[2]}}
+                    )  
+                    # Increment the parsed_urls counter
+                    
+                    # Emit new_item only if parsing and updating were successful
+                    this_item = collection.find_one({'_id': ObjectId(item_id)})
+                    socketio.emit("new_item", dumps(this_item))
+                elif multi == 'Yes' and multipack_quantity != 1:
+                    parsed_data = multiparse(link) 
+                # Update the document in MongoDB with the parsed data  
+                    collection.update_one(
+                        {'_id': ObjectId(item_id)},
+                        {'$set': {'Price': parsed_data[0]*multipack_quantity, 'StockAviability': parsed_data[1], 'FreeShippingWithPlus' : parsed_data[2]}}
                     )  
                     # Increment the parsed_urls counter
                     
