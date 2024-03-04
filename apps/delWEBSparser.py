@@ -187,7 +187,7 @@ def multiparse(ulrs:str):
         if result[1] == 'Out':
             return [total_price, stock_status, plus_text]
         total_price += float(result[0])
-    return [total_price, result[1], result[2]]
+    return [round(total_price, 2), result[1], result[2]]
 
 
 
