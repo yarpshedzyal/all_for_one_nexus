@@ -505,6 +505,12 @@ def handle_selected_parse(data):
 
                 # Handle the exception here, for example, set the "DeliveryPrice" field to an error value
                 print(f"Error parsing item {item_id}: {e}")
+            # update full_price
+            full_price = (item_data['DeliveryPriceTHR90001'] + item_data['DeliveryPriceTHR90001'])/2 + item_data['supplier_price']
+            collection.update_one(
+                        {'_id': ObjectId(item_id)},
+                        {"$set": {"full_price": full_price}}
+                    )  
             parsed_urls += 1
             progress = int((parsed_urls / total_urls_selected) * 100)
             socketio.emit('progress_update', {'progress': progress, 'category': "progress_update_selected"})  
