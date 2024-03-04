@@ -198,7 +198,7 @@ def count():
     count = collection.count_documents({})
     return count
 
-urls = 'https://www.webstaurantstore.com/choice-40-qt-standard-weight-aluminum-stock-pot/471SP40QT.html https://www.webstaurantstore.com/vigor-17-1316-x-22-stainless-steel-stock-pot-dolly/473SP18DLY.html'
+urls = 'https://www.webstaurantstore.com/lavex-janitorial-16-gallon-black-slim-trash-can/475WH16BK.html https://www.webstaurantstore.com/lavex-janitorial-black-slim-trash-can-flat-lid-with-handle/475WHLDFTBK.html https://www.webstaurantstore.com/lavex-janitorial-black-trainable-slim-trash-can-dolly/475WHTRDOLLY.html'
 print(urls.split())
 
 print(multiparse(urls))
