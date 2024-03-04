@@ -442,30 +442,44 @@ def handle_selected_parse(data):
 
         for index, item_data in enumerate(arr_data):
             item_id = str(item_data['_id']['$oid'])
-            link = item_data['WSlink']
+            link = item_data['WSlink']  
+            multi = item_data['multiurl']
 
             try:
+                if multi == 'No':
                 # Perform parsing using the parser_solo function
-                parsed_data = parser_solo(link)
+                    parsed_data = parser_solo(link)
 
-                # Update the document in MongoDB with the parsed data
-                collection.update_one(
-                    {'_id': ObjectId(item_id)},
-                    {'$set': {'Price': parsed_data[0], 'StockAviability': parsed_data[1], 'FreeShippingWithPlus' : parsed_data[2]}}
-                )
+                    # Update the document in MongoDB with the parsed data
+                    collection.update_one(
+                        {'_id': ObjectId(item_id)},
+                        {'$set': {'Price': parsed_data[0], 'StockAviability': parsed_data[1], 'FreeShippingWithPlus' : parsed_data[2]}}
+                    )
 
-                # Increment the parsed_urls counter
-                parsed_urls += 1
-                # Emit new_item only if parsing and updating were successful
-                this_item = collection.find_one({'_id': ObjectId(item_id)})
-                socketio.emit("new_item", dumps(this_item))
+                    # Increment the parsed_urls counter
+                    # parsed_urls += 1
+                    # Emit new_item only if parsing and updating were successful
+                    this_item = collection.find_one({'_id': ObjectId(item_id)})
+                    socketio.emit("new_item", dumps(this_item))
+                elif multi == 'Yes':
+                    parsed_data = multiparse(link) 
+                # Update the document in MongoDB with the parsed data  
+                    collection.update_one(
+                        {'_id': ObjectId(item_id)},
+                        {'$set': {'Price': parsed_data[0], 'StockAviability': parsed_data[1], 'FreeShippingWithPlus' : parsed_data[2]}}
+                    )  
+                    # Increment the parsed_urls counter
+                    
+                    # Emit new_item only if parsing and updating were successful
+                    this_item = collection.find_one({'_id': ObjectId(item_id)})
+                    socketio.emit("new_item", dumps(this_item))
 
             except Exception as e: 
                 traceback.print_exc()  # Add this line to print the exception traceback
 
                 # Handle the exception here, for example, set the "DeliveryPrice" field to an error value
                 print(f"Error parsing item {item_id}: {e}")
-
+            parsed_urls += 1
             progress = int((parsed_urls / total_urls_selected) * 100)
             socketio.emit('progress_update', {'progress': progress, 'category': "progress_update_selected"})  
             socketio.emit('disabled',  {'disabled': is_parsing_selected, "category":"is_parsing_selected"}) 
