@@ -184,8 +184,8 @@ def multiparse(ulrs:str):
 
     for url in split_urls:
         result = parser_solo(url)
-        if result[1] == 'Out':
-            return [total_price, stock_status, plus_text]
+        # if result[1] == 'Out':
+        #     return [total_price, stock_status, plus_text]
         total_price += float(result[0])
     return [total_price, result[1], result[2]]
 
