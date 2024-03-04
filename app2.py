@@ -396,7 +396,7 @@ def parse_urls(message):
             # Update the document in MongoDB with the parsed data  
                 collection.update_one(
                     {'_id': ObjectId(url_id)},
-                    {'$set': {'Price': parsed_data[0]*multipack_quantity, 'StockAviability': parsed_data[1], 'FreeShippingWithPlus' : parsed_data[2]}}
+                    {'$set': {'Price': round(parsed_data[0]*multipack_quantity, 2), 'StockAviability': parsed_data[1], 'FreeShippingWithPlus' : parsed_data[2]}}
                 )  
                 # Increment the parsed_urls counter
                 
@@ -492,7 +492,7 @@ def handle_selected_parse(data):
                 # Update the document in MongoDB with the parsed data  
                     collection.update_one(
                         {'_id': ObjectId(item_id)},
-                        {'$set': {'Price': parsed_data[0]*multipack_quantity, 'StockAviability': parsed_data[1], 'FreeShippingWithPlus' : parsed_data[2]}}
+                        {'$set': {'Price': round(parsed_data[0]*multipack_quantity, 2), 'StockAviability': parsed_data[1], 'FreeShippingWithPlus' : parsed_data[2]}}
                     )  
                     # Increment the parsed_urls counter
                     
