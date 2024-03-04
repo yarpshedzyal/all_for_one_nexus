@@ -364,6 +364,7 @@ def parse_urls(message):
         url_id = str(url['_id'])
         link = url['WSlink']
         multi = url['multiurl'] 
+        multipack_quantity = url['multipack_quantity']
         try:
             if multi == 'No':
             # Perform parsing using the parser_solo function
@@ -378,12 +379,24 @@ def parse_urls(message):
                 # Emit new_item only if parsing and updating were successful
                 this_item = collection.find_one({'_id': ObjectId(url_id)})
                 socketio.emit("new_item", dumps(this_item))
-            elif multi == 'Yes':
+            elif multi == 'Yes' and multipack_quantity == 1:
                 parsed_data = multiparse(link) 
                 # Update the document in MongoDB with the parsed data  
                 collection.update_one(
                     {'_id': ObjectId(url_id)},
                     {'$set': {'Price': parsed_data[0], 'StockAviability': parsed_data[1], 'FreeShippingWithPlus' : parsed_data[2]}}
+                )  
+                # Increment the parsed_urls counter
+                
+                # Emit new_item only if parsing and updating were successful
+                this_item = collection.find_one({'_id': ObjectId(url_id)})
+                socketio.emit("new_item", dumps(this_item))
+            elif multi == 'Yes' and multipack_quantity != 1:
+                parsed_data = parser_solo(link) 
+            # Update the document in MongoDB with the parsed data  
+                collection.update_one(
+                    {'_id': ObjectId(url_id)},
+                    {'$set': {'Price': parsed_data[0]*multipack_quantity, 'StockAviability': parsed_data[1], 'FreeShippingWithPlus' : parsed_data[2]}}
                 )  
                 # Increment the parsed_urls counter
                 
@@ -475,7 +488,7 @@ def handle_selected_parse(data):
                     this_item = collection.find_one({'_id': ObjectId(item_id)})
                     socketio.emit("new_item", dumps(this_item))
                 elif multi == 'Yes' and multipack_quantity != 1:
-                    parsed_data = multiparse(link) 
+                    parsed_data = parser_solo(link) 
                 # Update the document in MongoDB with the parsed data  
                     collection.update_one(
                         {'_id': ObjectId(item_id)},
