@@ -413,6 +413,11 @@ def parse_urls(message):
                 {'_id': ObjectId(url_id)},
                 {'$set': {'StockAviability': 'Out'}}
             )
+            full_price = (url['DeliveryPriceTHR90001'] + url['DeliveryPriceTHR90001'])/2 + url['supplier_price']
+            collection.update_one(
+                        {'_id': ObjectId(url)},
+                        {"$set": {"full_price": full_price}}
+                    )  
         parsed_urls += 1
         # Calculate progress and emit progress update
         progress = int((parsed_urls / total_urls) * 100) 
