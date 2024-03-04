@@ -573,12 +573,12 @@ def perform_parsing_async(urls, total_urls):
                 # Update the document in MongoDB with the parsed data
                 collection.update_one(
                     {'_id': ObjectId(url_id)},
-                    {'$set': {'DeliveryPriceTHR90001': parsed_data[0]}}
+                    {'$set': {'DeliveryPriceTHR90001': round(float(parsed_data[0]), 2)}}
                 )
                 
                 collection.update_one(
                     {'_id': ObjectId(url_id)},
-                    {'$set': {'DeliveryPriceTHR10001': parsed_data[1]}}
+                    {'$set': {'DeliveryPriceTHR10001': round(float(parsed_data[1]), 2)}}
                 )
                 # Perform parsing for the other zip code (10001)
                 # time.sleep(5)
@@ -648,14 +648,14 @@ def collect_and_start_delivery(data):
                     # Update the document in MongoDB with the parsed data
                     collection.update_one(
                         {'_id': ObjectId(url_id)},
-                        {'$set': {'DeliveryPriceTHR90001': parsed_data[0]}}
+                        {'$set': {'DeliveryPriceTHR90001': round(float(parsed_data[0]), 2)}}
                     )
 
                     
                     # Update the document in MongoDB with the parsed data for 10001
                     collection.update_one(
                         {'_id': ObjectId(url_id)},
-                        {'$set': {'DeliveryPriceTHR10001': parsed_data[1]}}
+                        {'$set': {'DeliveryPriceTHR10001': round(float(parsed_data[1]), 2)}}
                     )
             
             except Exception as e:
