@@ -63,4 +63,4 @@ def automation_track_number():
         elif feedback[1] != 'Shipped' and feedback[2]:
             send_telegram_message(f'Sales: something wrong with # {order_number}')
 
-automation_track_number()
+# automation_track_number()

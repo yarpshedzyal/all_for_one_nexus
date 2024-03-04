@@ -174,7 +174,7 @@ def parser_solo(url):
     
 #     return [format_price(price_text), Stock]
 
-def multiparse(ulrs):
+def multiparse(ulrs:str):
 
     total_price = 0
     stock_status = "Out"
