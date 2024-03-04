@@ -186,8 +186,7 @@ def multiparse(ulrs:str):
         result = parser_solo(url)
         if result[1] == 'Out':
             return [total_price, stock_status, plus_text]
-            break
-        total_price += result[0]
+        total_price += int(result[0])
     return [total_price, result[1], result[2]]
 
 
@@ -199,6 +198,8 @@ def count():
     count = collection.count_documents({})
     return count
 
+urls = 'https://www.therestaurantstore.com/items/516137 https://www.therestaurantstore.com/items/516128'
+print(urls.split())
 
-
+print(multiparse(urls))
 
