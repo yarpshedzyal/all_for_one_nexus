@@ -198,8 +198,8 @@ def count():
     count = collection.count_documents({})
     return count
 
-urls = 'https://www.webstaurantstore.com/lavex-janitorial-16-gallon-black-slim-trash-can/475WH16BK.html https://www.webstaurantstore.com/lavex-janitorial-black-slim-trash-can-flat-lid-with-handle/475WHLDFTBK.html https://www.webstaurantstore.com/lavex-janitorial-black-trainable-slim-trash-can-dolly/475WHTRDOLLY.html'
-print(urls.split())
+# urls = 'https://www.webstaurantstore.com/lavex-janitorial-16-gallon-black-slim-trash-can/475WH16BK.html https://www.webstaurantstore.com/lavex-janitorial-black-slim-trash-can-flat-lid-with-handle/475WHLDFTBK.html https://www.webstaurantstore.com/lavex-janitorial-black-trainable-slim-trash-can-dolly/475WHTRDOLLY.html'
+# print(urls.split())
 
-print(multiparse(urls))
+# print(multiparse(urls))
 
