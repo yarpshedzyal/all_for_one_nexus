@@ -703,26 +703,7 @@ def collect_and_start_delivery(data):
         socketio.emit('disabled', {'disabled': is_parsing_delivery_selected, "category":"is_parsing_delivery_selected"})
 
 
-# @socketio.on('test')
-# def handle_message(data):
-#     for i in range(11):  # Пример: 10 итераций
-#         progress = i * 10
-#         print(progress) 
-#         # Отправка данных на клиент
-#         socketio.emit("progress_update", {'progress': progress, 'category': "test"})   
-#         socketio.sleep(0.5)
-# @socketio.on('test2')
-# def handle_message(data): 
-#     for i in range(11):  # Пример: 10 итераций
-#         progress = i * 10
-#         print(progress) 
-#         # Отправка данных на клиент
-#         socketio.emit("progress_update", {'progress': progress, 'category': "test2"})  
-#         socketio.sleep(0.3)
 
-
-
- 
 
 if __name__ == '__main__':
     '''[<User: test1>, <User: test2>, <User: q>]

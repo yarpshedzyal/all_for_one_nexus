@@ -38,7 +38,7 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price_multi(urlmulti):
             page.goto(ulr)
             print('came to url: ', ulr)
 
-
+            page.screenshot(path='screenshot.png')
             page.wait_for_timeout(1500)
             out_of_stock_element = page.locator(out_of_stock_selector)
             if out_of_stock_element.is_visible():
@@ -57,7 +57,7 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price_multi(urlmulti):
                 page.wait_for_timeout(1500)  # Adjust the timeout based on your specific case
 
                 double_button = page.locator(double_button_selector)
-
+                page.screenshot(path='screenshot.png')
                 # Try to click the double button (modal), handle exception if not clickable
                 try:
                     double_button.click(timeout=max_timeout)
@@ -74,10 +74,9 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price_multi(urlmulti):
         cart_link_selector = '.flex.items-center.justify-center.w-24.h-28.bg-gray-200'
         cart_link = page.locator(cart_link_selector)
         cart_link.click()
-
         # Wait for some time to allow any JavaScript code triggered by the click to execute
         page.wait_for_timeout(1500)# Adjust the timeout based on your specific case
-
+        page.screenshot(path='screenshot.png')
         # Get the current URL of the page
         current_url = page.url
 
@@ -96,13 +95,13 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price_multi(urlmulti):
                 zip_code_field.type('90013')
                 calculate_button.click()
 
-
+        page.screenshot(path='screenshot.png')
         try:
             zip_code_to_input_90001 = str(zipindex[0])
             zip_code_to_input_10001 = str(zipindex[1])
             change_index_button = page.locator(change_index_button_selector)
             change_index_button.click()
-
+            page.screenshot(path='screenshot.png')
             page.wait_for_selector(zip_code_field_selector)
             zip_code_field = page.locator(zip_code_field_selector)
             zip_code_field.type(zip_code_to_input_90001)
@@ -111,7 +110,7 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price_multi(urlmulti):
             calculate_button.click()
             # Wait for some time to allow any JavaScript code triggered by the click to execute
             page.wait_for_timeout(max_timeout)  # Adjust the timeout based on your specific case
-
+            page.screenshot(path='screenshot.png')
             # Print a message after clicking the "Calculate" button
             print("Calculate button clicked 90001!")
 
@@ -119,13 +118,14 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price_multi(urlmulti):
             shipping_price_selector = '.shipping-method-price'
             shipping_price_elements_90001 = page.locator(shipping_price_selector).element_handles()
 
-
+            page.screenshot(path='screenshot.png')
             change_index_button.click()
             page.wait_for_selector(zip_code_field_selector)
             zip_code_field.type(zip_code_to_input_10001)
             calculate_button.click()
             page.wait_for_timeout(max_timeout)
             print("Calculate button clicked 10001!")
+            page.screenshot(path='screenshot.png')
             shipping_price_elements_10001 = page.locator(shipping_price_selector).element_handles()
         except Exception as e:
             print(f"Failed to click : {e}")
@@ -166,4 +166,5 @@ def perform_add_to_cart_view_cart_calculate_and_retrieve_price_multi(urlmulti):
 
 test = 'https://www.therestaurantstore.com/items/773486  https://www.therestaurantstore.com/items/274682'
 for i in range(100):
+    time.sleep(3)
     print(perform_add_to_cart_view_cart_calculate_and_retrieve_price_multi(test))
